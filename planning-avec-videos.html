@@ -1,0 +1,322 @@
+import { useState } from "react";
+
+const C = {
+  bg: "#0c0f14", card: "#14181f", border: "#1e2430", text: "#e8eaf0", muted: "#6b7590",
+  accent: "#4ecdc4", blue: "#5f9fff", purple: "#a78bfa", amber: "#feca57",
+  green: "#34d399", red: "#ff6b6b", orange: "#ff9f43",
+};
+
+const days = [
+  {
+    id: "lun", label: "Lundi", tag: "Récupération", tagColor: C.red,
+    emoji: "🤢",
+    alert: {
+      title: "Jour sensible — post-injection",
+      text: "Tu vomis souvent le lundi. L'objectif n'est PAS de manger normalement mais de ne pas tomber à zéro protéines.",
+      color: C.red,
+    },
+    exercise: {
+      name: "Repos ou marche douce",
+      detail: "15 min max. Si nausée forte, reste au lit. Rien de forcé.",
+      icon: "🚶",
+      color: C.green,
+      video: null,
+      steps: null,
+    },
+    meals: [
+      { time: "Matin", name: "Eau + électrolytes", desc: "Eau plate avec une pincée de sel + jus de citron. Petites gorgées.", prot: "0g", emoji: "💧", color: C.blue },
+      { time: "Midi (si ça passe)", name: "Bouillon + fromage blanc", desc: "Bouillon de poule chaud (du cube c'est ok) + 150g fromage blanc nature. Si ça ne passe pas, juste le bouillon.", prot: "~15g", emoji: "🍵", color: C.amber },
+      { time: "Soir", name: "Shaker whey ou skyr", desc: "30g whey dans eau froide OU 200g skyr nature. Le minimum vital pour tes muscles.", prot: "~22g", emoji: "🥛", color: C.accent },
+    ],
+    protTarget: "~35-40g",
+    note: "C'est un jour de survie protéique, pas un jour normal. Si tu arrives à 40g c'est déjà bien. L'hydratation est la priorité n°1.",
+  },
+  {
+    id: "mar", label: "Mardi", tag: "Jour B · Haut du corps", tagColor: C.purple,
+    emoji: "💪",
+    alert: null,
+    exercise: {
+      name: "Circuit B — Haut du corps",
+      detail: "~18 min · 3 exercices · 60s repos entre séries",
+      icon: "💪",
+      color: C.purple,
+      video: "https://www.youtube.com/results?search_query=beginner+upper+body+home+workout+no+equipment",
+      steps: [
+        { name: "Pompes (genoux)", sets: "3 × 8-10", tips: "Mains largeur épaules, descends poitrine au sol, corps en ligne", video: "https://www.youtube.com/results?search_query=knee+push+up+proper+form+beginner" },
+        { name: "Dips sur chaise", sets: "3 × 8", tips: "Chaise contre le mur, coudes à 90°, ne descends pas trop bas", video: "https://www.youtube.com/results?search_query=chair+tricep+dips+beginner+at+home" },
+        { name: "Mountain climbers", sets: "3 × 20", tips: "Position pompe, genoux vers poitrine en alternant, dos plat", video: "https://www.youtube.com/results?search_query=mountain+climbers+tutorial+beginner" },
+      ],
+    },
+    meals: [
+      { time: "Déjeuner", name: "Bowl poulet express", desc: "200g poulet émincé + riz micro-ondable + brocoli surgelé. Sauce soja.", prot: "~65g", emoji: "🍗", color: C.accent },
+      { time: "Dîner", name: "Omelette thon", desc: "3 œufs + 1 boîte de thon mélangés, poêle antiadhésive, salade verte.", prot: "~48g", emoji: "🍳", color: C.blue },
+      { time: "Snack", name: "Skyr + amandes", desc: "200g skyr + quelques amandes + 1 carré chocolat noir.", prot: "~20g", emoji: "🥛", color: C.amber },
+    ],
+    protTarget: "~133g",
+    note: null,
+  },
+  {
+    id: "mer", label: "Mercredi", tag: "Jour A · Bas du corps", tagColor: C.blue,
+    emoji: "🦵",
+    alert: null,
+    exercise: {
+      name: "Circuit A — Bas du corps",
+      detail: "~20 min · 3 exercices · 60s repos entre séries",
+      icon: "🦵",
+      color: C.blue,
+      video: "https://www.youtube.com/results?search_query=beginner+lower+body+home+workout+no+equipment",
+      steps: [
+        { name: "Squats", sets: "3 × 12", tips: "Pieds largeur épaules, descends cuisses parallèles au sol, pousse par les talons", video: "https://www.youtube.com/results?search_query=bodyweight+squat+proper+form+beginner" },
+        { name: "Fentes avant alternées", sets: "3 × 10/jambe", tips: "Grand pas, genou arrière frôle le sol, buste droit", video: "https://www.youtube.com/results?search_query=forward+lunge+tutorial+beginner" },
+        { name: "Planche gainage", sets: "3 × 30-45s", tips: "Avant-bras au sol, corps en ligne, serre abdos + fessiers", video: "https://www.youtube.com/results?search_query=forearm+plank+proper+form+tutorial" },
+      ],
+    },
+    meals: [
+      { time: "Déjeuner", name: "Thon-avocat", desc: "2 boîtes thon + ½ avocat + tomates cerises + quinoa ou riz. Citron, huile d'olive.", prot: "~55g", emoji: "🐟", color: C.accent },
+      { time: "Dîner", name: "Wrap dinde-crudités", desc: "Tortilla complète + 150g dinde + fromage + salade. Roulé en 5 min.", prot: "~45g", emoji: "🌯", color: C.amber },
+      { time: "Snack", name: "Fromage blanc", desc: "200g fromage blanc 0% + 1 carré chocolat noir.", prot: "~20g", emoji: "🥛", color: C.blue },
+    ],
+    protTarget: "~120g",
+    note: null,
+  },
+  {
+    id: "jeu", label: "Jeudi", tag: "Jour B · Haut du corps", tagColor: C.purple,
+    emoji: "💪",
+    alert: null,
+    exercise: {
+      name: "Circuit B — Haut du corps",
+      detail: "~18 min · Même circuit que mardi",
+      icon: "💪",
+      color: C.purple,
+      video: "https://www.youtube.com/results?search_query=beginner+upper+body+home+workout+no+equipment",
+      steps: [
+        { name: "Pompes (genoux)", sets: "3 × 8-10", tips: "Essaie d'ajouter 1-2 reps vs mardi", video: "https://www.youtube.com/results?search_query=knee+push+up+proper+form+beginner" },
+        { name: "Dips sur chaise", sets: "3 × 8", tips: "Contrôle la descente, 2 sec pour descendre", video: "https://www.youtube.com/results?search_query=chair+tricep+dips+beginner+at+home" },
+        { name: "Mountain climbers", sets: "3 × 20", tips: "Un peu plus rapide que mardi si possible", video: "https://www.youtube.com/results?search_query=mountain+climbers+tutorial+beginner" },
+      ],
+    },
+    meals: [
+      { time: "Déjeuner", name: "Dinde-courgette-lentilles", desc: "200g dinde grillée + courgettes à l'ail + lentilles en boîte.", prot: "~70g", emoji: "🦃", color: C.accent },
+      { time: "Dîner", name: "Fromage blanc salé + saumon fumé", desc: "300g fromage blanc + concombre en dés + 100g saumon fumé + herbes.", prot: "~50g", emoji: "🥒", color: C.blue },
+      { time: "Snack", name: "Shaker whey", desc: "30g whey + eau froide. 30 secondes.", prot: "~25g", emoji: "⚡", color: C.purple },
+    ],
+    protTarget: "~145g",
+    note: null,
+  },
+  {
+    id: "ven", label: "Vendredi", tag: "Jour A · Bas du corps", tagColor: C.blue,
+    emoji: "🦵",
+    alert: null,
+    exercise: {
+      name: "Circuit A — Bas du corps",
+      detail: "~20 min · Même circuit que mercredi",
+      icon: "🦵",
+      color: C.blue,
+      video: "https://www.youtube.com/results?search_query=beginner+lower+body+home+workout+no+equipment",
+      steps: [
+        { name: "Squats", sets: "3 × 12", tips: "Essaie de descendre un peu plus bas que mercredi", video: "https://www.youtube.com/results?search_query=bodyweight+squat+proper+form+beginner" },
+        { name: "Fentes avant alternées", sets: "3 × 10/jambe", tips: "Tiens 1 sec en bas de chaque fente", video: "https://www.youtube.com/results?search_query=forward+lunge+tutorial+beginner" },
+        { name: "Planche gainage", sets: "3 × 35-50s", tips: "+5 sec vs mercredi", video: "https://www.youtube.com/results?search_query=forearm+plank+proper+form+tutorial" },
+      ],
+    },
+    meals: [
+      { time: "Déjeuner", name: "Saumon four + patate douce", desc: "Pavé saumon surgelé au four 15 min + haricots verts + patate douce micro-ondée.", prot: "~55g", emoji: "🐠", color: C.green },
+      { time: "Dîner", name: "Soupe + poulet", desc: "Soupe de légumes (brique) + 200g poulet froid émincé dedans.", prot: "~45g", emoji: "🍲", color: C.amber },
+      { time: "Snack", name: "Skyr + amandes", desc: "200g skyr + amandes + chocolat noir.", prot: "~20g", emoji: "🥛", color: C.accent },
+    ],
+    protTarget: "~120g",
+    note: null,
+  },
+  {
+    id: "sam", label: "Samedi", tag: "Marche + Injection soir", tagColor: C.orange,
+    emoji: "💉",
+    alert: {
+      title: "Jour d'injection — prépare-toi",
+      text: "Repas normal AVANT l'injection du soir. C'est ton dernier vrai repas copieux avant la fenêtre de nausée. Mange bien, mange protéiné.",
+      color: C.orange,
+    },
+    exercise: {
+      name: "Marche active",
+      detail: "30-40 min · Rythme soutenu, pas une balade. Dehors de préférence.",
+      icon: "🚶",
+      color: C.green,
+      video: "https://www.youtube.com/results?search_query=30+minute+brisk+walking+workout",
+      steps: null,
+    },
+    meals: [
+      { time: "Déjeuner", name: "Salade poulet rôti", desc: "Cuisse poulet rôti effilochée + salade, concombre, feta, pois chiches.", prot: "~60g", emoji: "🥗", color: C.accent },
+      { time: "Dîner (AVANT injection)", name: "Bowl poulet express", desc: "200g poulet + riz + brocoli. Mange AVANT de piquer. Repas copieux autorisé.", prot: "~65g", emoji: "🍗", color: C.orange },
+      { time: "Snack", name: "Fromage blanc", desc: "200g fromage blanc + amandes. Après injection si tu as encore faim.", prot: "~20g", emoji: "🥛", color: C.amber },
+    ],
+    protTarget: "~145g",
+    note: "Injection le soir APRÈS le dîner. Bien s'hydrater toute la journée.",
+  },
+  {
+    id: "dim", label: "Dimanche", tag: "Mode doux — pré-nausée", tagColor: C.amber,
+    emoji: "😴",
+    alert: {
+      title: "Jour tampon — alimentation douce",
+      text: "NE SAUTE PAS ce jour. Passe en mode 'liquide + mou' pour éviter que la nourriture stagne dans l'estomac. Petits volumes, fréquents. Évite les graisses et fibres lourdes.",
+      color: C.amber,
+    },
+    exercise: {
+      name: "Repos complet",
+      detail: "Le muscle se construit au repos. Dors bien, hydrate-toi.",
+      icon: "😴",
+      color: C.green,
+      video: null,
+      steps: null,
+    },
+    meals: [
+      { time: "Matin (10h)", name: "Skyr nature", desc: "200g skyr ou fromage blanc. Facile à digérer, riche en protéines. Mange lentement.", prot: "~20g", emoji: "🥛", color: C.accent },
+      { time: "Midi", name: "Soupe de légumes + poulet mixé", desc: "Soupe lisse (brique ou mixée) + poulet émincé très fin dedans. Pas de morceaux gros.", prot: "~35g", emoji: "🍵", color: C.blue },
+      { time: "16h", name: "Shaker whey léger", desc: "20g whey dans beaucoup d'eau froide. Petites gorgées sur 30 min.", prot: "~18g", emoji: "⚡", color: C.purple },
+      { time: "Soir", name: "Fromage blanc + saumon fumé", desc: "200g fromage blanc + 80g saumon fumé émietté. Texture molle = vidange facile.", prot: "~30g", emoji: "🐟", color: C.amber },
+    ],
+    protTarget: "~100g",
+    note: "Objectif réduit à 100g — mieux que 0g si tu sautes. Anti-nausée naturels : gingembre frais en infusion, menthe.",
+  },
+];
+
+function ExerciseStep({ step, i }) {
+  return (
+    <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 10 }}>
+      <div style={{ width: 28, height: 28, borderRadius: 8, background: C.accent + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: C.accent, flexShrink: 0 }}>{i + 1}</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontWeight: 700, fontSize: 14 }}>{step.name} <span style={{ fontWeight: 500, color: C.muted, fontSize: 12 }}>· {step.sets}</span></div>
+        <div style={{ fontSize: 12, color: C.muted, marginTop: 2, lineHeight: 1.4 }}>{step.tips}</div>
+        <a href={step.video} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 5, fontSize: 11, fontWeight: 700, color: "#ff4444", textDecoration: "none", background: "#ff444415", padding: "3px 10px", borderRadius: 6 }}>
+          ▶ Voir sur YouTube
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [selectedDay, setSelectedDay] = useState("mar");
+  const day = days.find(d => d.id === selectedDay);
+
+  return (
+    <div style={{ background: C.bg, color: C.text, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', minHeight: "100vh", padding: "16px 12px" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto" }}>
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 900, background: `linear-gradient(135deg, ${C.accent}, ${C.blue})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", margin: 0 }}>Plan Semaine · Vue par Jour</h1>
+          <div style={{ color: C.muted, fontSize: 12, marginTop: 4 }}>Injection samedi soir · Adapté cycle Mounjaro 5mg</div>
+        </div>
+
+        {/* Day selector */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginBottom: 20 }}>
+          {days.map(d => (
+            <button key={d.id} onClick={() => setSelectedDay(d.id)} style={{
+              padding: "10px 2px", textAlign: "center", borderRadius: 10, cursor: "pointer",
+              background: selectedDay === d.id ? d.tagColor + "20" : C.card,
+              border: `1.5px solid ${selectedDay === d.id ? d.tagColor : C.border}`,
+              transition: "all 0.2s",
+            }}>
+              <div style={{ fontSize: 18 }}>{d.emoji}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: selectedDay === d.id ? d.tagColor : C.muted, marginTop: 2, textTransform: "uppercase" }}>{d.label}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Day content */}
+        {day && (
+          <div key={day.id} style={{ animation: "fadeIn 0.3s ease" }}>
+            {/* Day header */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <div style={{ fontSize: 36 }}>{day.emoji}</div>
+              <div>
+                <div style={{ fontSize: 22, fontWeight: 900 }}>{day.label}</div>
+                <span style={{ display: "inline-block", padding: "3px 10px", borderRadius: 8, background: day.tagColor + "18", color: day.tagColor, fontSize: 12, fontWeight: 700 }}>{day.tag}</span>
+              </div>
+            </div>
+
+            {/* Alert */}
+            {day.alert && (
+              <div style={{ background: day.alert.color + "0c", border: `1px solid ${day.alert.color}30`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: day.alert.color, marginBottom: 6 }}>⚠️ {day.alert.title}</div>
+                <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.55 }}>{day.alert.text}</div>
+              </div>
+            )}
+
+            {/* Exercise */}
+            <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>Exercice du jour</div>
+            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 16, marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: day.exercise.steps ? 14 : 0 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: day.exercise.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>{day.exercise.icon}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>{day.exercise.name}</div>
+                  <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{day.exercise.detail}</div>
+                </div>
+              </div>
+              {day.exercise.steps && (
+                <div style={{ background: C.bg, borderRadius: 10, padding: 14, marginTop: 4 }}>
+                  {day.exercise.steps.map((s, i) => <ExerciseStep key={i} step={s} i={i} />)}
+                </div>
+              )}
+              {day.exercise.video && !day.exercise.steps && (
+                <a href={day.exercise.video} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 12, fontWeight: 700, color: "#ff4444", textDecoration: "none", background: "#ff444415", padding: "6px 14px", borderRadius: 8 }}>
+                  ▶ Trouver un parcours sur YouTube
+                </a>
+              )}
+            </div>
+
+            {/* Meals */}
+            <div style={{ fontSize: 11, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 }}>Repas du jour</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+              {day.meals.map((m, i) => (
+                <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "14px 16px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 10, background: m.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{m.emoji}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: m.color, textTransform: "uppercase" }}>{m.time}</span>
+                        <span style={{ fontWeight: 700, fontSize: 14 }}>{m.name}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: C.muted, marginTop: 3, lineHeight: 1.45 }}>{m.desc}</div>
+                    </div>
+                    <div style={{ background: C.accent + "18", color: C.accent, fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 8, flexShrink: 0, alignSelf: "flex-start" }}>{m.prot}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Protein total */}
+            <div style={{ background: C.accent + "0c", border: `1px solid ${C.accent}25`, borderRadius: 12, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+              <span style={{ fontSize: 13, fontWeight: 600 }}>Protéines du jour</span>
+              <span style={{ fontSize: 18, fontWeight: 900, color: C.accent }}>{day.protTarget}</span>
+            </div>
+
+            {/* Note */}
+            {day.note && (
+              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.55, padding: "0 4px", fontStyle: "italic" }}>
+                💡 {day.note}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Anti-nausea tips fixed */}
+        <div style={{ marginTop: 24, background: `linear-gradient(135deg, ${C.amber}08, ${C.orange}08)`, border: `1px solid ${C.amber}20`, borderRadius: 14, padding: 16 }}>
+          <div style={{ fontWeight: 700, fontSize: 14, color: C.amber, marginBottom: 8 }}>🫚 Anti-nausée & rots de soufre</div>
+          <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+            <strong style={{ color: C.text }}>Gingembre frais</strong> : infusion avant/après les repas le dimanche et lundi. C'est le meilleur anti-émétique naturel.<br/><br/>
+            <strong style={{ color: C.text }}>Menthe poivrée</strong> : en infusion, aide contre les rots sulfureux (gastroparésie).<br/><br/>
+            <strong style={{ color: C.text }}>Manger assis et lentement</strong> : 20 min minimum par repas dim/lun. Petites bouchées.<br/><br/>
+            <strong style={{ color: C.text }}>Éviter dim/lun</strong> : graisses, fritures, aliments fibreux (crudités dures, légumineuses entières), boissons gazeuses, caféine à jeun.<br/><br/>
+            <strong style={{ color: C.red }}>Parle à ton médecin</strong> : des vomissements chaque semaine au même moment méritent un suivi. Il peut ajuster le timing de l'injection ou prescrire un anti-émétique (ondansétron) pour les jours difficiles.
+          </div>
+        </div>
+
+      </div>
+
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        button { font-family: inherit; }
+      `}</style>
+    </div>
+  );
+}
