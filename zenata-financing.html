@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zenata Strategic Planner 2026</title>
+<title>Zenata Waterfall Strategy</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -14,249 +14,235 @@
     --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 20px; font-size: 13px; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 25px; font-size: 13px; }
   
   .header { text-align: center; margin-bottom: 30px; }
-  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--gold); letter-spacing: 0.05em; }
-  
-  /* Inputs Section */
-  .section-label { font-size: 10px; text-transform: uppercase; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 15px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;}
-  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--surface); padding: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
-  .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .param-item input { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 8px; border-radius: 2px; outline: none; }
-  .param-item input:focus { border-color: var(--gold); }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold); letter-spacing: 0.05em; }
 
-  /* KPI */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 25px; }
-  .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 2px; }
-  .card.gold-border { border-top: 3px solid var(--gold); }
+  .focus-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; border: 1px solid var(--gold); padding: 20px; background: rgba(201,168,76,0.02); }
+  .input-group { display: flex; flex-direction: column; }
+  .input-group label { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; font-weight: bold; }
+  .input-group input { background: transparent; border: none; border-bottom: 2px solid var(--gold-dim); color: #fff; font-size: 1.5rem; font-family: 'Cormorant Garamond'; padding: 5px 0; outline: none; }
+
+  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; background: var(--surface); padding: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+  .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .param-item input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 4px 0; outline: none; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; text-align: center; }
   .card-label { font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; line-height: 1; }
-  .card-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
-
-  /* Charts */
-  .charts-section { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; margin-bottom: 25px; }
-  .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 350px; }
-  @media (max-width: 900px) { .charts-section { grid-template-columns: 1fr; } }
-
-  /* Assets & Security */
-  .security-section { background: rgba(201,168,76,0.02); border: 1px solid var(--gold-dim); padding: 20px; margin-bottom: 25px; }
-  .assets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 15px; }
-  .asset-item { border-left: 1px solid var(--border); padding-left: 15px; }
-
-  .suggestion-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-left: 4px solid var(--blue); }
+  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
   
-  .red { color: var(--red); } .green { color: var(--green); } .gold { color: var(--gold); } .blue { color: var(--blue); }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+  .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 380px; }
+  @media (max-width: 950px) { .charts-grid { grid-template-columns: 1fr; } }
+
+  .safety-box { background: rgba(201,168,76,0.03); border: 1px solid var(--gold-dim); padding: 20px; margin-bottom: 25px; }
+  .assets-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 15px; }
+  
+  .suggestion { background: var(--surface); padding: 20px; border-left: 4px solid var(--blue); line-height: 1.6; }
+  .gold { color: var(--gold); } .red { color: var(--red); } .green { color: var(--green); } .blue { color: var(--blue); }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Dashboard Zenata : Avril 2026</h1>
-  <div style="font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 5px;">Planning Financier & Stratégie Cash</div>
+  <h1>Stratégie Zenata</h1>
+  <div style="font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em;">Analyse Waterfall & Flux de Trésorerie</div>
 </div>
 
-<span class="section-label">Configuration des Flux (Inputs)</span>
-<div class="params-grid">
-  <div class="param-item">
+<div class="focus-inputs">
+  <div class="input-group">
     <label>Épargne Mensuelle Fixe (€)</label>
-    <input type="number" id="fixedSavings" value="2300" onchange="compute()">
+    <input type="number" id="inputFixed" value="1900" oninput="compute()">
   </div>
-  <div class="param-item">
-    <label>Primes Annuelles / Exceptionnel (€)</label>
-    <input type="number" id="bonusSavings" value="9000" onchange="compute()">
+  <div class="input-group">
+    <label>Prime Annuelle Exceptionnelle (€)</label>
+    <input type="number" id="inputBonus" value="7000" oninput="compute()">
   </div>
-  <div class="param-item">
-    <label>Solde Attijari (MAD)</label>
-    <input type="number" id="attijari" value="162000" onchange="compute()">
-  </div>
-  <div class="param-item">
-    <label>Solde Fortuneo (€)</label>
-    <input type="number" id="fortuneo" value="16000" onchange="compute()">
-  </div>
-  <div class="param-item">
-    <label>Loyer Fès (MAD/m)</label>
-    <input type="number" id="loyerFes" value="1800" onchange="compute()">
-  </div>
-  <div class="param-item">
-    <label>Taux EUR/MAD</label>
-    <input type="number" id="eurRate" value="10.8" step="0.1" onchange="compute()">
-  </div>
+</div>
+
+<div class="params-grid">
   <div class="param-item">
     <label>Date de Livraison</label>
     <input type="month" id="deliveryDate" value="2026-12" onchange="compute()">
   </div>
   <div class="param-item">
+    <label>Attijari (MAD)</label>
+    <input type="number" id="attijari" value="162000" oninput="compute()">
+  </div>
+  <div class="param-item">
+    <label>Fortuneo (€)</label>
+    <input type="number" id="fortuneo" value="16000" oninput="compute()">
+  </div>
+  <div class="param-item">
+    <label>Loyer Fès (MAD/m)</label>
+    <input type="number" id="loyerFes" value="1800" oninput="compute()">
+  </div>
+  <div class="param-item">
+    <label>Taux EUR/MAD</label>
+    <input type="number" id="eurRate" value="10.8" step="0.1" oninput="compute()">
+  </div>
+  <div class="param-item">
     <label>Dette Tiers (MAD)</label>
-    <input type="number" id="dette" value="100000" onchange="compute()">
+    <input type="number" id="dette" value="100000" oninput="compute()">
   </div>
 </div>
 
 <div class="kpi-grid">
-  <div class="card gold-border">
-    <div class="card-label">Reste à payer (Zenata)</div>
+  <div class="card">
+    <div class="card-label">Reste à payer (Immo)</div>
     <div class="card-value red" id="kpi-remaining">—</div>
-    <div class="card-sub" id="kpi-remaining-eur">—</div>
   </div>
   <div class="card">
-    <div class="card-label">Cash Projeté à Livraison</div>
-    <div class="card-value green" id="kpi-total-cash">—</div>
-    <div class="card-sub">Fixe + Primes + Loyers + Actuel</div>
+    <div class="card-label">Trésorerie Projetée</div>
+    <div class="card-value blue" id="kpi-final-cash">—</div>
   </div>
-  <div class="card">
-    <div class="card-label">Surplus / Gap Final</div>
+  <div class="card" style="border-top: 3px solid var(--gold);">
+    <div class="card-label">Bilan (Excédent/Gap)</div>
     <div class="card-value" id="kpi-net">—</div>
-    <div class="card-sub" id="net-sub">Après règlement appartement</div>
   </div>
 </div>
 
-<span class="section-label">Analyses Graphiques</span>
-<div class="charts-section">
+<div class="charts-grid">
   <div class="chart-box">
-    <div class="card-label">Projection mensuelle de la trésorerie (MAD)</div>
+    <div class="card-label">Évolution de la Trésorerie (MAD)</div>
     <canvas id="chartTraj"></canvas>
   </div>
   <div class="chart-box">
-    <div class="card-label">Composition de ton Financement</div>
-    <canvas id="chartStructure"></canvas>
+    <div class="card-label">Analyse Waterfall du Financement (MAD)</div>
+    <canvas id="chartWaterfall"></canvas>
   </div>
 </div>
 
-<span class="section-label">Filet de Sécurité (Actifs Mobiles)</span>
-<div class="security-section">
-  <div class="assets-grid">
-    <div class="asset-item">
-      <div class="card-label">Actions Maroc</div>
-      <div style="font-size: 1.2rem;">80 000 MAD</div>
-    </div>
-    <div class="asset-item">
-      <div class="card-label">PEA (Total)</div>
-      <div style="font-size: 1.2rem;">10 000 €</div>
-    </div>
-    <div class="asset-item">
-      <div class="card-label">FactSet Stocks</div>
-      <div style="font-size: 1.2rem;">9 000 €</div>
-    </div>
-    <div class="asset-item" style="border-left: 2px solid var(--gold);">
-      <div class="card-label gold">Valorisation Sécurité</div>
-      <div style="font-size: 1.2rem; color: var(--gold);" id="total-safety">—</div>
+<div class="safety-box">
+  <div class="card-label gold">Filet de Sécurité (Actifs Mobiles)</div>
+  <div class="assets-list">
+    <div><span class="card-label">Actions Maroc</span><br><span style="font-size:1.1rem">80 000 MAD</span></div>
+    <div><span class="card-label">PEA</span><br><span style="font-size:1.1rem">10 000 €</span></div>
+    <div><span class="card-label">FactSet</span><br><span style="font-size:1.1rem">9 000 €</span></div>
+    <div style="border-left: 2px solid var(--gold); padding-left: 15px;">
+      <span class="card-label gold">Total Buffer</span><br>
+      <span style="font-size:1.1rem; color: var(--gold);" id="total-safety">—</span>
     </div>
   </div>
 </div>
 
-<div class="suggestion-box">
-  <div class="card-label" style="color: var(--blue);">Analyse de situation</div>
-  <div id="dynamic-note" style="line-height: 1.6;"></div>
+<div class="suggestion">
+  <div id="dynamic-note"></div>
 </div>
 
 <script>
-const TOTAL_APPART = 722700;
-const AVANCE_DEJA_FAITE = 100000;
-const ACTIONS_MA = 80000;
-const ACTIONS_PEA_E = 10000;
-const ACTIONS_FS_E = 9000;
+const COST_TOTAL = 722700;
+const PRE_PAID = 100000;
+const ACT_MA = 80000;
+const ACT_PEA = 10000;
+const ACT_FS = 9000;
 
 let charts = {};
 
 function fM(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
-function fE(v) { return new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v); }
 
 function compute() {
-  const eurRate = parseFloat(document.getElementById('eurRate').value);
-  const attijari = parseFloat(document.getElementById('attijari').value);
-  const fortuneo = parseFloat(document.getElementById('fortuneo').value);
-  const fixedE = parseFloat(document.getElementById('fixedSavings').value);
-  const bonusE = parseFloat(document.getElementById('bonusSavings').value);
-  const loyerFes = parseFloat(document.getElementById('loyerFes').value);
-  const detteTiers = parseFloat(document.getElementById('dette').value);
+  const eurRate = parseFloat(document.getElementById('eurRate').value) || 10.8;
+  const attijari = parseFloat(document.getElementById('attijari').value) || 0;
+  const fortuneo = parseFloat(document.getElementById('fortuneo').value) || 0;
+  const fixedE = parseFloat(document.getElementById('inputFixed').value) || 0;
+  const bonusE = parseFloat(document.getElementById('inputBonus').value) || 0;
+  const loyerFes = parseFloat(document.getElementById('loyerFes').value) || 0;
+  const detteTiers = parseFloat(document.getElementById('dette').value) || 0;
 
-  const deliveryDate = new Date(document.getElementById('deliveryDate').value);
+  const delivery = new Date(document.getElementById('deliveryDate').value);
   const now = new Date(2026, 3, 1); // Avril 2026
-  const monthsRemaining = (deliveryDate.getFullYear() - now.getFullYear()) * 12 + (deliveryDate.getMonth() - now.getMonth());
+  const months = (delivery.getFullYear() - now.getFullYear()) * 12 + (delivery.getMonth() - now.getMonth());
 
-  // Calculs Financiers
-  const cashActuelMad = attijari + (fortuneo * eurRate);
-  const epargneFixeTotaleMad = (fixedE * monthsRemaining) * eurRate;
-  const primesTotaleMad = bonusE * eurRate;
-  const loyersTotauxMad = loyerFes * monthsRemaining;
+  const totalNeed = COST_TOTAL - PRE_PAID;
+  const initialCash = attijari + (fortuneo * eurRate);
+  const totalFixedSavings = fixedE * months * eurRate;
+  const totalBonus = bonusE * eurRate;
+  const totalRent = loyerFes * months;
   
-  const totalCashFinal = cashActuelMad + epargneFixeTotaleMad + primesTotaleMad + loyersTotauxMad;
-  const resteAPayerZenata = TOTAL_APPART - AVANCE_DEJA_FAITE;
-  const balanceFinale = totalCashFinal - resteAPayerZenata;
-  
-  const totalSafetyMad = ACTIONS_MA + ((ACTIONS_PEA_E + ACTIONS_FS_E) * eurRate);
+  const finalCash = initialCash + totalFixedSavings + totalBonus + totalRent;
+  const netBalance = finalCash - totalNeed;
+  const bufferTotal = ACT_MA + (ACT_PEA * eurRate) + (ACT_FS * eurRate);
 
-  // Update KPI
-  document.getElementById('kpi-remaining').textContent = fM(resteAPayerZenata);
-  document.getElementById('kpi-remaining-eur').textContent = "soit " + fE(resteAPayerZenata / eurRate);
-  document.getElementById('kpi-total-cash').textContent = fM(totalCashFinal);
-  
-  const netKpi = document.getElementById('kpi-net');
-  netKpi.textContent = fM(balanceFinale);
-  netKpi.className = "card-value " + (balanceFinale >= 0 ? "green" : "red");
-  document.getElementById('net-sub').textContent = balanceFinale >= 0 ? "Excédent disponible" : "Gap à combler";
-  document.getElementById('total-safety').textContent = fM(totalSafetyMad);
+  document.getElementById('kpi-remaining').textContent = fM(totalNeed);
+  document.getElementById('kpi-final-cash').textContent = fM(finalCash);
+  document.getElementById('kpi-net').textContent = fM(netBalance);
+  document.getElementById('kpi-net').className = "card-value " + (netBalance >= 0 ? "green" : "red");
+  document.getElementById('total-safety').textContent = fM(bufferTotal);
 
-  // Note Dynamique
-  let note = `Avec une épargne fixe de <b>${fE(fixedE)}/mois</b> et ta prime de <b>${fE(bonusE)}</b>, tu génères <b>${fM(epargneFixeTotaleMad + primesTotaleMad)}</b> d'ici décembre 2026.<br>`;
-  if(balanceFinale >= 0) {
-    note += `L'appartement est <b class="green">entièrement sécurisé</b> par ton flux de trésorerie. `;
-    if(balanceFinale >= detteTiers) {
-      note += `Ton surplus de ${fM(balanceFinale)} permet de rembourser intégralement la <b>Dette Tiers</b> (${fM(detteTiers)}) sans toucher à tes actions.`;
-    } else {
-      note += `Ton surplus de ${fM(balanceFinale)} couvrira une partie de la Dette Tiers. Le reste pourra être pioché dans ton filet de sécurité de ${fM(totalSafetyMad)}.`;
-    }
+  let note = `<span class="card-label blue">Focus Dette Tiers</span><br>Après avoir soldé l'appartement, il te restera <b>${fM(netBalance)}</b> de cash.<br>`;
+  if(netBalance >= detteTiers) {
+    note += `Tu peux rembourser la <b class="green">dette tiers intégralement</b> sans toucher à tes actions.`;
+  } else if (netBalance > 0) {
+    note += `Tu couvres l'appartement, mais il faudra puiser <b>${fM(detteTiers - netBalance)}</b> dans ton buffer pour solder la dette tiers.`;
   } else {
-    note += `<b class="red">Attention :</b> Il manque ${fM(Math.abs(balanceFinale))} pour solder l'appartement uniquement via le cash. Tu devras mobiliser environ ${Math.round(Math.abs(balanceFinale) / totalSafetyMad * 100)}% de ton filet de sécurité.`;
+    note += `Le gap pour l'appartement est de <b class="red">${fM(Math.abs(netBalance))}</b>. La dette tiers devra être gérée après mobilisation du buffer.`;
   }
   document.getElementById('dynamic-note').innerHTML = note;
 
-  updateCharts(monthsRemaining, cashActuelMad, resteAPayerZenata, (fixedE * eurRate) + loyerFes, primesTotaleMad, epargneFixeTotaleMad, loyersTotauxMad);
+  updateTraj(months, initialCash, totalNeed, (fixedE * eurRate) + loyerFes, totalBonus);
+  updateWaterfall(totalNeed, attijari, (fortuneo * eurRate), totalFixedSavings, totalBonus, totalRent, netBalance);
 }
 
-function updateCharts(months, initial, target, monthlyIn, totalBonus, totalFixed, totalLoyers) {
-  // 1. Trajectoire
-  const labels = [];
-  const data = [];
-  const targetLine = [];
-  const startMonth = 3; // Avril
+function updateTraj(months, initial, target, monthlyIn, bonus) {
   const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
-
+  const labels = []; const data = []; const targetLine = [];
   for(let i=0; i<=months; i++) {
-    let d = new Date(2026, startMonth + i, 1);
+    let d = new Date(2026, 3 + i, 1);
     labels.push(monthNames[d.getMonth()] + " " + d.getFullYear().toString().slice(-2));
-    // On ajoute le bonus au milieu de la période ou à la fin ? Mettons à la fin pour être conservateur
-    let bonusCurrent = (i === months) ? totalBonus : 0;
-    data.push(initial + (i * monthlyIn) + bonusCurrent);
+    let bonusVal = (i === months) ? bonus : 0;
+    data.push(initial + (i * monthlyIn) + bonusVal);
     targetLine.push(target);
   }
-
-  if(charts.traj) charts.traj.destroy();
-  charts.traj = new Chart(document.getElementById('chartTraj'), {
+  if(charts.tj) charts.tj.destroy();
+  charts.tj = new Chart(document.getElementById('chartTraj'), {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: 'Trésorerie Projetée', data: data, borderColor: '#c9a84c', backgroundColor: 'rgba(201,168,76,0.1)', fill: true, tension: 0.3 },
-        { label: 'Cible Zenata', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
-      ]
-    },
-    options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: '#7a7670', font: { family: 'DM Mono' } } } }, scales: { y: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670' } }, x: { ticks: { color: '#7a7670' } } } }
+    data: { labels, datasets: [
+      { label: 'Cash Projeté', data: data, borderColor: '#5a8fcf', fill: true, backgroundColor: 'rgba(90,143,207,0.1)', tension: 0.3 },
+      { label: 'Cible Zenata', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
+    ]},
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#222' } } } }
   });
+}
 
-  // 2. Structure
-  if(charts.struct) charts.struct.destroy();
-  charts.struct = new Chart(document.getElementById('chartStructure'), {
-    type: 'doughnut',
+function updateWaterfall(need, att, fort, fixed, bonus, rent, net) {
+  if(charts.wf) charts.wf.destroy();
+  
+  // Construction des données Waterfall : [start, end]
+  const data = [
+    [0, need],                // Besoin initial
+    [need, need - att],       // Moins Attijari
+    [need - att, need - att - fort], // Moins Fortuneo
+    [need - att - fort, need - att - fort - fixed], // Moins Epargne fixe
+    [need - att - fort - fixed, need - att - fort - fixed - bonus], // Moins Bonus
+    [need - att - fort - fixed - bonus, need - att - fort - fixed - bonus - rent] // Moins Loyers
+  ];
+
+  charts.wf = new Chart(document.getElementById('chartWaterfall'), {
+    type: 'bar',
     data: {
-      labels: ['Cash Actuel', 'Épargne Fixe', 'Primes', 'Loyers Fès'],
+      labels: ['Besoin', 'Attijari', 'Fortuneo', 'Épargne Fixe', 'Prime', 'Loyers'],
       datasets: [{
-        data: [initial, totalFixed, totalBonus, totalLoyers],
-        backgroundColor: ['#5a8fcf', '#c9a84c', '#6aaa8a', '#d4845a'],
-        borderWidth: 0
+        label: 'MAD',
+        data: data,
+        backgroundColor: (ctx) => ctx.index === 0 ? '#c0604a' : '#6aaa8a',
+        borderColor: '#161617',
+        borderWidth: 1
       }]
     },
-    options: { maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { color: '#7a7670', padding: 20 } } } }
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => {
+        let val = ctx.raw[0] - ctx.raw[1];
+        return ctx.index === 0 ? "Total: " + fM(ctx.raw[1]) : "Contribution: " + fM(Math.abs(val));
+      }}}},
+      scales: { 
+        y: { grid: { color: '#222' }, stacked: false },
+        x: { grid: { display: false } }
+      }
+    }
   });
 }
 
