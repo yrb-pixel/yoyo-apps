@@ -1,229 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zenata - Stratégie de Financement</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<style>
-  :root {
-    --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
-    --gold: #c9a84c; --gold-dim: #8a6e30;
-    --text: #e8e4dc; --muted: #7a7670;
-    --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf; --purple: #9b7ecf;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 30px; font-size: 13px; line-height: 1.5; }
-  
-  .header { text-align: center; margin-bottom: 40px; }
-  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--gold); letter-spacing: 0.05em; }
-  .subtitle { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; margin-top: 10px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenata Strategic Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        :root {
+            --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
+            --gold: #c9a84c; --gold-dim: #8a6e30;
+            --text: #e8e4dc; --muted: #7a7670;
+            --red: #c0604a; --green: #6aaa8a; --purple: #9b7ecf;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background: var(--bg); color: var(--text); 
+            font-family: 'DM Mono', monospace; padding: 40px; 
+            font-size: 12px; letter-spacing: -0.02em;
+        }
 
-  .main-layout { display: grid; grid-template-columns: 350px 1fr; gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Header */
+        .header { margin-bottom: 40px; border-left: 1px solid var(--gold); padding-left: 20px; }
+        .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--gold); }
+        .header p { color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px; margin-top: 5px; }
 
-  /* Sidebar Params */
-  .sidebar { display: flex; flex-direction: column; gap: 20px; }
-  .section-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 4px; }
-  .section-title { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-  
-  .input-group { margin-bottom: 15px; }
-  .input-group label { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
-  .input-group input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); width: 100%; padding: 5px 0; font-family: 'DM Mono'; outline: none; transition: border-color 0.3s; }
-  .input-group input:focus { border-color: var(--gold); }
+        .grid-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
 
-  /* Dashboard */
-  .dashboard { display: flex; flex-direction: column; gap: 20px; }
-  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  
-  .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; position: relative; overflow: hidden; }
-  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-  .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--text); }
-  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+        /* Inputs */
+        .panel { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
+        .panel-title { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; opacity: 0.8; }
+        
+        .input-item { margin-bottom: 12px; }
+        .input-item label { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; margin-bottom: 4px; }
+        .input-item input { 
+            background: transparent; border: none; border-bottom: 1px solid var(--border); 
+            color: var(--text); width: 100%; padding: 4px 0; font-family: 'DM Mono'; outline: none;
+        }
+        .input-item input:focus { border-color: var(--gold); }
 
-  .progress-container { height: 4px; background: var(--border); margin-top: 15px; border-radius: 2px; }
-  .progress-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.5s ease; }
+        /* Stats Cards */
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
+        .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--text); }
+        .stat-footer { font-size: 10px; margin-top: 8px; color: var(--muted); }
 
-  .chart-container { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 400px; }
-  
-  .suggestion-box { background: rgba(201, 168, 76, 0.05); border: 1px solid var(--gold-dim); padding: 20px; color: var(--text); font-size: 12px; }
+        /* Progress Bars */
+        .progress-bg { height: 2px; background: var(--border); margin-top: 10px; position: relative; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.5s; }
 
-  @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } }
-</style>
+        /* Charts */
+        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 350px; }
+
+        .analysis-box { 
+            background: rgba(201, 168, 76, 0.03); border: 1px solid var(--gold-dim); 
+            padding: 20px; margin-top: 20px; line-height: 1.6;
+        }
+
+        .tag { font-size: 9px; padding: 2px 6px; border: 1px solid var(--muted); color: var(--muted); text-transform: uppercase; margin-left: 8px; }
+        .tag.urgent { border-color: var(--red); color: var(--red); }
+    </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Zenata - Horizon 2026</h1>
-  <div class="subtitle">Gestion du Cash-Flow & Priorités d'Investissement</div>
-</div>
-
-<div class="main-layout">
-  <!-- Panneau de configuration -->
-  <div class="sidebar">
-    <div class="section-card">
-      <div class="section-title">Disponibilités Actuelles</div>
-      <div class="input-group">
-        <label>Compte Attijari (MAD)</label>
-        <input type="number" id="attijari" value="162000" oninput="compute()">
-      </div>
-      <div class="input-group">
-        <label>Compte Fortuneo (€)</label>
-        <input type="number" id="fortuneo" value="16000" oninput="compute()">
-      </div>
-      <div class="input-group">
-        <label>Actions Marroc / PEA (€)</label>
-        <input type="number" id="actions" value="25000" oninput="compute()">
-      </div>
+<div class="container">
+    <div class="header">
+        <h1>Zenata Horizon</h1>
+        <p>Stratégie Financière & Arbitrage de Cash</p>
     </div>
 
-    <div class="section-card">
-      <div class="section-title">Paramètres Projet</div>
-      <div class="input-group">
-        <label>Prix Total Appartement (MAD)</label>
-        <input type="number" id="totalAppart" value="722700" oninput="compute()">
-      </div>
-      <div class="input-group">
-        <label>Date de Livraison</label>
-        <input type="month" id="deliveryDate" value="2026-12" oninput="compute()">
-      </div>
-      <div class="input-group">
-        <label>Dette Fès à rembourser (MAD)</label>
-        <input type="number" id="detteFes" value="100000" oninput="compute()">
-      </div>
-      <div class="input-group">
-        <label>Taux de Change (EUR/MAD)</label>
-        <input type="number" id="eurRate" value="10.8" step="0.1" oninput="compute()">
-      </div>
-    </div>
-  </div>
+    <div class="grid-layout">
+        <!-- SIDEBAR : INPUTS -->
+        <div class="sidebar">
+            <div class="panel">
+                <div class="panel-title">Disponibilités Cash</div>
+                <div class="input-item">
+                    <label>Attijari (MAD)</label>
+                    <input type="number" id="attijari" value="162000" oninput="compute()">
+                </div>
+                <div class="input-item">
+                    <label>Fortuneo (EUR)</label>
+                    <input type="number" id="fortuneo" value="16000" oninput="compute()">
+                </div>
+                <div class="input-item">
+                    <label>Actions / PEA (Total MAD)</label>
+                    <input type="number" id="invests" value="280000" oninput="compute()">
+                </div>
+            </div>
 
-  <!-- Panneau d'affichage -->
-  <div class="dashboard">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">Reste à payer (Zenata)</div>
-        <div id="valRemAppart" class="stat-value red">—</div>
-        <div id="progTextAppart" class="stat-sub">0% financé</div>
-        <div class="progress-container"><div id="progBarAppart" class="progress-bar" style="background: var(--red)"></div></div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-label">Besoin en épargne cash</div>
-        <div id="valGap" class="stat-value gold">—</div>
-        <div id="valGapEur" class="stat-sub">—</div>
-      </div>
+            <div class="panel">
+                <div class="panel-title">Engagements</div>
+                <div class="input-item">
+                    <label>Solde Zenata (MAD)</label>
+                    <input type="number" id="soldeZenata" value="622700" oninput="compute()">
+                </div>
+                <div class="input-item">
+                    <label>Dette Fès (MAD)</label>
+                    <input type="number" id="detteFes" value="100000" oninput="compute()">
+                </div>
+                <div class="input-item">
+                    <label>Mois restants (Déc 2026)</label>
+                    <input type="number" id="months" value="21" oninput="compute()">
+                </div>
+                <div class="input-item">
+                    <label>Taux EUR/MAD</label>
+                    <input type="number" id="rate" value="10.8" step="0.1" oninput="compute()">
+                </div>
+            </div>
+        </div>
 
-      <div class="stat-card" style="border-color: var(--purple)">
-        <div class="stat-label">Effort Mensuel Cible</div>
-        <div id="valMonthly" class="stat-value purple">—</div>
-        <div id="valMonthsLeft" class="stat-sub">—</div>
-      </div>
-    </div>
+        <!-- MAIN DASHBOARD -->
+        <div class="dashboard">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Cible Zenata <span class="tag urgent">Priorité 1</span></div>
+                    <div id="ui-solde" class="stat-value">—</div>
+                    <div class="progress-bg"><div id="bar-zenata" class="progress-fill" style="background: var(--red)"></div></div>
+                    <div id="footer-zenata" class="stat-footer">0% financé</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Besoin Épargne Cash</div>
+                    <div id="ui-gap" class="stat-value gold">—</div>
+                    <div id="ui-gap-eur" class="stat-footer">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Effort Mensuel</div>
+                    <div id="ui-effort" class="stat-value" style="color: var(--purple)">—</div>
+                    <div id="ui-effort-sub" class="stat-footer">—</div>
+                </div>
+            </div>
 
-    <div class="chart-container">
-      <canvas id="mainChart"></canvas>
-    </div>
+            <div class="chart-box">
+                <canvas id="projectionChart"></canvas>
+            </div>
 
-    <div class="suggestion-box" id="analysis">
-      Chargement de l'analyse...
+            <div class="analysis-box">
+                <div class="panel-title" style="margin-bottom: 10px;">Analyse Stratégique</div>
+                <div id="analysis-text">Analyse des flux en cours...</div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
-let chart = null;
+let myChart = null;
 
-function formatMAD(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
-function formatEUR(v) { return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(v); }
+function fmtMAD(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
+function fmtEUR(v) { return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(v); }
 
 function compute() {
-  // 1. Récupération des données
-  const rate = parseFloat(document.getElementById('eurRate').value);
-  const attijari = parseFloat(document.getElementById('attijari').value);
-  const fortuneoMAD = parseFloat(document.getElementById('fortuneo').value) * rate;
-  const actionsMAD = parseFloat(document.getElementById('actions').value) * rate;
-  
-  const totalAppart = parseFloat(document.getElementById('totalAppart').value);
-  const resteAppart = totalAppart - 100000; // 100k déjà versés
-  const detteFes = parseFloat(document.getElementById('detteFes').value);
-  
-  // Dates
-  const [y, m] = document.getElementById('deliveryDate').value.split('-').map(Number);
-  const deliveryDate = new Date(y, m - 1, 1);
-  const now = new Date();
-  const monthsLeft = Math.max(1, (deliveryDate.getFullYear() - now.getFullYear()) * 12 + (deliveryDate.getMonth() - now.getMonth()));
+    // Data
+    const rate = parseFloat(document.getElementById('rate').value);
+    const attijari = parseFloat(document.getElementById('attijari').value);
+    const fortuneoMAD = parseFloat(document.getElementById('fortuneo').value) * rate;
+    const invests = parseFloat(document.getElementById('invests').value);
+    
+    const soldeZenata = parseFloat(document.getElementById('soldeZenata').value);
+    const detteFes = parseFloat(document.getElementById('detteFes').value);
+    const months = parseInt(document.getElementById('months').value);
 
-  // 2. Logique de calcul (Priorité Appartement)
-  const cashActuel = attijari + fortuneoMAD;
-  const gapAppart = Math.max(0, resteAppart - cashActuel);
-  const effortMensuelMAD = gapAppart / monthsLeft;
-  
-  // 3. Mise à jour de l'UI
-  document.getElementById('valRemAppart').innerText = formatMAD(resteAppart);
-  document.getElementById('valGap').innerText = formatMAD(gapAppart);
-  document.getElementById('valGapEur').innerText = "Soit " + formatEUR(gapAppart / rate);
-  document.getElementById('valMonthly').innerText = formatEUR(effortMensuelMAD / rate) + "/m";
-  document.getElementById('valMonthsLeft').innerText = "Sur " + monthsLeft + " mois restants";
+    // Logic
+    const totalCash = attijari + fortuneoMAD;
+    const gapZenata = Math.max(0, soldeZenata - totalCash);
+    const effortMensuelMAD = gapZenata / months;
+    
+    // UI Update
+    document.getElementById('ui-solde').innerText = fmtMAD(soldeZenata);
+    document.getElementById('ui-gap').innerText = fmtMAD(gapZenata);
+    document.getElementById('ui-gap-eur').innerText = "Besoin total : " + fmtEUR(gapZenata/rate);
+    document.getElementById('ui-effort').innerText = fmtEUR(effortMensuelMAD/rate) + "/m";
+    document.getElementById('ui-effort-sub').innerText = "Soit " + fmtMAD(effortMensuelMAD) + " / mois";
 
-  // Progress Bar
-  const pctAppart = Math.min(100, (cashActuel / resteAppart) * 100);
-  document.getElementById('progBarAppart').style.width = pctAppart + "%";
-  document.getElementById('progTextAppart').innerText = Math.round(pctAppart) + "% du solde couvert par le cash";
+    // Bars
+    const pctZenata = Math.min(100, (totalCash / soldeZenata) * 100);
+    document.getElementById('bar-zenata').style.width = pctZenata + "%";
+    document.getElementById('footer-zenata').innerText = Math.round(pctZenata) + "% du solde couvert par le cash actuel";
 
-  // Analyse
-  const totalSecu = cashActuel + actionsMAD;
-  let analyseHtml = `<strong>Analyse Stratégique :</strong><br>`;
-  if (gapAppart > 0) {
-    analyseHtml += `• Pour l'appartement : Il manque ${formatEUR(gapAppart/rate)}. Épargnez ${formatEUR(effortMensuelMAD/rate)} par mois d'ici fin 2026.<br>`;
-  } else {
-    analyseHtml += `• ✅ L'appartement est déjà auto-financé par votre cash actuel.<br>`;
-  }
-  
-  const coverageDette = (actionsMAD / detteFes) * 100;
-  analyseHtml += `• Dette de Fès : Vos actions couvrent ${Math.round(coverageDette)}% du montant. Ne les vendez qu'au dernier moment.`;
-  document.getElementById('analysis').innerHTML = analyseHtml;
+    // Analyse
+    let html = `• <strong>Logement :</strong> Votre cash couvre actuellement ${Math.round(pctZenata)}% du solde Zenata. `;
+    html += `L'objectif est d'atteindre 100% via l'épargne mensuelle sans toucher aux investissements.<br>`;
+    
+    const coverageDette = (invests / detteFes) * 100;
+    html += `• <strong>Dettes :</strong> Votre poche Investissements (${fmtMAD(invests)}) couvre ${Math.round(coverageDette)}% de la dette de Fès. `;
+    html += `C'est votre filet de sécurité : si l'épargne faiblit, ces actifs liquideront la dette.`;
+    document.getElementById('analysis-text').innerHTML = html;
 
-  updateChart(monthsLeft, cashActuel, effortMensuelMAD, resteAppart, detteFes);
+    drawChart(months, totalCash, effortMensuelMAD, soldeZenata);
 }
 
-function updateChart(months, startCash, monthly, targetAppart, targetDette) {
-  const ctx = document.getElementById('mainChart').getContext('2d');
-  const labels = [];
-  const dataCash = [];
-  const dataTarget = [];
+function drawChart(m, start, step, target) {
+    const ctx = document.getElementById('projectionChart').getContext('2d');
+    const labels = [];
+    const dataPoints = [];
+    const targetPoints = [];
 
-  for (let i = 0; i <= months + 2; i++) {
-    labels.push("M+" + i);
-    dataCash.push(startCash + (monthly * i));
-    dataTarget.push(targetAppart);
-  }
-
-  if (chart) chart.destroy();
-  
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        { label: 'Projection Épargne (MAD)', data: dataCash, borderColor: '#c9a84c', tension: 0.3, fill: false },
-        { label: 'Objectif Appartement', data: dataTarget, borderColor: '#c0604a', borderDash: [5, 5], pointRadius: 0 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#7a7670', font: { family: 'DM Mono' } } } },
-      scales: {
-        y: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670' } },
-        x: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670' } }
-      }
+    for (let i = 0; i <= m; i++) {
+        labels.push("M" + i);
+        dataPoints.push(start + (step * i));
+        targetPoints.push(target);
     }
-  });
+
+    if (myChart) myChart.destroy();
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Projection Épargne Cash',
+                data: dataPoints,
+                borderColor: '#c9a84c',
+                borderWidth: 1,
+                pointRadius: 0,
+                tension: 0.2,
+                fill: true,
+                backgroundColor: 'rgba(201, 168, 76, 0.05)'
+            }, {
+                label: 'Cible Zenata',
+                data: targetPoints,
+                borderColor: '#c0604a',
+                borderWidth: 1,
+                borderDash: [5, 5],
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670', font: { size: 9 } } },
+                x: { grid: { display: false }, ticks: { color: '#7a7670', font: { size: 9 } } }
+            },
+            plugins: {
+                legend: { labels: { color: '#e8e4dc', font: { family: 'DM Mono', size: 10 } } }
+            }
+        }
+    });
 }
 
-// Initialisation
 compute();
 </script>
+
 </body>
 </html>
