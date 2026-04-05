@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tableau de Bord — Appartement Zenata</title>
+<title>Appartement Zenata</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root {
     --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
@@ -14,57 +15,58 @@
     --purple: #9b7ecf;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; font-weight: 300; min-height: 100vh; padding: 40px 24px; font-size: 13px; }
-  .header { text-align: center; margin-bottom: 48px; }
-  .header h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2.6rem; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 4px; }
-  .header .subtitle { color: var(--muted); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; }
-  .divider { width: 80px; height: 1px; background: var(--gold-dim); margin: 16px auto; opacity: 0.4; }
-
-  .params-section { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 24px; margin-bottom: 24px; }
-  .params-title { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; opacity: 0.7; }
-  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-  .param-item label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .param-item .input-wrap { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; transition: border-color 0.2s; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; font-weight: 300; min-height: 100vh; padding: 32px 20px; font-size: 13px; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2.4rem; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 4px; }
+  .header .subtitle { color: var(--muted); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .divider { width: 80px; height: 1px; background: var(--gold-dim); margin: 14px auto; opacity: 0.4; }
+  .params-section { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 20px; margin-bottom: 20px; }
+  .params-title { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; opacity: 0.7; }
+  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .param-item label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .param-item .input-wrap { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 3px; transition: border-color 0.2s; }
   .param-item .input-wrap:focus-within { border-color: var(--gold-dim); }
-  .param-item input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 400; width: 100%; }
-  .param-item .unit { color: var(--muted); font-size: 11px; white-space: nowrap; }
-
-  .main-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .param-item input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 400; width: 100%; }
+  .param-item .unit { color: var(--muted); font-size: 10px; white-space: nowrap; }
+  .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
   @media (max-width: 760px) { .main-grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 480px) { .main-grid { grid-template-columns: 1fr; } }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 20px; }
-  .card-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; margin-bottom: 4px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 18px; }
+  .card-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; margin-bottom: 3px; }
+  .card-value-eur { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 300; color: var(--muted); margin-bottom: 3px; }
   .card-sub { font-size: 10px; color: var(--muted); line-height: 1.4; }
   .gold { color: var(--gold); } .red { color: var(--red); } .green { color: var(--green); }
   .blue { color: var(--blue); } .orange { color: var(--orange); } .purple { color: var(--purple); }
-
-  .card-full { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 24px; margin-bottom: 16px; }
-  .section-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; opacity: 0.7; }
+  .card-full { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 20px; margin-bottom: 14px; }
+  .section-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; opacity: 0.7; }
   .flex-between { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
   .tag { display: inline-block; padding: 2px 8px; border-radius: 1px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
   .tag-ok { background: rgba(106,170,138,0.15); color: var(--green); border: 1px solid rgba(106,170,138,0.3); }
   .tag-warn { background: rgba(192,96,74,0.15); color: var(--red); border: 1px solid rgba(192,96,74,0.3); }
-
-  .breakdown { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .breakdown { width: 100%; border-collapse: collapse; margin-top: 10px; }
   .breakdown tr { border-bottom: 1px solid var(--border); }
   .breakdown tr:last-child { border-bottom: none; }
-  .breakdown td { padding: 9px 0; font-size: 12px; }
+  .breakdown td { padding: 8px 0; font-size: 12px; }
   .breakdown td:last-child { text-align: right; }
-  .breakdown .total-row td { color: var(--gold); border-top: 1px solid var(--gold-dim); padding-top: 12px; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+  .breakdown td:nth-child(3) { text-align: right; color: var(--muted); font-size: 10px; padding-right: 10px; }
+  .breakdown .total-row td { color: var(--gold); border-top: 1px solid var(--gold-dim); padding-top: 10px; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
   .breakdown .sub-row td { color: var(--muted); font-size: 11px; padding: 3px 0; }
-
-  .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 5px; }
-  .progress-bar { height: 3px; background: var(--border); border-radius: 1px; overflow: hidden; margin-bottom: 11px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .progress-bar { height: 3px; background: var(--border); border-radius: 1px; overflow: hidden; margin-bottom: 9px; }
   .progress-fill { height: 100%; border-radius: 1px; }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--muted); }
-  .legend-dot { width: 10px; height: 10px; border-radius: 1px; flex-shrink: 0; }
-  .legend-dash { width: 16px; height: 2px; flex-shrink: 0; }
-
-  .footer-note { text-align: center; font-size: 10px; color: var(--muted); margin-top: 32px; letter-spacing: 0.15em; opacity: 0.5; }
-  svg text { font-family: 'DM Mono', monospace; }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 640px) { .charts-row { grid-template-columns: 1fr; } }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 1px; flex-shrink: 0; }
+  .footer-note { text-align: center; font-size: 10px; color: var(--muted); margin-top: 28px; letter-spacing: 0.15em; opacity: 0.5; }
+  .eur-badge { display: inline-block; background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); font-size: 9px; padding: 1px 5px; border-radius: 1px; margin-left: 5px; letter-spacing: 0.1em; vertical-align: middle; }
+  .tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .tab { padding: 7px 14px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 </style>
 </head>
 <body>
@@ -75,7 +77,6 @@
   <div class="subtitle">Tableau de financement · Effort d'épargne</div>
 </div>
 
-<!-- PARAMS -->
 <div class="params-section">
   <div class="params-title">Paramètres modifiables</div>
   <div class="params-grid">
@@ -111,53 +112,94 @@
       <label>Dette à rembourser (MAD)</label>
       <div class="input-wrap"><input type="number" id="dette" value="100000" onchange="compute()"><span class="unit">MAD</span></div>
     </div>
+    <div class="param-item">
+      <label>Revenu mensuel net (€)</label>
+      <div class="input-wrap"><input type="number" id="revenuEur" value="5000" onchange="compute()"><span class="unit">€/mois</span></div>
+    </div>
   </div>
 </div>
 
-<!-- CARDS -->
+<!-- KPI CARDS -->
 <div class="main-grid">
   <div class="card">
     <div class="card-label">Coût total projet</div>
     <div class="card-value gold" id="totalCost">—</div>
+    <div class="card-value-eur" id="totalCostEur">—</div>
     <div class="card-sub">Appart + frais (tesjil, tehfid, notaire)</div>
   </div>
   <div class="card">
     <div class="card-label">Reste à payer (livraison)</div>
     <div class="card-value red" id="remaining">—</div>
+    <div class="card-value-eur" id="remainingEur">—</div>
     <div class="card-sub">Après déduction de l'avance</div>
-  </div>
-  <div class="card">
-    <div class="card-label">Dette</div>
-    <div class="card-value orange" id="detteCard">—</div>
-    <div class="card-sub" id="detteCardSub">À rembourser</div>
   </div>
   <div class="card">
     <div class="card-label">Besoin total net</div>
     <div class="card-value red" id="totalNeed">—</div>
+    <div class="card-value-eur" id="totalNeedEur">—</div>
     <div class="card-sub">Livraison + dette</div>
   </div>
   <div class="card">
     <div class="card-label">Ressources disponibles</div>
     <div class="card-value blue" id="resources">—</div>
+    <div class="card-value-eur" id="resourcesEur">—</div>
     <div class="card-sub">Attijari + Fortuneo + loyers cumulés</div>
   </div>
   <div class="card">
-    <div class="card-label">Effort d'épargne</div>
+    <div class="card-label">Effort d'épargne total</div>
     <div class="card-value" id="gap">—</div>
+    <div class="card-value-eur" id="gapEur">—</div>
     <div class="card-sub" id="gap-sub">—</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Effort mensuel <span class="eur-badge">€</span></div>
+    <div class="card-value" id="perMonthEurCard">—</div>
+    <div class="card-sub" id="perMonthPct">—</div>
   </div>
 </div>
 
-<!-- CHART 1: Besoins vs Ressources -->
+<!-- TABS pour les graphiques -->
 <div class="card-full">
-  <div class="section-title">Vue d'ensemble — Besoins vs Ressources</div>
-  <div id="chart1"></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('overview')">Vue d'ensemble</div>
+    <div class="tab" onclick="switchTab('trajectory')">Trajectoire</div>
+    <div class="tab" onclick="switchTab('effort')">Effort mensuel</div>
+    <div class="tab" onclick="switchTab('waterfall')">Waterfall</div>
+  </div>
+  <div id="tab-overview" class="tab-panel active">
+    <div class="section-title">Besoins vs Ressources</div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="chartOverview"></canvas></div>
+    <div class="legend" id="legendOverview"></div>
+  </div>
+  <div id="tab-trajectory" class="tab-panel">
+    <div class="section-title">Trajectoire d'épargne mensuelle (MAD)</div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="chartTraj"></canvas></div>
+    <div class="legend" id="legendTraj"></div>
+  </div>
+  <div id="tab-effort" class="tab-panel">
+    <div class="section-title">Effort requis en % du revenu mensuel net <span class="eur-badge">€</span></div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="chartEffort"></canvas></div>
+    <div class="legend" id="legendEffort"></div>
+  </div>
+  <div id="tab-waterfall" class="tab-panel">
+    <div class="section-title">Waterfall — construction du besoin (MAD)</div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="chartWaterfall"></canvas></div>
+    <div class="legend" id="legendWaterfall"></div>
+  </div>
 </div>
 
-<!-- CHART 2: Trajectoire temporelle -->
-<div class="card-full">
-  <div class="section-title">Trajectoire d'épargne — Évolution mensuelle jusqu'à la livraison</div>
-  <div id="chart2"></div>
+<!-- CHARTS ROW: 2 mini -->
+<div class="charts-row">
+  <div class="card-full">
+    <div class="section-title">Composition des ressources</div>
+    <div style="position:relative;width:100%;height:220px;"><canvas id="chartDonut"></canvas></div>
+    <div class="legend" id="legendDonut"></div>
+  </div>
+  <div class="card-full">
+    <div class="section-title">Taux de couverture par échéance</div>
+    <div style="position:relative;width:100%;height:220px;"><canvas id="chartCoverage"></canvas></div>
+    <div class="legend" id="legendCoverage"></div>
+  </div>
 </div>
 
 <!-- BREAKDOWN -->
@@ -167,369 +209,392 @@
     <div id="status-tag"></div>
   </div>
   <table class="breakdown" id="breakdown-table"></table>
-  <div id="progress-bars" style="margin-top:20px;"></div>
+  <div id="progress-bars" style="margin-top:18px;"></div>
 </div>
 
 <div class="footer-note">
-  Toutes les valeurs en MAD sauf indication · Mis à jour à chaque changement de paramètre
+  Toutes les valeurs en MAD sauf indication · Les montants en € utilisent le taux de change défini ci-dessus
 </div>
 
 <script>
-  const TOTAL_PROJET = 722700; // inclut appart + tesjil/tehfid + notaire
+const TOTAL_PROJET = 722700;
+let charts = {};
 
-  function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' MAD'; }
-  function fmtN(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)); }
+function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' MAD'; }
+function fmtN(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)); }
+function fmtE(n) { return new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n)); }
+function fmtPct(n) { return Math.round(n) + ' %'; }
 
-  function parseYM(val) {
-    if (!val) return null;
-    const [y, m] = val.split('-').map(Number);
-    return { year: y, month: m - 1 }; // month 0-indexed
+function parseYM(val) {
+  if (!val) return null;
+  const [y, m] = val.split('-').map(Number);
+  return { year: y, month: m - 1 };
+}
+function monthDiff(fy, fm, ty, tm) { return (ty - fy) * 12 + (tm - fm); }
+function getMonthLabel(year, m0) {
+  return new Date(year, m0, 1).toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['overview','trajectory','effort','waterfall'][i] === id));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function compute() {
+  const delivery = parseYM(document.getElementById('deliveryDate').value) || { year: 2026, month: 11 };
+  const detteD   = parseYM(document.getElementById('detteDate').value)   || { year: 2026, month: 5 };
+  const attijari    = parseFloat(document.getElementById('attijari').value) || 0;
+  const fortuneoEur = parseFloat(document.getElementById('fortuneo').value) || 0;
+  const eurRate     = parseFloat(document.getElementById('eurRate').value) || 10.8;
+  const loyerFes    = parseFloat(document.getElementById('loyerFes').value) || 0;
+  const dejaAvance  = parseFloat(document.getElementById('dejaAvance').value) || 0;
+  const dette       = parseFloat(document.getElementById('dette').value) || 0;
+  const revenuEur   = parseFloat(document.getElementById('revenuEur').value) || 5000;
+
+  const fortuneoMad = fortuneoEur * eurRate;
+  const nowYear = 2026, nowMonth = 3;
+
+  const firstRentYear  = nowMonth === 11 ? nowYear + 1 : nowYear;
+  const firstRentMonth = (nowMonth + 1) % 12;
+  const rentMonths = Math.max(0, monthDiff(firstRentYear, firstRentMonth, delivery.year, delivery.month) + 1);
+  const loyersCumul = loyerFes * rentMonths;
+  const detteMonths = Math.max(0, monthDiff(nowYear, nowMonth, detteD.year, detteD.month));
+
+  const totalResources = attijari + fortuneoMad + loyersCumul;
+  const remaining      = TOTAL_PROJET - dejaAvance;
+  const totalNeed      = remaining + dette;
+  const gap            = totalNeed - totalResources;
+
+  const horizonMonths = Math.max(
+    monthDiff(nowYear, nowMonth, delivery.year, delivery.month),
+    detteMonths
+  );
+  const perMonth    = (horizonMonths > 0 && gap > 0) ? gap / horizonMonths : 0;
+  const perMonthEur = perMonth / eurRate;
+  const pctRevenu   = revenuEur > 0 ? (perMonthEur / revenuEur) * 100 : 0;
+
+  // --- KPI cards ---
+  document.getElementById('totalCost').textContent    = fmt(TOTAL_PROJET);
+  document.getElementById('totalCostEur').textContent = fmtE(TOTAL_PROJET / eurRate);
+  document.getElementById('remaining').textContent    = fmt(remaining);
+  document.getElementById('remainingEur').textContent = fmtE(remaining / eurRate);
+  document.getElementById('totalNeed').textContent    = fmt(totalNeed);
+  document.getElementById('totalNeedEur').textContent = fmtE(totalNeed / eurRate);
+  document.getElementById('resources').textContent    = fmt(totalResources);
+  document.getElementById('resourcesEur').textContent = fmtE(totalResources / eurRate);
+
+  const gapEl  = document.getElementById('gap');
+  const gapEur = document.getElementById('gapEur');
+  const gapSub = document.getElementById('gap-sub');
+  if (gap <= 0) {
+    gapEl.className  = 'card-value green';
+    gapEl.textContent  = fmt(Math.abs(gap));
+    gapEur.textContent = fmtE(Math.abs(gap) / eurRate);
+    gapSub.textContent = '✓ Surplus — tu es couvert';
+  } else {
+    gapEl.className  = 'card-value red';
+    gapEl.textContent  = fmt(gap);
+    gapEur.textContent = fmtE(gap / eurRate);
+    gapSub.textContent = horizonMonths > 0 ? `sur ${horizonMonths} mois` : 'Échéance dépassée';
   }
 
-  function monthDiff(fromY, fromM, toY, toM) {
-    return (toY - fromY) * 12 + (toM - fromM);
+  const pmEurCard = document.getElementById('perMonthEurCard');
+  const pmPct     = document.getElementById('perMonthPct');
+  if (gap > 0 && horizonMonths > 0) {
+    pmEurCard.className   = 'card-value red';
+    pmEurCard.textContent = fmtE(perMonthEur);
+    pmPct.textContent     = `${fmtPct(pctRevenu)} du revenu net · ${fmt(perMonth)}/mois`;
+  } else {
+    pmEurCard.className   = 'card-value green';
+    pmEurCard.textContent = '—';
+    pmPct.textContent     = 'Aucun effort requis';
   }
 
-  function getMonthLabel(year, month0) {
-    return new Date(year, month0, 1).toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' });
-  }
+  document.getElementById('status-tag').innerHTML = gap <= 0
+    ? '<span class="tag tag-ok">Couvert</span>'
+    : '<span class="tag tag-warn">Effort requis</span>';
 
-  function compute() {
-    const delivery = parseYM(document.getElementById('deliveryDate').value) || { year: 2026, month: 11 };
-    const detteD   = parseYM(document.getElementById('detteDate').value)   || { year: 2026, month: 5 };
-    const attijari     = parseFloat(document.getElementById('attijari').value) || 0;
-    const fortuneoEur  = parseFloat(document.getElementById('fortuneo').value) || 0;
-    const eurRate      = parseFloat(document.getElementById('eurRate').value) || 10.8;
-    const loyerFes     = parseFloat(document.getElementById('loyerFes').value) || 0;
-    const dejaAvance   = parseFloat(document.getElementById('dejaAvance').value) || 0;
-    const dette        = parseFloat(document.getElementById('dette').value) || 0;
+  // --- Breakdown ---
+  document.getElementById('breakdown-table').innerHTML = `
+    <tr><td>Coût total projet</td><td></td><td>${fmtE(TOTAL_PROJET/eurRate)}</td><td>${fmt(TOTAL_PROJET)}</td></tr>
+    <tr class="sub-row"><td>dont avancé</td><td></td><td style="color:var(--green)">${fmtE(-dejaAvance/eurRate)}</td><td style="color:var(--green)">− ${fmt(dejaAvance)}</td></tr>
+    <tr class="total-row"><td>Reste livraison</td><td></td><td>${fmtE(remaining/eurRate)}</td><td>${fmt(remaining)}</td></tr>
+    <tr class="sub-row"><td>+ Dette (${getMonthLabel(detteD.year, detteD.month)})</td><td></td><td style="color:var(--orange)">${fmtE(dette/eurRate)}</td><td style="color:var(--orange)">${fmt(dette)}</td></tr>
+    <tr class="total-row"><td>Besoin total net</td><td></td><td>${fmtE(totalNeed/eurRate)}</td><td>${fmt(totalNeed)}</td></tr>
+    <tr style="height:4px"></tr>
+    <tr><td>Attijari</td><td></td><td style="color:var(--blue)">${fmtE(attijari/eurRate)}</td><td style="color:var(--blue)">${fmt(attijari)}</td></tr>
+    <tr><td>Fortuneo</td><td></td><td style="color:var(--gold)">${fmtE(fortuneoEur)}</td><td style="color:var(--gold)">${fmt(fortuneoMad)}</td></tr>
+    <tr><td>Loyers Fès × ${rentMonths} mois</td><td></td><td style="color:var(--green)">${fmtE(loyersCumul/eurRate)}</td><td style="color:var(--green)">${fmt(loyersCumul)}</td></tr>
+    <tr class="total-row"><td>Total ressources</td><td></td><td>${fmtE(totalResources/eurRate)}</td><td>${fmt(totalResources)}</td></tr>
+    <tr style="height:4px"></tr>
+    <tr class="total-row">
+      <td>${gap > 0 ? "Effort d'épargne" : 'Surplus'}</td><td></td>
+      <td style="color:${gap>0?'var(--red)':'var(--green)'}">${fmtE(Math.abs(gap)/eurRate)}</td>
+      <td style="color:${gap>0?'var(--red)':'var(--green)'}">${fmt(Math.abs(gap))}</td>
+    </tr>
+    ${gap>0&&horizonMonths>0?`<tr class="sub-row"><td>dont effort mensuel moyen</td><td></td><td style="color:var(--red)">${fmtE(perMonthEur)}/mois</td><td style="color:var(--red)">${fmt(perMonth)}/mois</td></tr>`:''}
+    ${gap>0&&horizonMonths>0?`<tr class="sub-row"><td>en % du revenu net (${fmtE(revenuEur)}/m)</td><td></td><td style="color:var(--red)">${fmtPct(pctRevenu)}</td><td></td></tr>`:''}
+  `;
 
-    const fortuneoMad = fortuneoEur * eurRate;
+  // Progress bars
+  const pb = document.getElementById('progress-bars');
+  pb.innerHTML = '';
+  const total = Math.max(totalNeed, totalResources, 1);
+  [
+    { label: 'Attijari', value: attijari, color: 'var(--blue)' },
+    { label: `Loyers Fès (${rentMonths} m)`, value: loyersCumul, color: 'var(--green)' },
+    { label: 'Fortuneo', value: fortuneoMad, color: 'var(--gold)' },
+    ...(gap>0?[{label:'Effort requis',value:gap,color:'var(--red)'}]:[]),
+  ].forEach(b => {
+    const pct = Math.min(100, (b.value/total)*100);
+    pb.innerHTML += `
+      <div class="progress-label"><span style="color:${b.color}">${b.label}</span><span>${fmt(b.value)} · ${fmtE(b.value/eurRate)}</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${b.color}"></div></div>`;
+  });
 
-    // Aujourd'hui = avril 2026
-    const nowYear = 2026, nowMonth = 3; // 0-indexed: 3 = avril
+  renderChartOverview({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap, eurRate });
+  renderChartTrajectory({ attijari, fortuneoMad, loyerFes, gap, perMonth, totalNeed, totalResources, rentMonths, nowYear, nowMonth, firstRentYear, firstRentMonth, delivery, detteD, detteMonths, horizonMonths, dette, dejaAvance, eurRate });
+  renderChartEffort({ horizonMonths, perMonthEur, revenuEur, pctRevenu, gap, nowYear, nowMonth, delivery, detteD, detteMonths });
+  renderChartWaterfall({ TOTAL_PROJET, dejaAvance, dette, attijari, fortuneoMad, loyersCumul, gap, eurRate });
+  renderChartDonut({ attijari, fortuneoMad, loyersCumul, gap, eurRate });
+  renderChartCoverage({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap, detteMonths, horizonMonths, eurRate, delivery, detteD, nowYear, nowMonth });
+}
 
-    // Loyers: premier loyer en mai (nowMonth+1), jusqu'au mois de livraison inclus
-    const firstRentYear  = nowMonth === 11 ? nowYear + 1 : nowYear;
-    const firstRentMonth = (nowMonth + 1) % 12; // mai = 4
-
-    // Nombre de mois de loyer (de mai jusqu'à mois livraison inclus)
-    const rentMonths = Math.max(0, monthDiff(firstRentYear, firstRentMonth, delivery.year, delivery.month) + 1);
-    const loyersCumul = loyerFes * rentMonths;
-
-    // Mois jusqu'à remboursement dette (depuis maintenant)
-    const detteMonths = Math.max(0, monthDiff(nowYear, nowMonth, detteD.year, detteD.month));
-
-    const totalResources = attijari + fortuneoMad + loyersCumul;
-    const remaining      = TOTAL_PROJET - dejaAvance;
-    const totalNeed      = remaining + dette;
-    const gap            = totalNeed - totalResources;
-
-    // Horizon = date la plus tardive entre livraison et remboursement dette
-    const horizonMonths = Math.max(
-      monthDiff(nowYear, nowMonth, delivery.year, delivery.month),
-      detteMonths
-    );
-    // Effort mensuel sur l'horizon complet
-    const perMonth = (horizonMonths > 0 && gap > 0) ? gap / horizonMonths : 0;
-
-    // --- Cards ---
-    document.getElementById('totalCost').textContent   = fmt(TOTAL_PROJET);
-    document.getElementById('remaining').textContent   = fmt(remaining);
-    document.getElementById('detteCard').textContent   = fmt(dette);
-    document.getElementById('detteCardSub').textContent = `Remboursement prévu ${getMonthLabel(detteD.year, detteD.month)}`;
-    document.getElementById('totalNeed').textContent   = fmt(totalNeed);
-    document.getElementById('resources').textContent   = fmt(totalResources);
-
-    const gapEl = document.getElementById('gap');
-    const gapSub = document.getElementById('gap-sub');
-    if (gap <= 0) {
-      gapEl.className = 'card-value green';
-      gapEl.textContent = fmt(Math.abs(gap));
-      gapSub.textContent = '✓ Surplus — tu es couvert';
-    } else {
-      gapEl.className = 'card-value red';
-      gapEl.textContent = fmt(gap);
-      gapSub.textContent = horizonMonths > 0
-        ? `≈ ${fmt(perMonth)} / mois sur ${horizonMonths} mois`
-        : 'Échéance déjà passée';
-    }
-
-    document.getElementById('status-tag').innerHTML = gap <= 0
-      ? '<span class="tag tag-ok">Couvert</span>'
-      : '<span class="tag tag-warn">Effort requis</span>';
-
-    // --- Breakdown ---
-    document.getElementById('breakdown-table').innerHTML = `
-      <tr><td>Coût total projet (appart + frais)</td><td>${fmt(TOTAL_PROJET)}</td></tr>
-      <tr class="sub-row"><td>dont appart estimé</td><td>~669 000 MAD</td></tr>
-      <tr class="sub-row"><td>dont frais (tesjil, tehfid, notaire)</td><td>~53 700 MAD</td></tr>
-      <tr class="sub-row"><td>— Déjà avancé</td><td style="color:var(--green)">− ${fmt(dejaAvance)}</td></tr>
-      <tr class="total-row"><td>Reste à payer (livraison)</td><td>${fmt(remaining)}</td></tr>
-      <tr class="sub-row"><td>+ Dette (remb. ${getMonthLabel(detteD.year, detteD.month)})</td><td style="color:var(--orange)">+ ${fmt(dette)}</td></tr>
-      <tr class="total-row"><td>Besoin total net</td><td>${fmt(totalNeed)}</td></tr>
-      <tr style="height:6px"></tr>
-      <tr><td>Compte Attijari</td><td style="color:var(--blue)">${fmt(attijari)}</td></tr>
-      <tr><td>Fortuneo (${fmtN(fortuneoEur)} € × ${eurRate})</td><td style="color:var(--gold)">${fmt(fortuneoMad)}</td></tr>
-      <tr><td>Loyers Fès × ${rentMonths} mois (mai → livraison)</td><td style="color:var(--green)">${fmt(loyersCumul)}</td></tr>
-      <tr class="total-row"><td>Total ressources</td><td>${fmt(totalResources)}</td></tr>
-      <tr style="height:6px"></tr>
-      <tr class="total-row">
-        <td>${gap > 0 ? "Effort d'épargne total" : 'Surplus'}</td>
-        <td style="color:${gap > 0 ? 'var(--red)' : 'var(--green)'}">${gap > 0 ? '' : '+ '}${fmt(Math.abs(gap))}</td>
-      </tr>
-      ${gap > 0 && horizonMonths > 0 ? `<tr class="sub-row"><td>Effort mensuel moyen (sur ${horizonMonths} mois)</td><td style="color:var(--red)">${fmt(perMonth)} / mois</td></tr>` : ''}
-    `;
-
-    // --- Progress bars ---
-    const pb = document.getElementById('progress-bars');
-    pb.innerHTML = '';
-    const total = Math.max(totalNeed, totalResources, 1);
-    [
-      { label: 'Attijari', value: attijari, color: 'var(--blue)' },
-      { label: `Loyers Fès (${rentMonths} mois)`, value: loyersCumul, color: 'var(--green)' },
-      { label: 'Fortuneo', value: fortuneoMad, color: 'var(--gold)' },
-      ...(gap > 0 ? [{ label: 'Effort requis', value: gap, color: 'var(--red)' }] : []),
-    ].forEach(b => {
-      const pct = Math.min(100, (b.value / total) * 100);
-      pb.innerHTML += `
-        <div class="progress-label"><span style="color:${b.color}">${b.label}</span><span>${fmt(b.value)}</span></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${b.color}"></div></div>`;
-    });
-
-    renderChart1({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap, rentMonths });
-    renderChart2({
-      attijari, fortuneoMad, loyerFes, gap, perMonth,
-      totalNeed, totalResources, rentMonths,
-      nowYear, nowMonth, firstRentYear, firstRentMonth,
-      delivery, detteD, detteMonths, horizonMonths, dette
-    });
-  }
-
-  /* ═══════════════════════════════════════════════
-     CHART 1 — Barres empilées Besoins vs Ressources
-  ═══════════════════════════════════════════════ */
-  function renderChart1({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap }) {
-    const W = 680, H = 300, padL = 20, padR = 20, padT = 20, padB = 44;
-    const chartH = H - padT - padB;
-    const maxVal = Math.max(totalNeed, totalResources) * 1.1;
-    const cx = W / 2, barW = (W - padL - padR) * 0.24;
-    const x1 = cx - barW - 24, x2 = cx + 24;
-
-    function sy(v) { return padT + chartH - (v / maxVal) * chartH; }
-
-    let grid = '';
-    for (let i = 0; i <= 4; i++) {
-      const v = (maxVal / 4) * i, y = sy(v);
-      grid += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#1e1e20" stroke-width="1"/>
-               <text x="${padL+2}" y="${y-3}" fill="#3a3a40" font-size="9">${fmtN(v)}</text>`;
-    }
-
-    function stackedBar(segs, x) {
-      let out = '', cum = 0;
-      segs.forEach(s => {
-        if (s.value <= 0) return;
-        const y1 = sy(cum + s.value), y2 = sy(cum), h = y2 - y1;
-        out += `<rect x="${x}" y="${y1}" width="${barW}" height="${h}" fill="${s.color}" rx="1" opacity="0.88"/>`;
-        if (h > 18) out += `<text x="${x + barW/2}" y="${y1 + h/2 + 4}" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="9">${fmtN(s.value)}</text>`;
-        cum += s.value;
-      });
-      return out;
-    }
-
-    const needSegs = [
-      { label: 'Reste livraison', value: remaining, color: '#c0604a' },
-      { label: 'Dette', value: dette, color: '#d4845a' }
-    ];
-    const resSegs = [
-      { label: 'Attijari', value: attijari, color: '#5a8fcf' },
-      { label: 'Loyers Fès', value: loyersCumul, color: '#6aaa8a' },
-      { label: 'Fortuneo', value: fortuneoMad, color: '#c9a84c' },
-      ...(gap > 0 ? [{ label: 'Effort requis', value: gap, color: '#7a2a1a' }] : []),
-    ];
-
-    const targetY = sy(totalNeed);
-    const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;">
-      ${grid}
-      <line x1="${padL}" y1="${targetY}" x2="${W-padR}" y2="${targetY}" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.6"/>
-      <text x="${W-padR-2}" y="${targetY-5}" fill="#c9a84c" font-size="9" text-anchor="end">Besoin total: ${fmtN(totalNeed)}</text>
-      ${stackedBar(needSegs, x1)}
-      ${stackedBar(resSegs, x2)}
-      <text x="${x1+barW/2}" y="${H-26}" text-anchor="middle" fill="#c9a84c" font-size="11">BESOINS</text>
-      <text x="${x1+barW/2}" y="${H-12}" text-anchor="middle" fill="#7a7670" font-size="9">${fmtN(totalNeed)} MAD</text>
-      <text x="${x2+barW/2}" y="${H-26}" text-anchor="middle" fill="${gap > 0 ? '#c0604a' : '#6aaa8a'}" font-size="11">RESSOURCES</text>
-      <text x="${x2+barW/2}" y="${H-12}" text-anchor="middle" fill="#7a7670" font-size="9">${fmtN(totalResources)} MAD</text>
-    </svg>`;
-
-    const allSegs = [...needSegs, ...resSegs];
-    const legend = `<div class="legend">${allSegs.map(s =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div>${s.label}</div>`
-    ).join('')}</div>`;
-    document.getElementById('chart1').innerHTML = svg + legend;
-  }
-
-  /* ═══════════════════════════════════════════════
-     CHART 2 — Trajectoire temporelle
-  ═══════════════════════════════════════════════ */
-  function renderChart2({ attijari, fortuneoMad, loyerFes, gap, perMonth,
-      totalNeed, totalResources, rentMonths,
-      nowYear, nowMonth, firstRentYear, firstRentMonth,
-      delivery, detteD, detteMonths, horizonMonths, dette }) {
-
-    const W = 680, H = 320, padL = 70, padR = 24, padT = 24, padB = 48;
-    const chartW = W - padL - padR, chartH = H - padT - padB;
-
-    // On construit un point par mois de t=0 (avril) à t=horizonMonths (échéance la plus lointaine)
-    const totalMonths = Math.max(horizonMonths, 1);
-    const points = [];
-
-    for (let t = 0; t <= totalMonths; t++) {
-      // Mois courant
-      const absMonth = nowMonth + t;
-      const y = nowYear + Math.floor(absMonth / 12);
-      const m = absMonth % 12;
-
-      // Loyers: comptés à partir de mai (t=1 si on est en avril)
-      // Premier loyer arrive quand on atteint firstRentMonth/firstRentYear
-      const tFirstRent = (firstRentYear - nowYear) * 12 + (firstRentMonth - nowMonth); // t auquel le 1er loyer arrive
-      const loyers_t = loyerFes * Math.max(0, Math.min(t - tFirstRent + 1, rentMonths));
-
-      const passives = attijari + fortuneoMad + loyers_t;
-      const withSavings = passives + perMonth * t;
-
-      // Besoins cumulés à t: dette si t >= detteMonths, + livraison si t >= delivery months
-      const deliveryT = (delivery.year - nowYear) * 12 + (delivery.month - nowMonth);
-      const needsAtT = (t >= deliveryT ? (TOTAL_PROJET - (parseFloat(document.getElementById('dejaAvance').value)||0)) : 0)
-                     + (t >= detteMonths ? dette : 0);
-
-      points.push({ t, y, m, passives, withSavings, needsAtT, label: getMonthLabel(y, m) });
-    }
-
-    const maxY = Math.max(totalNeed * 1.12, (points[points.length-1]?.withSavings || 0) * 1.05, 1);
-    function sx(t) { return padL + (t / totalMonths) * chartW; }
-    function sy(v) { return padT + chartH - (v / maxY) * chartH; }
-
-    // Grid lignes horizontales
-    let grid = '';
-    const steps = 5;
-    for (let i = 0; i <= steps; i++) {
-      const v = (maxY / steps) * i, y = sy(v);
-      grid += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#1c1c1e" stroke-width="1"/>
-               <text x="${padL-5}" y="${y+4}" fill="#4a4a50" font-size="9" text-anchor="end">${fmtN(v)}</text>`;
-    }
-
-    // Axe X: labels mois (espacés)
-    let xAxis = `<line x1="${padL}" y1="${padT+chartH}" x2="${W-padR}" y2="${padT+chartH}" stroke="#2a2a2d" stroke-width="1"/>`;
-    const labelStep = totalMonths <= 12 ? 1 : totalMonths <= 24 ? 2 : 3;
-    points.forEach((p, i) => {
-      if (i % labelStep === 0) {
-        xAxis += `<line x1="${sx(p.t)}" y1="${padT+chartH}" x2="${sx(p.t)}" y2="${padT+chartH+4}" stroke="#2a2a2d" stroke-width="1"/>
-                  <text x="${sx(p.t)}" y="${H-padB+16}" text-anchor="middle" fill="#4a4a50" font-size="9">${p.label}</text>`;
-      }
-    });
-
-    // Courbe passives (sans épargne)
-    let pathPass = `M ${sx(0)} ${sy(points[0].passives)}`;
-    points.forEach((p, i) => { if (i > 0) pathPass += ` L ${sx(p.t)} ${sy(p.passives)}`; });
-
-    // Courbe avec épargne (cible)
-    let pathSave = `M ${sx(0)} ${sy(points[0].withSavings)}`;
-    points.forEach((p, i) => { if (i > 0) pathSave += ` L ${sx(p.t)} ${sy(p.withSavings)}`; });
-
-    // Zone remplie sous passives
-    let areaPass = `M ${sx(0)} ${sy(0)} L ${sx(0)} ${sy(points[0].passives)}`;
-    points.forEach((p, i) => { if (i > 0) areaPass += ` L ${sx(p.t)} ${sy(p.passives)}`; });
-    areaPass += ` L ${sx(totalMonths)} ${sy(0)} Z`;
-
-    // Zone effort (entre passives et withSavings)
-    let areaEffort = '';
-    if (gap > 0) {
-      areaEffort = `M ${sx(0)} ${sy(points[0].passives)}`;
-      points.forEach((p, i) => { if (i > 0) areaEffort += ` L ${sx(p.t)} ${sy(p.passives)}`; });
-      for (let i = points.length-1; i >= 0; i--) areaEffort += ` L ${sx(points[i].t)} ${sy(points[i].withSavings)}`;
-      areaEffort += ' Z';
-    }
-
-    // Ligne besoin total horizontal
-    const needLineY = sy(totalNeed);
-    const needLine = `
-      <line x1="${padL}" y1="${needLineY}" x2="${W-padR}" y2="${needLineY}" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.7"/>
-      <text x="${padL+4}" y="${needLineY-5}" fill="#c9a84c" font-size="9">Besoin total: ${fmtN(totalNeed)}</text>`;
-
-    // Marqueur livraison
-    const deliveryT = (delivery.year - nowYear) * 12 + (delivery.month - nowMonth);
-    const dvX = sx(Math.max(0, Math.min(deliveryT, totalMonths)));
-    const deliveryMarker = `
-      <line x1="${dvX}" y1="${padT}" x2="${dvX}" y2="${padT+chartH}" stroke="#c9a84c" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
-      <text x="${dvX+3}" y="${padT+12}" fill="#c9a84c" font-size="9">Livraison</text>`;
-
-    // Marqueur dette
-    const dtX = sx(Math.max(0, Math.min(detteMonths, totalMonths)));
-    const detteMarker = detteMonths > 0 ? `
-      <line x1="${dtX}" y1="${padT}" x2="${dtX}" y2="${padT+chartH}" stroke="#d4845a" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
-      <text x="${dtX+3}" y="${padT+24}" fill="#d4845a" font-size="9">Remb. dette</text>` : '';
-
-    // Annotation effort mensuel
-    let annotation = '';
-    if (gap > 0 && totalMonths > 1) {
-      const midT = Math.floor(totalMonths / 2);
-      const mp = points[midT];
-      if (mp) {
-        const midY = (sy(mp.passives) + sy(mp.withSavings)) / 2;
-        annotation = `<rect x="${sx(midT)-36}" y="${midY-10}" width="72" height="16" rx="2" fill="#0e0e0f" opacity="0.7"/>
-                      <text x="${sx(midT)}" y="${midY+2}" text-anchor="middle" fill="#c0604a" font-size="9">+${fmtN(perMonth)}/m</text>`;
+/* ── CHART 1: Besoins vs Ressources (grouped bar) ── */
+function renderChartOverview({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap, eurRate }) {
+  destroyChart('overview');
+  const ctx = document.getElementById('chartOverview').getContext('2d');
+  charts.overview = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['BESOINS', 'RESSOURCES'],
+      datasets: [
+        { label: 'Reste livraison / Attijari', data: [remaining, attijari], backgroundColor: ['#c0604a','#5a8fcf'] },
+        { label: 'Dette / Loyers Fès', data: [dette, loyersCumul], backgroundColor: ['#d4845a','#6aaa8a'] },
+        { label: '— / Fortuneo', data: [0, fortuneoMad], backgroundColor: ['transparent','#c9a84c'] },
+        ...(gap>0?[{label:'— / Effort requis',data:[0,gap],backgroundColor:['transparent','rgba(192,96,74,0.35)']}]:[]),
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: {
+          label: ctx => ` ${fmtN(ctx.raw)} MAD  ·  ${fmtE(ctx.raw/eurRate)}`
+        }
+      }},
+      scales: {
+        x: { stacked: true, ticks: { color: '#7a7670', font: { family: 'DM Mono', size: 11 } }, grid: { color: '#1e1e20' } },
+        y: { stacked: true, ticks: { color: '#7a7670', font: { family: 'DM Mono', size: 10 }, callback: v => fmtN(v) }, grid: { color: '#1e1e20' } }
       }
     }
+  });
+  document.getElementById('legendOverview').innerHTML = [
+    {c:'#c0604a',l:'Reste livraison'},{c:'#d4845a',l:'Dette'},{c:'#5a8fcf',l:'Attijari'},{c:'#6aaa8a',l:'Loyers Fès'},{c:'#c9a84c',l:'Fortuneo'},
+    ...(gap>0?[{c:'rgba(192,96,74,0.35)',l:'Effort requis'}]:[])
+  ].map(x=>`<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+}
 
-    // Points finaux
-    const lastP = points[points.length-1];
-    const dots = `
-      <circle cx="${sx(lastP.t)}" cy="${sy(lastP.passives)}" r="3.5" fill="#6aaa8a"/>
-      ${gap > 0 ? `<circle cx="${sx(lastP.t)}" cy="${sy(lastP.withSavings)}" r="3.5" fill="#c9a84c"/>` : ''}`;
+/* ── CHART 2: Trajectoire ── */
+function renderChartTrajectory({ attijari, fortuneoMad, loyerFes, gap, perMonth, totalNeed, totalResources, rentMonths, nowYear, nowMonth, firstRentYear, firstRentMonth, delivery, detteD, detteMonths, horizonMonths, dette, dejaAvance, eurRate }) {
+  destroyChart('traj');
+  const totalMonths = Math.max(horizonMonths, 1);
+  const tFirstRent = (firstRentYear - nowYear)*12 + (firstRentMonth - nowMonth);
+  const deliveryT  = (delivery.year - nowYear)*12 + (delivery.month - nowMonth);
+  const labels = [], passives = [], withSavings = [], needs = [];
 
-    const svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;">
-      <defs>
-        <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#5a8fcf" stop-opacity="0.25"/>
-          <stop offset="100%" stop-color="#5a8fcf" stop-opacity="0.03"/>
-        </linearGradient>
-        <linearGradient id="ge" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#c0604a" stop-opacity="0.2"/>
-          <stop offset="100%" stop-color="#c0604a" stop-opacity="0.03"/>
-        </linearGradient>
-      </defs>
-      ${grid}
-      ${xAxis}
-      ${needLine}
-      ${deliveryMarker}
-      ${detteMarker}
-      <path d="${areaPass}" fill="url(#gp)"/>
-      ${gap > 0 ? `<path d="${areaEffort}" fill="url(#ge)"/>` : ''}
-      <path d="${pathPass}" fill="none" stroke="#6aaa8a" stroke-width="2.5"/>
-      ${gap > 0 ? `<path d="${pathSave}" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="7 4"/>` : ''}
-      ${annotation}
-      ${dots}
-    </svg>`;
-
-    const legend = `<div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#6aaa8a"></div>Ressources passives (Attijari + Fortuneo + loyers Fès)</div>
-      ${gap > 0 ? `<div class="legend-item">
-        <div style="width:20px;height:2px;background:#c9a84c;flex-shrink:0;background-image:repeating-linear-gradient(90deg,#c9a84c 0,#c9a84c 7px,transparent 7px,transparent 11px)"></div>
-        Trajectoire cible avec effort mensuel (${fmtN(perMonth)} MAD/m)
-      </div>` : ''}
-      <div class="legend-item">
-        <div style="width:20px;height:2px;flex-shrink:0;background-image:repeating-linear-gradient(90deg,#c9a84c 0,#c9a84c 6px,transparent 6px,transparent 10px)"></div>
-        Besoin total à couvrir
-      </div>
-      <div class="legend-item"><div class="legend-dot" style="background:#c9a84c;opacity:0.4"></div>Livraison</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#d4845a;opacity:0.5"></div>Remboursement dette</div>
-      ${gap > 0 ? '<div class="legend-item"><div class="legend-dot" style="background:#c0604a;opacity:0.4"></div>Effort d\'épargne requis</div>' : ''}
-    </div>`;
-
-    document.getElementById('chart2').innerHTML = svg + legend;
+  for (let t = 0; t <= totalMonths; t++) {
+    const absM = nowMonth + t;
+    const y = nowYear + Math.floor(absM/12), m = absM%12;
+    labels.push(getMonthLabel(y,m));
+    const loyers_t = loyerFes * Math.max(0, Math.min(t - tFirstRent + 1, rentMonths));
+    const passive_t = attijari + fortuneoMad + loyers_t;
+    const saving_t  = passive_t + (gap>0?perMonth*t:0);
+    const need_t    = (t>=deliveryT?(TOTAL_PROJET-dejaAvance):0) + (t>=detteMonths?dette:0);
+    passives.push(Math.round(passive_t));
+    withSavings.push(Math.round(saving_t));
+    needs.push(Math.round(need_t > 0 ? need_t : null));
   }
 
-  compute();
+  destroyChart('traj');
+  const ctx = document.getElementById('chartTraj').getContext('2d');
+  charts.traj = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Ressources passives', data: passives, borderColor: '#6aaa8a', backgroundColor: 'rgba(106,170,138,0.08)', fill: true, tension: 0.3, pointRadius: 2, borderWidth: 2.5 },
+        ...(gap>0?[{ label: 'Avec effort d\'épargne', data: withSavings, borderColor: '#c9a84c', backgroundColor: 'rgba(201,168,76,0.04)', fill: true, tension: 0.3, pointRadius: 2, borderWidth: 1.5, borderDash: [7,4] }]:[]),
+        { label: 'Besoin à couvrir', data: needs, borderColor: '#c0604a', backgroundColor: 'transparent', fill: false, tension: 0, pointRadius: 5, pointStyle: 'rectRot', borderWidth: 1.5, showLine: false },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label: ctx=>`${ctx.dataset.label}: ${fmtN(ctx.raw)} MAD · ${fmtE(ctx.raw/eurRate)}`}} },
+      scales: {
+        x: { ticks: { color:'#7a7670', font:{family:'DM Mono',size:10}, maxRotation: 45, autoSkip: true, maxTicksLimit: 10 }, grid:{color:'#1c1c1e'} },
+        y: { ticks: { color:'#7a7670', font:{family:'DM Mono',size:10}, callback: v=>fmtN(v) }, grid:{color:'#1c1c1e'} }
+      }
+    }
+  });
+  document.getElementById('legendTraj').innerHTML = [
+    {c:'#6aaa8a',l:'Ressources passives'},{c:'#c9a84c',l:'Avec effort épargne'},{c:'#c0604a',l:'Besoin à couvrir (date)'}
+  ].map(x=>`<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+}
+
+/* ── CHART 3: Effort en % du revenu ── */
+function renderChartEffort({ horizonMonths, perMonthEur, revenuEur, pctRevenu, gap, nowYear, nowMonth, delivery, detteD, detteMonths }) {
+  destroyChart('effort');
+  if (gap <= 0 || horizonMonths <= 0) {
+    document.getElementById('chartEffort').parentElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:200px;color:var(--green);font-size:14px;">✓ Aucun effort requis — ressources suffisantes</div>`;
+    return;
+  }
+
+  const labels = [], pcts = [], eurs = [];
+  const scenarios = [
+    { label:'Aucun effort', extra: 0 },
+    { label:'Effort minimal\n(réparti sur horizon)', extra: perMonthEur },
+    { label:'Effort +20%\n(marge de sécurité)', extra: perMonthEur * 1.2 },
+    { label:'Effort +50%\n(remboursement rapide)', extra: perMonthEur * 1.5 },
+  ];
+  scenarios.forEach(s => {
+    labels.push(s.label);
+    pcts.push(Math.round((s.extra / revenuEur) * 100));
+    eurs.push(Math.round(s.extra));
+  });
+
+  const colors = ['#6aaa8a','#c9a84c','#d4845a','#c0604a'];
+  const ctx = document.getElementById('chartEffort').getContext('2d');
+  charts.effort = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{ label: '% du revenu net', data: pcts, backgroundColor: colors, borderRadius: 1 }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{ callbacks:{ label: ctx=>`${ctx.raw}% du revenu  ·  ${fmtE(eurs[ctx.dataIndex])}/mois` }}
+      },
+      scales: {
+        x: { ticks:{ color:'#7a7670', font:{family:'DM Mono',size:10}, callback: v=>v+'%' }, grid:{color:'#1c1c1e'}, max: Math.max(...pcts)*1.3 },
+        y: { ticks:{ color:'#7a7670', font:{family:'DM Mono',size:10} }, grid:{display:false} }
+      }
+    }
+  });
+  document.getElementById('legendEffort').innerHTML = scenarios.map((s,i)=>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${s.label.replace('\n',' ')} — ${fmtE(eurs[i])}/m (${pcts[i]}%)</div>`
+  ).join('');
+}
+
+/* ── CHART 4: Waterfall ── */
+function renderChartWaterfall({ TOTAL_PROJET, dejaAvance, dette, attijari, fortuneoMad, loyersCumul, gap, eurRate }) {
+  destroyChart('waterfall');
+  const labels  = ['Coût projet','− Avancé','+ Dette','− Attijari','− Fortuneo','− Loyers Fès', gap>0?'Effort requis':'Surplus'];
+  const deltas  = [TOTAL_PROJET, -dejaAvance, dette, -attijari, -fortuneoMad, -loyersCumul, gap>0?gap:-Math.abs(gap)];
+  const bases   = [], bars = [], barColors = [];
+  let running = 0;
+  deltas.forEach((d,i) => {
+    if (i===0) { bases.push(0); bars.push(d); barColors.push('#c9a84c'); }
+    else if (i===labels.length-1) { bases.push(0); bars.push(Math.abs(d)); barColors.push(gap>0?'#c0604a':'#6aaa8a'); }
+    else { if(d<0){bases.push(running+d);bars.push(-d);barColors.push('#6aaa8a');}else{bases.push(running);bars.push(d);barColors.push('#d4845a');} }
+    running += d;
+  });
+
+  const ctx = document.getElementById('chartWaterfall').getContext('2d');
+  charts.waterfall = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Base (invisible)', data: bases, backgroundColor: 'transparent', borderWidth: 0 },
+        { label: 'Valeur', data: bars, backgroundColor: barColors, borderRadius: 1 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{ callbacks:{ label: (ctx) => ctx.datasetIndex===1?`${fmtN(bars[ctx.dataIndex])} MAD · ${fmtE(bars[ctx.dataIndex]/eurRate)}`:'', title: (ctx)=>labels[ctx[0].dataIndex] }}
+      },
+      scales: {
+        x: { stacked: true, ticks:{color:'#7a7670',font:{family:'DM Mono',size:10},maxRotation:30}, grid:{display:false} },
+        y: { stacked: true, ticks:{color:'#7a7670',font:{family:'DM Mono',size:10},callback:v=>fmtN(v)}, grid:{color:'#1c1c1e'} }
+      }
+    }
+  });
+  document.getElementById('legendWaterfall').innerHTML = [
+    {c:'#c9a84c',l:'Coût projet'},{c:'#d4845a',l:'Ajout (dette)'},{c:'#6aaa8a',l:'Soustraction (ressources)'},{c:gap>0?'#c0604a':'#6aaa8a',l:gap>0?'Effort requis':'Surplus'}
+  ].map(x=>`<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+}
+
+/* ── CHART 5: Donut ressources ── */
+function renderChartDonut({ attijari, fortuneoMad, loyersCumul, gap, eurRate }) {
+  destroyChart('donut');
+  const data   = [attijari, fortuneoMad, loyersCumul];
+  const colors = ['#5a8fcf','#c9a84c','#6aaa8a'];
+  const labels_d = ['Attijari','Fortuneo','Loyers Fès'];
+  const ctx = document.getElementById('chartDonut').getContext('2d');
+  charts.donut = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels: labels_d, datasets: [{ data, backgroundColor: colors, borderColor: '#161617', borderWidth: 3 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>`${fmtN(ctx.raw)} MAD · ${fmtE(ctx.raw/eurRate)}`}} }
+    }
+  });
+  const total = attijari+fortuneoMad+loyersCumul;
+  document.getElementById('legendDonut').innerHTML = labels_d.map((l,i)=>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${l} ${Math.round(data[i]/total*100)}%</div>`
+  ).join('');
+}
+
+/* ── CHART 6: Taux de couverture ── */
+function renderChartCoverage({ attijari, fortuneoMad, loyersCumul, remaining, dette, totalNeed, totalResources, gap, detteMonths, horizonMonths, eurRate, delivery, detteD, nowYear, nowMonth }) {
+  destroyChart('coverage');
+  const deliveryT = (delivery.year - nowYear)*12 + (delivery.month - nowMonth);
+  const scenarios = [
+    { label: 'Attijari seul',         value: attijari },
+    { label: 'Attijari + Fortuneo',    value: attijari+fortuneoMad },
+    { label: '+ Loyers Fès',           value: attijari+fortuneoMad+loyersCumul },
+  ];
+  const coverages = scenarios.map(s => Math.min(100, Math.round((s.value/totalNeed)*100)));
+  const colors = coverages.map(c => c>=100?'#6aaa8a': c>=70?'#c9a84c': c>=50?'#d4845a':'#c0604a');
+
+  const ctx = document.getElementById('chartCoverage').getContext('2d');
+  charts.coverage = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: scenarios.map(s=>s.label),
+      datasets: [
+        { label: 'Couverture (%)', data: coverages, backgroundColor: colors, borderRadius: 1 },
+        { label: 'Objectif 100%', data: [100,100,100], type: 'line', borderColor: '#c9a84c', backgroundColor: 'transparent', borderDash: [6,3], pointRadius: 0, borderWidth: 1.5 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=> ctx.datasetIndex===0?`${ctx.raw}% du besoin total · ${fmtE(scenarios[ctx.dataIndex].value/eurRate)}`:''}}
+      },
+      scales: {
+        x: { ticks:{color:'#7a7670',font:{family:'DM Mono',size:10},maxRotation:10}, grid:{display:false} },
+        y: { min:0, max:110, ticks:{color:'#7a7670',font:{family:'DM Mono',size:10},callback:v=>v+'%'}, grid:{color:'#1c1c1e'} }
+      }
+    }
+  });
+  document.getElementById('legendCoverage').innerHTML = [
+    {c:'#6aaa8a',l:'≥ 100%'},{c:'#c9a84c',l:'70–99%'},{c:'#d4845a',l:'50–69%'},{c:'#c0604a',l:'< 50%'}
+  ].map(x=>`<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+}
+
+compute();
 </script>
 </body>
 </html>
+
