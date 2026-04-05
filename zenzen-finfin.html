@@ -1,201 +1,246 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zenata Mobile Strategic</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<style>
-  :root {
-    --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
-    --gold: #c9a84c; --gold-dim: #8a6e30;
-    --text: #e8e4dc; --muted: #7a7670;
-    --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 15px; font-size: 13px; }
-  
-  .header { text-align: center; margin-bottom: 20px; }
-  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--gold); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenata Strategic Planner 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    <style>
+        :root {
+            --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
+            --gold: #c9a84c; --gold-dim: #8a6e30;
+            --text: #e8e4dc; --muted: #7a7670;
+            --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 15px; font-size: 13px; line-height: 1.4; }
+        
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--gold); letter-spacing: 0.05em; }
 
-  /* CORRECTION MOBILE : Wrap des inputs prioritaires */
-  .focus-inputs { 
-    display: flex; 
-    flex-wrap: wrap; /* Permet le retour à la ligne */
-    gap: 15px; 
-    margin-bottom: 20px; 
-    border: 1px solid var(--gold); 
-    padding: 15px; 
-    background: rgba(201,168,76,0.02); 
-  }
-  .input-group { 
-    flex: 1 1 200px; /* Prend toute la largeur si < 400px environ */
-    display: flex; 
-    flex-direction: column; 
-  }
-  .input-group label { font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
-  .input-group input { 
-    background: transparent; border: none; border-bottom: 2px solid var(--gold-dim); 
-    color: #fff; font-size: 1.3rem; font-family: 'Cormorant Garamond'; padding: 5px 0; outline: none; width: 100%;
-  }
+        /* Inputs Prioritaires - Adaptatif Mobile */
+        .focus-inputs { 
+            display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; 
+            border: 1px solid var(--gold); padding: 15px; background: rgba(201,168,76,0.03); 
+        }
+        .input-group { flex: 1 1 160px; display: flex; flex-direction: column; }
+        .input-group label { font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .input-group input { 
+            background: transparent; border: none; border-bottom: 2px solid var(--gold-dim); 
+            color: #fff; font-size: 1.4rem; font-family: 'Cormorant Garamond'; padding: 5px 0; outline: none; width: 100%;
+        }
 
-  /* Grid adaptative pour les petits paramètres */
-  .params-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-    gap: 12px; background: var(--surface); padding: 15px; border: 1px solid var(--border); margin-bottom: 20px; 
-  }
-  .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-  .param-item input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 4px 0; outline: none; }
+        /* Grille des paramètres secondaires */
+        .params-grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 12px; background: var(--surface); padding: 15px; border: 1px solid var(--border); margin-bottom: 20px; 
+        }
+        .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+        .param-item input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 4px 0; outline: none; font-size: 12px; }
 
-  /* KPI sur mobile : s'empilent si besoin */
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px; }
-  .card { background: var(--surface); border: 1px solid var(--border); padding: 12px; text-align: center; }
-  .card-label { font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
-  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; word-break: break-all; }
-  
-  /* Graphiques : l'un sous l'autre sur mobile */
-  .charts-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
-  @media (min-width: 900px) { .charts-grid { grid-template-columns: 1fr 1fr; } }
-  .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 10px; height: 320px; }
+        .section-label { font-size: 10px; text-transform: uppercase; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 10px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
 
-  .safety-box { background: rgba(201,168,76,0.03); border: 1px solid var(--gold-dim); padding: 15px; margin-bottom: 20px; }
-  .assets-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-  
-  .suggestion { background: var(--surface); padding: 15px; border-left: 4px solid var(--blue); line-height: 1.4; font-size: 12px; }
-  .gold { color: var(--gold); } .red { color: var(--red); } .green { color: var(--green); } .blue { color: var(--blue); }
-</style>
+        /* Jauges de Progression */
+        .goal-wrapper { background: var(--surface); border: 1px solid var(--border); padding: 15px; margin-bottom: 12px; border-radius: 2px; }
+        .goal-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; }
+        .progress-bg { height: 12px; background: #232325; border-radius: 6px; overflow: hidden; border: 1px solid #333; }
+        .progress-fill { height: 100%; width: 0%; transition: width 0.8s ease-out; }
+        .fill-appart { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+        .fill-dette { background: linear-gradient(90deg, #4a70a0, var(--blue)); }
+        .goal-footer { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: var(--muted); }
+        .check-icon { color: var(--green); font-weight: bold; display: none; }
+
+        /* Graphiques */
+        .charts-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (min-width: 900px) { .charts-grid { grid-template-columns: 1fr 1fr; } }
+        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 15px; height: 320px; }
+
+        /* Filet de sécurité */
+        .safety-box { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; }
+        .assets-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        
+        .suggestion { background: var(--surface); padding: 15px; border-left: 4px solid var(--blue); font-size: 12px; }
+        .gold { color: var(--gold); } .red { color: var(--red); } .green { color: var(--green); } .blue { color: var(--blue); }
+    </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Stratégie Zenata</h1>
+    <h1>Zenata Stratégie</h1>
 </div>
 
 <div class="focus-inputs">
-  <div class="input-group">
-    <label>Épargne Fixe (€/m)</label>
-    <input type="number" id="inputFixed" value="1900" oninput="compute()">
-  </div>
-  <div class="input-group">
-    <label>Prime Annuelle (€)</label>
-    <input type="number" id="inputBonus" value="9000" oninput="compute()">
-  </div>
+    <div class="input-group">
+        <label>Épargne Fixe (€/mois)</label>
+        <input type="number" id="inputFixed" value="1900" oninput="compute()">
+    </div>
+    <div class="input-group">
+        <label>Prime Annuelle (€)</label>
+        <input type="number" id="inputBonus" value="9000" oninput="compute()">
+    </div>
 </div>
 
 <div class="params-grid">
-  <div class="param-item"><label>Livraison</label><input type="month" id="deliveryDate" value="2026-12" onchange="compute()"></div>
-  <div class="param-item"><label>Attijari (MAD)</label><input type="number" id="attijari" value="162000" oninput="compute()"></div>
-  <div class="param-item"><label>Fortuneo (€)</label><input type="number" id="fortuneo" value="16000" oninput="compute()"></div>
-  <div class="param-item"><label>Loyer Fès</label><input type="number" id="loyerFes" value="1800" oninput="compute()"></div>
-  <div class="param-item"><label>Change</label><input type="number" id="eurRate" value="10.8" step="0.1" oninput="compute()"></div>
-  <div class="param-item"><label>Dette Tiers</label><input type="number" id="dette" value="100000" oninput="compute()"></div>
+    <div class="param-item"><label>Livraison</label><input type="month" id="deliveryDate" value="2026-12" onchange="compute()"></div>
+    <div class="param-item"><label>Attijari (MAD)</label><input type="number" id="attijari" value="162000" oninput="compute()"></div>
+    <div class="param-item"><label>Fortuneo (€)</label><input type="number" id="fortuneo" value="16000" oninput="compute()"></div>
+    <div class="param-item"><label>Loyer Fès (MAD)</label><input type="number" id="loyerFes" value="1800" oninput="compute()"></div>
+    <div class="param-item"><label>Taux Change</label><input type="number" id="eurRate" value="10.8" step="0.1" oninput="compute()"></div>
+    <div class="param-item"><label>Dette Tiers</label><input type="number" id="dette" value="100000" oninput="compute()"></div>
 </div>
 
-<div class="kpi-grid">
-  <div class="card"><div class="card-label">Reste Immo</div><div class="card-value red" id="kpi-remaining">—</div></div>
-  <div class="card"><div class="card-label">Cash Fin 26</div><div class="card-value blue" id="kpi-final-cash">—</div></div>
-  <div class="card"><div class="card-label">Bilan</div><div class="card-value" id="kpi-net">—</div></div>
+<span class="section-label">Couverture des Objectifs</span>
+
+<div class="goal-wrapper" id="wrapper-appart">
+    <div class="goal-header">
+        <span class="gold">1. Solde Appartement</span>
+        <span id="pct-appart" class="gold">0%</span>
+    </div>
+    <div class="progress-bg">
+        <div id="bar-appart" class="progress-fill fill-appart"></div>
+    </div>
+    <div class="goal-footer">
+        <span id="label-appart">0 / 622 700 MAD</span>
+        <span id="check-appart" class="check-icon">✓ SÉCURISÉ</span>
+    </div>
+</div>
+
+<div class="goal-wrapper" id="wrapper-dette">
+    <div class="goal-header">
+        <span class="blue">2. Remboursement Dette</span>
+        <span id="pct-dette" class="blue">0%</span>
+    </div>
+    <div class="progress-bg">
+        <div id="bar-dette" class="progress-fill fill-dette"></div>
+    </div>
+    <div class="goal-footer">
+        <span id="label-dette">En attente...</span>
+        <span id="check-dette" class="check-icon">✓ SOLDÉE</span>
+    </div>
 </div>
 
 <div class="charts-grid">
-  <div class="chart-box"><canvas id="chartTraj"></canvas></div>
-  <div class="chart-box"><canvas id="chartWaterfall"></canvas></div>
+    <div class="chart-box"><canvas id="chartTraj"></canvas></div>
+    <div class="chart-box"><canvas id="chartWaterfall"></canvas></div>
 </div>
 
 <div class="safety-box">
-  <div class="card-label gold">Filet Sécurité</div>
-  <div class="assets-list">
-    <div><div class="card-label">Maroc</div><div style="font-size:1rem">80k MAD</div></div>
-    <div><div class="card-label">PEA</div><div style="font-size:1rem">10k €</div></div>
-    <div><div class="card-label">FactSet</div><div style="font-size:1rem">9k €</div></div>
-    <div style="border-left: 2px solid var(--gold); padding-left: 10px;"><div class="card-label gold">Total</div><div style="font-size:1rem; color:var(--gold)" id="total-safety">—</div></div>
-  </div>
+    <span class="section-label" style="border:none">Buffer Actions (Non touché)</span>
+    <div class="assets-list">
+        <div><div class="card-label">Bourse Maroc</div><div style="font-size:1.1rem">80k MAD</div></div>
+        <div><div class="card-label">PEA / FactSet</div><div style="font-size:1.1rem">19k €</div></div>
+        <div style="grid-column: span 2; border-top: 1px solid var(--border); padding-top: 10px;">
+            <div class="card-label gold">Total Filet Sécurité</div>
+            <div style="font-size:1.2rem; color:var(--gold)" id="total-safety">—</div>
+        </div>
+    </div>
 </div>
 
 <div class="suggestion" id="dynamic-note"></div>
 
 <script>
-const COST_TOTAL = 722700;
-const PRE_PAID = 100000;
-const ACT_MA = 80000;
-const ACT_PEA = 10000;
-const ACT_FS = 9000;
-let charts = {};
+    const COST_TOTAL = 722700;
+    const PRE_PAID = 100000;
+    const ACT_MA = 80000;
+    const ACT_EUR_TOTAL = 19000; // PEA 10k + FactSet 9k
 
-function fM(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
+    let charts = {};
 
-function compute() {
-  const eurRate = parseFloat(document.getElementById('eurRate').value) || 10.8;
-  const attijari = parseFloat(document.getElementById('attijari').value) || 0;
-  const fortuneo = parseFloat(document.getElementById('fortuneo').value) || 0;
-  const fixedE = parseFloat(document.getElementById('inputFixed').value) || 0;
-  const bonusE = parseFloat(document.getElementById('inputBonus').value) || 0;
-  const loyerFes = parseFloat(document.getElementById('loyerFes').value) || 0;
-  const detteTiers = parseFloat(document.getElementById('dette').value) || 0;
+    function fM(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
 
-  const delivery = new Date(document.getElementById('deliveryDate').value);
-  const now = new Date(2026, 3, 1);
-  const months = Math.max(0, (delivery.getFullYear() - now.getFullYear()) * 12 + (delivery.getMonth() - now.getMonth()));
+    function compute() {
+        const eurRate = parseFloat(document.getElementById('eurRate').value) || 10.8;
+        const attijari = parseFloat(document.getElementById('attijari').value) || 0;
+        const fortuneo = parseFloat(document.getElementById('fortuneo').value) || 0;
+        const fixedE = parseFloat(document.getElementById('inputFixed').value) || 0;
+        const bonusE = parseFloat(document.getElementById('inputBonus').value) || 0;
+        const loyerFes = parseFloat(document.getElementById('loyerFes').value) || 0;
+        const detteTiers = parseFloat(document.getElementById('dette').value) || 100000;
 
-  const totalNeed = COST_TOTAL - PRE_PAID;
-  const initialCash = attijari + (fortuneo * eurRate);
-  const totalFixedSavings = fixedE * months * eurRate;
-  const totalBonus = bonusE * eurRate;
-  const totalRent = loyerFes * months;
-  
-  const finalCash = initialCash + totalFixedSavings + totalBonus + totalRent;
-  const netBalance = finalCash - totalNeed;
-  const bufferTotal = ACT_MA + (ACT_PEA * eurRate) + (ACT_FS * eurRate);
+        const delivery = new Date(document.getElementById('deliveryDate').value);
+        const now = new Date(2026, 3, 1); // Avril 2026
+        const months = Math.max(0, (delivery.getFullYear() - now.getFullYear()) * 12 + (delivery.getMonth() - now.getMonth()));
 
-  document.getElementById('kpi-remaining').textContent = fM(totalNeed);
-  document.getElementById('kpi-final-cash').textContent = fM(finalCash);
-  document.getElementById('kpi-net').textContent = fM(netBalance);
-  document.getElementById('kpi-net').className = "card-value " + (netBalance >= 0 ? "green" : "red");
-  document.getElementById('total-safety').textContent = fM(bufferTotal);
+        const needImmo = COST_TOTAL - PRE_PAID;
+        const initialCash = attijari + (fortuneo * eurRate);
+        const totalFixedSavings = fixedE * months * eurRate;
+        const totalBonus = bonusE * eurRate;
+        const totalRent = loyerFes * months;
+        
+        const totalCashProjete = initialCash + totalFixedSavings + totalBonus + totalRent;
+        const safetyTotal = ACT_MA + (ACT_EUR_TOTAL * eurRate);
 
-  document.getElementById('dynamic-note').innerHTML = `<b>Analyse :</b> Après l'appartement, il reste ${fM(netBalance)}. Dette tiers : ${fM(detteTiers)}. ` + 
-    (netBalance >= detteTiers ? '<span class="green">OK sans actions.</span>' : '<span class="blue">Recours au buffer nécessaire pour la dette.</span>');
+        // Mise à jour Jauge 1 (Appartement)
+        const pctAppart = Math.min(100, (totalCashProjete / needImmo) * 100);
+        document.getElementById('bar-appart').style.width = pctAppart + "%";
+        document.getElementById('pct-appart').textContent = Math.round(pctAppart) + "%";
+        document.getElementById('label-appart').textContent = fM(Math.min(totalCashProjete, needImmo)) + " / " + fM(needImmo);
+        document.getElementById('check-appart').style.display = pctAppart >= 100 ? "inline" : "none";
+        document.getElementById('wrapper-appart').style.borderColor = pctAppart >= 100 ? "var(--green)" : "var(--border)";
 
-  updateTraj(months, initialCash, totalNeed, (fixedE * eurRate) + loyerFes, totalBonus);
-  updateWaterfall(totalNeed, attijari, (fortuneo * eurRate), totalFixedSavings, totalBonus, totalRent);
-}
+        // Mise à jour Jauge 2 (Dette)
+        const surplus = Math.max(0, totalCashProjete - needImmo);
+        const pctDette = Math.min(100, (surplus / detteTiers) * 100);
+        document.getElementById('bar-dette').style.width = pctDette + "%";
+        document.getElementById('pct-dette').textContent = Math.round(pctDette) + "%";
+        document.getElementById('label-dette').textContent = surplus > 0 ? fM(Math.min(surplus, detteTiers)) + " / " + fM(detteTiers) : "En attente du surplus...";
+        document.getElementById('check-dette').style.display = pctDette >= 100 ? "inline" : "none";
+        document.getElementById('wrapper-dette').style.borderColor = pctDette >= 100 ? "var(--green)" : (surplus > 0 ? "var(--blue)" : "var(--border)");
 
-function updateTraj(months, initial, target, monthlyIn, bonus) {
-  const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
-  const labels = []; const data = []; const targetLine = [];
-  for(let i=0; i<=months; i++) {
-    let d = new Date(2026, 3 + i, 1);
-    labels.push(monthNames[d.getMonth()] + " " + d.getFullYear().toString().slice(-2));
-    data.push(initial + (i * monthlyIn) + (i === months ? bonus : 0));
-    targetLine.push(target);
-  }
-  if(charts.tj) charts.tj.destroy();
-  charts.tj = new Chart(document.getElementById('chartTraj'), {
-    type: 'line',
-    data: { labels, datasets: [
-      { label: 'Cash', data: data, borderColor: '#5a8fcf', fill: true, backgroundColor: 'rgba(90,143,207,0.1)', tension: 0.3 },
-      { label: 'Cible', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
-    ]},
-    options: { maintainAspectRatio: false, plugins: { title: { display: true, text: 'Trésorerie', color: '#7a7670' } } }
-  });
-}
+        document.getElementById('total-safety').textContent = fM(safetyTotal);
 
-function updateWaterfall(need, att, fort, fixed, bonus, rent) {
-  if(charts.wf) charts.wf.destroy();
-  const data = [[0, need], [need, need - att], [need - att, need - att - fort], [need - att - fort, need - att - fort - fixed], [need - att - fort - fixed, need - att - fort - fixed - bonus], [need - att - fort - fixed - bonus, need - att - fort - fixed - bonus - rent]];
-  charts.wf = new Chart(document.getElementById('chartWaterfall'), {
-    type: 'bar',
-    data: {
-      labels: ['Prix', 'Attij', 'Fort', 'Épar', 'Pri', 'Loy'],
-      datasets: [{ data: data, backgroundColor: (ctx) => ctx.index === 0 ? '#c0604a' : '#6aaa8a' }]
-    },
-    options: { maintainAspectRatio: false, plugins: { title: { display: true, text: 'Waterfall', color: '#7a7670' }, legend: { display: false } } }
-  });
-}
+        // Note Dynamique
+        let finalStatus = totalCashProjete - needImmo - detteTiers;
+        let note = `<b>Statut :</b> `;
+        if (finalStatus >= 0) {
+            note += `<span class="green">Félicitations ! Tu couvres l'appart et la dette avec tes flux. Excédent de ${fM(finalStatus)}.</span>`;
+        } else if (totalCashProjete >= needImmo) {
+            note += `<span class="blue">Appartement payé. Il manque ${fM(Math.abs(finalStatus))} pour la dette tiers (puisable dans le buffer).</span>`;
+        } else {
+            note += `<span class="red">Gap de ${fM(Math.abs(totalCashProjete - needImmo))} pour l'appartement. Vente d'actions nécessaire.</span>`;
+        }
+        document.getElementById('dynamic-note').innerHTML = note;
 
-window.onload = compute;
+        updateCharts(months, initialCash, needImmo, (fixedE * eurRate) + loyerFes, totalBonus, attijari, (fortuneo * eurRate), totalFixedSavings, totalRent);
+    }
+
+    function updateCharts(months, initial, target, monthlyIn, bonus, att, fort, fixed, rent) {
+        const labels = []; const data = []; const targetLine = [];
+        const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
+        
+        for(let i=0; i<=months; i++) {
+            let d = new Date(2026, 3 + i, 1);
+            labels.push(monthNames[d.getMonth()] + " " + d.getFullYear().toString().slice(-2));
+            data.push(initial + (i * monthlyIn) + (i === months ? bonus : 0));
+            targetLine.push(target);
+        }
+
+        if(charts.tj) charts.tj.destroy();
+        charts.tj = new Chart(document.getElementById('chartTraj'), {
+            type: 'line',
+            data: { labels, datasets: [
+                { label: 'Trésorerie', data: data, borderColor: '#c9a84c', fill: true, backgroundColor: 'rgba(201,168,76,0.1)', tension: 0.3 },
+                { label: 'Cible Immo', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
+            ]},
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Trajectoire Cash (MAD)', color: '#7a7670' } } }
+        });
+
+        if(charts.wf) charts.wf.destroy();
+        charts.wf = new Chart(document.getElementById('chartWaterfall'), {
+            type: 'bar',
+            data: {
+                labels: ['Cible', 'Attijari', 'Fortu.', 'Épargne', 'Prime', 'Loyers'],
+                datasets: [{ 
+                    data: [[0, target], [target, target-att], [target-att, target-att-fort], [target-att-fort, target-att-fort-fixed], [target-att-fort-fixed, target-att-fort-fixed-bonus], [target-att-fort-fixed-bonus, target-att-fort-fixed-bonus-rent]],
+                    backgroundColor: (ctx) => ctx.index === 0 ? '#c0604a' : '#6aaa8a'
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Waterfall de Financement', color: '#7a7670' } } }
+        });
+    }
+
+    window.onload = compute;
 </script>
 </body>
 </html>
