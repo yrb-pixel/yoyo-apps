@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="yoyo-apps">
+<title>yoyo-apps</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f0f13;
+    color: #f0f0f0;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  header {
+    padding: 52px 24px 24px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f13 100%);
+  }
+
+  .logo { font-size: 36px; margin-bottom: 6px; }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .search-bar {
+    margin: 20px 24px 0;
+    background: #1e1e2a;
+    border: 1px solid #2a2a3a;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #f0f0f0;
+    font-size: 15px;
+    width: 100%;
+  }
+
+  .search-bar input::placeholder { color: #555; }
+
+  .search-icon { color: #555; font-size: 16px; }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+    padding: 28px 24px 12px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 24px;
+  }
+
+  .card {
+    background: #1a1a24;
+    border: 1px solid #252535;
+    border-radius: 16px;
+    padding: 20px 16px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.15s, border-color 0.15s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent, #6c6cff);
+    border-radius: 16px 16px 0 0;
+  }
+
+  .card:active { transform: scale(0.97); border-color: #3a3a55; }
+
+  .card-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e8e8e8;
+    line-height: 1.3;
+  }
+
+  .card-url {
+    font-size: 11px;
+    color: #555;
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-arrow {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 60px 24px;
+    color: #555;
+  }
+
+  .loading-spinner {
+    width: 32px; height: 32px;
+    border: 2px solid #2a2a3a;
+    border-top-color: #6c6cff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty {
+    text-align: center;
+    padding: 40px 24px;
+    color: #555;
+    font-size: 14px;
+  }
+
+  .error-msg {
+    background: #1e1010;
+    border: 1px solid #3a1a1a;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 0 24px;
+    font-size: 13px;
+    color: #cc6666;
+  }
+
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 24px auto 0;
+    background: none;
+    border: 1px solid #2a2a3a;
+    border-radius: 10px;
+    color: #666;
+    font-size: 13px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .refresh-btn:hover { border-color: #6c6cff; color: #6c6cff; }
+
+  .count-badge {
+    display: inline-block;
+    background: #252535;
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #888;
+    margin-left: 8px;
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: 0;
+    vertical-align: middle;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📱</div>
+  <h1>yoyo-apps</h1>
+  <div class="subtitle">yrb-pixel.github.io/yoyo-apps</div>
+</header>
+
+<div class="search-bar">
+  <span class="search-icon">🔍</span>
+  <input type="text" id="search" placeholder="Rechercher une app..." oninput="filterApps()">
+</div>
+
+<div class="section-title">
+  Mes apps <span class="count-badge" id="count">—</span>
+</div>
+
+<div id="loading" class="loading">
+  <div class="loading-spinner"></div>
+  <div>Chargement de tes apps…</div>
+</div>
+
+<div id="error" class="error-msg hidden"></div>
+
+<div id="grid" class="grid" style="display:none"></div>
+
+<div id="empty" class="empty hidden">Aucune app trouvée.</div>
+
+<div style="text-align:center; margin-top: 24px;">
+  <button class="refresh-btn" onclick="loadApps()">↻ Actualiser</button>
+</div>
+
+<script>
+const OWNER = 'yrb-pixel';
+const REPO  = 'yoyo-apps';
+const BASE  = `https://${OWNER}.github.io/${REPO}/`;
+const API   = `https://api.github.com/repos/${OWNER}/${REPO}/contents`;
+
+// Palette de couleurs et emojis par mot-clé
+const THEMES = [
+  { keys: ['simulat', 'ir', 'impot', 'tax', 'fiscal'], icon: '🧮', accent: '#f59e0b' },
+  { keys: ['budget', 'finance', 'argent', 'money'], icon: '💰', accent: '#10b981' },
+  { keys: ['planning', 'plan', 'agenda', 'semaine'], icon: '📅', accent: '#6c6cff' },
+  { keys: ['todo', 'tache', 'task', 'liste'], icon: '✅', accent: '#06b6d4' },
+  { keys: ['suivi', 'tracker', 'track'], icon: '📊', accent: '#8b5cf6' },
+  { keys: ['sport', 'sante', 'health', 'fit'], icon: '💪', accent: '#ef4444' },
+  { keys: ['note', 'journal', 'memo'], icon: '📝', accent: '#f97316' },
+  { keys: ['meteo', 'weather'], icon: '🌤️', accent: '#0ea5e9' },
+  { keys: ['recette', 'recipe', 'cook'], icon: '🍳', accent: '#84cc16' },
+  { keys: ['voyage', 'travel', 'trip'], icon: '✈️', accent: '#ec4899' },
+];
+
+const DEFAULT_ACCENTS = ['#6c6cff','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ef4444'];
+
+let allApps = [];
+
+function getTheme(name, index) {
+  const lower = name.toLowerCase().replace(/-|_/g, '');
+  for (const t of THEMES) {
+    if (t.keys.some(k => lower.includes(k))) return t;
+  }
+  return { icon: '🔧', accent: DEFAULT_ACCENTS[index % DEFAULT_ACCENTS.length] };
+}
+
+function formatName(filename) {
+  return filename
+    .replace('.html', '')
+    .replace(/-|_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+async function loadApps() {
+  const loading = document.getElementById('loading');
+  const grid    = document.getElementById('grid');
+  const error   = document.getElementById('error');
+  const empty   = document.getElementById('empty');
+
+  loading.style.display = 'block';
+  grid.style.display    = 'none';
+  error.classList.add('hidden');
+  empty.classList.add('hidden');
+
+  try {
+    const res = await fetch(API);
+    if (!res.ok) throw new Error(`GitHub API: ${res.status}`);
+    const files = await res.json();
+
+    allApps = files
+      .filter(f => f.name.endsWith('.html') && f.name !== 'index.html')
+      .map((f, i) => {
+        const theme = getTheme(f.name, i);
+        return {
+          name: formatName(f.name),
+          file: f.name,
+          url: BASE + f.name,
+          icon: theme.icon,
+          accent: theme.accent
+        };
+      });
+
+    loading.style.display = 'none';
+    renderApps(allApps);
+
+  } catch (err) {
+    loading.style.display = 'none';
+    error.classList.remove('hidden');
+    error.textContent = `Impossible de charger les apps : ${err.message}`;
+  }
+}
+
+function renderApps(apps) {
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const count = document.getElementById('count');
+
+  count.textContent = apps.length;
+
+  if (apps.length === 0) {
+    grid.style.display = 'none';
+    empty.classList.remove('hidden');
+    return;
+  }
+
+  grid.innerHTML = apps.map(app => `
+    <a class="card" href="${app.url}" style="--accent: ${app.accent}">
+      <span class="card-arrow">↗</span>
+      <div class="card-icon">${app.icon}</div>
+      <div class="card-name">${app.name}</div>
+      <div class="card-url">${app.file}</div>
+    </a>
+  `).join('');
+
+  grid.style.display = 'grid';
+  empty.classList.add('hidden');
+}
+
+function filterApps() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = allApps.filter(a =>
+    a.name.toLowerCase().includes(q) || a.file.toLowerCase().includes(q)
+  );
+  renderApps(filtered);
+}
+
+loadApps();
+</script>
+</body>
+</html>
