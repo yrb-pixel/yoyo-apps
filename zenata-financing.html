@@ -1,247 +1,319 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenata Strategic Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-    <style>
-        :root {
-            --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
-            --gold: #c9a84c; --gold-dim: #8a6e30;
-            --text: #e8e4dc; --muted: #7a7670;
-            --red: #c0604a; --green: #6aaa8a; --purple: #9b7ecf;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'DM Mono', monospace; padding: 40px; 
-            font-size: 12px; letter-spacing: -0.02em;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appartement Zenata - Stratégie 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0e0e0f; --surface: #161617; --border: #2a2a2d;
+    --gold: #c9a84c; --gold-dim: #8a6e30;
+    --text: #e8e4dc; --muted: #7a7670;
+    --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf; --orange: #d4845a;
+    --purple: #9b7ecf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; font-weight: 300; min-height: 100vh; padding: 32px 20px; font-size: 13px; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2.4rem; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 4px; }
+  .header .subtitle { color: var(--muted); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .divider { width: 80px; height: 1px; background: var(--gold-dim); margin: 14px auto; opacity: 0.4; }
+  
+  /* Paramètres */
+  .params-section { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 20px; margin-bottom: 20px; }
+  .params-title { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; opacity: 0.7; }
+  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .param-item label { display: block; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .param-item .input-wrap { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 3px; }
+  .param-item input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 400; width: 100%; }
+  .param-item .unit { color: var(--muted); font-size: 10px; }
 
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        /* Header */
-        .header { margin-bottom: 40px; border-left: 1px solid var(--gold); padding-left: 20px; }
-        .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--gold); }
-        .header p { color: var(--muted); text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px; margin-top: 5px; }
+  /* Grid System */
+  .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 760px) { .main-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .main-grid { grid-template-columns: 1fr; } }
 
-        .grid-layout { display: grid; grid-template-columns: 320px 1fr; gap: 30px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 18px; position: relative; overflow: hidden; }
+  .card.priority-1 { border-left: 3px solid var(--gold); }
+  .card-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; margin-bottom: 3px; }
+  .card-value-eur { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 300; color: var(--muted); margin-bottom: 3px; }
+  .card-sub { font-size: 10px; color: var(--muted); line-height: 1.4; }
+  
+  /* Assets Section */
+  .assets-container { background: rgba(201, 168, 76, 0.03); border: 1px solid var(--gold-dim); padding: 20px; border-radius: 2px; margin-bottom: 20px; }
+  .assets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 15px; }
+  .asset-item { border-left: 1px solid var(--border); padding-left: 15px; }
+  .asset-val { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--gold); }
 
-        /* Inputs */
-        .panel { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
-        .panel-title { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; opacity: 0.8; }
-        
-        .input-item { margin-bottom: 12px; }
-        .input-item label { display: block; color: var(--muted); font-size: 9px; text-transform: uppercase; margin-bottom: 4px; }
-        .input-item input { 
-            background: transparent; border: none; border-bottom: 1px solid var(--border); 
-            color: var(--text); width: 100%; padding: 4px 0; font-family: 'DM Mono'; outline: none;
-        }
-        .input-item input:focus { border-color: var(--gold); }
+  .gold { color: var(--gold); } .red { color: var(--red); } .green { color: var(--green); }
+  .blue { color: var(--blue); } .orange { color: var(--orange); }
 
-        /* Stats Cards */
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
-        .stat-label { font-size: 9px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--text); }
-        .stat-footer { font-size: 10px; margin-top: 8px; color: var(--muted); }
+  .card-full { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; padding: 20px; margin-bottom: 14px; }
+  .section-title { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; opacity: 0.7; }
+  
+  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .tab { padding: 8px 16px; font-size: 10px; cursor: pointer; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .tab.active { color: var(--gold); border-bottom: 2px solid var(--gold); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
-        /* Progress Bars */
-        .progress-bg { height: 2px; background: var(--border); margin-top: 10px; position: relative; }
-        .progress-fill { height: 100%; background: var(--gold); width: 0%; transition: 0.5s; }
+  .breakdown { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .breakdown td { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .breakdown .total-row { color: var(--gold); font-weight: 400; font-size: 1.1rem; font-family: 'Cormorant Garamond'; }
 
-        /* Charts */
-        .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 350px; }
-
-        .analysis-box { 
-            background: rgba(201, 168, 76, 0.03); border: 1px solid var(--gold-dim); 
-            padding: 20px; margin-top: 20px; line-height: 1.6;
-        }
-
-        .tag { font-size: 9px; padding: 2px 6px; border: 1px solid var(--muted); color: var(--muted); text-transform: uppercase; margin-left: 8px; }
-        .tag.urgent { border-color: var(--red); color: var(--red); }
-    </style>
+  .footer-note { text-align: center; font-size: 10px; color: var(--muted); margin: 40px 0; letter-spacing: 0.1em; }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>Zenata Horizon</h1>
-        <p>Stratégie Financière & Arbitrage de Cash</p>
+<div class="header">
+  <h1>Appartement Zenata</h1>
+  <div class="subtitle">Priorité Immobilière · Gestion de Patrimoine</div>
+  <div class="divider"></div>
+</div>
+
+<div class="params-section">
+  <div class="params-title">Données de base</div>
+  <div class="params-grid">
+    <div class="param-item">
+      <label>Livraison</label>
+      <div class="input-wrap"><input type="month" id="deliveryDate" value="2026-12" onchange="compute()"></div>
     </div>
-
-    <div class="grid-layout">
-        <!-- SIDEBAR : INPUTS -->
-        <div class="sidebar">
-            <div class="panel">
-                <div class="panel-title">Disponibilités Cash</div>
-                <div class="input-item">
-                    <label>Attijari (MAD)</label>
-                    <input type="number" id="attijari" value="162000" oninput="compute()">
-                </div>
-                <div class="input-item">
-                    <label>Fortuneo (EUR)</label>
-                    <input type="number" id="fortuneo" value="16000" oninput="compute()">
-                </div>
-                <div class="input-item">
-                    <label>Actions / PEA (Total MAD)</label>
-                    <input type="number" id="invests" value="280000" oninput="compute()">
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">Engagements</div>
-                <div class="input-item">
-                    <label>Solde Zenata (MAD)</label>
-                    <input type="number" id="soldeZenata" value="622700" oninput="compute()">
-                </div>
-                <div class="input-item">
-                    <label>Dette Fès (MAD)</label>
-                    <input type="number" id="detteFes" value="100000" oninput="compute()">
-                </div>
-                <div class="input-item">
-                    <label>Mois restants (Déc 2026)</label>
-                    <input type="number" id="months" value="21" oninput="compute()">
-                </div>
-                <div class="input-item">
-                    <label>Taux EUR/MAD</label>
-                    <input type="number" id="rate" value="10.8" step="0.1" oninput="compute()">
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN DASHBOARD -->
-        <div class="dashboard">
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">Cible Zenata <span class="tag urgent">Priorité 1</span></div>
-                    <div id="ui-solde" class="stat-value">—</div>
-                    <div class="progress-bg"><div id="bar-zenata" class="progress-fill" style="background: var(--red)"></div></div>
-                    <div id="footer-zenata" class="stat-footer">0% financé</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Besoin Épargne Cash</div>
-                    <div id="ui-gap" class="stat-value gold">—</div>
-                    <div id="ui-gap-eur" class="stat-footer">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Effort Mensuel</div>
-                    <div id="ui-effort" class="stat-value" style="color: var(--purple)">—</div>
-                    <div id="ui-effort-sub" class="stat-footer">—</div>
-                </div>
-            </div>
-
-            <div class="chart-box">
-                <canvas id="projectionChart"></canvas>
-            </div>
-
-            <div class="analysis-box">
-                <div class="panel-title" style="margin-bottom: 10px;">Analyse Stratégique</div>
-                <div id="analysis-text">Analyse des flux en cours...</div>
-            </div>
-        </div>
+    <div class="param-item">
+      <label>Attijari (MAD)</label>
+      <div class="input-wrap"><input type="number" id="attijari" value="162000" onchange="compute()"></div>
     </div>
+    <div class="param-item">
+      <label>Fortuneo (€)</label>
+      <div class="input-wrap"><input type="number" id="fortuneo" value="16000" onchange="compute()"></div>
+    </div>
+    <div class="param-item">
+      <label>Loyer Fès (MAD)</label>
+      <div class="input-wrap"><input type="number" id="loyerFes" value="1800" onchange="compute()"></div>
+    </div>
+    <div class="param-item">
+      <label>Dette tiers (MAD)</label>
+      <div class="input-wrap"><input type="number" id="dette" value="100000" onchange="compute()"></div>
+    </div>
+    <div class="param-item">
+      <label>Taux EUR/MAD</label>
+      <div class="input-wrap"><input type="number" id="eurRate" value="10.8" step="0.1" onchange="compute()"></div>
+    </div>
+    <!-- Hidden inputs for logic consistency -->
+    <input type="hidden" id="dejaAvance" value="100000">
+    <input type="hidden" id="revenuEur" value="7000">
+    <input type="hidden" id="detteDate" value="2027-02">
+  </div>
+</div>
+
+<div class="main-grid">
+  <div class="card priority-1">
+    <div class="card-label">Priorité 1: Reste Appartement</div>
+    <div class="card-value red" id="remaining">—</div>
+    <div class="card-value-eur" id="remainingEur">—</div>
+    <div class="card-sub">Cible impérative livraison 2026</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Ressources Cash Dispo</div>
+    <div class="card-value blue" id="resources">—</div>
+    <div class="card-value-eur" id="resourcesEur">—</div>
+    <div class="card-sub">Attijari + Fortuneo + Loyers</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Gap à combler (Appart)</div>
+    <div class="card-value" id="gapAppart">—</div>
+    <div class="card-value-eur" id="gapAppartEur">—</div>
+    <div class="card-sub">Effort nécessaire hors dette</div>
+  </div>
+</div>
+
+<div class="assets-container">
+  <div class="section-title" style="margin-bottom: 5px;">Filet de Sécurité (Estimé Déc. 2026)</div>
+  <div class="card-sub">Actifs mobilisables en cas d'urgence (hors cash)</div>
+  <div class="assets-grid">
+    <div class="asset-item">
+      <div class="card-label">Actions MAROC (Akdital/...)</div>
+      <div class="asset-val">80 000 MAD</div>
+    </div>
+    <div class="asset-item">
+      <div class="card-label">Actions PEA</div>
+      <div class="asset-val" id="valPea">—</div>
+    </div>
+    <div class="asset-item">
+      <div class="card-label">Actions FactSet</div>
+      <div class="asset-val" id="valFactset">—</div>
+    </div>
+    <div class="asset-item" style="border-left: 2px solid var(--gold);">
+      <div class="card-label gold">Total Épargne Secours</div>
+      <div class="asset-val gold" id="totalSecours">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="card-full">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('waterfall')">Flux de Financement</div>
+    <div class="tab" onclick="switchTab('trajectory')">Trajectoire Cash</div>
+  </div>
+  <div id="tab-waterfall" class="tab-panel active">
+    <div style="position:relative;width:100%;height:300px;"><canvas id="chartWaterfall"></canvas></div>
+  </div>
+  <div id="tab-trajectory" class="tab-panel">
+    <div style="position:relative;width:100%;height:300px;"><canvas id="chartTraj"></canvas></div>
+  </div>
+</div>
+
+<div class="card-full">
+  <div class="section-title">Suggestions Dynamiques & Analyse</div>
+  <table class="breakdown">
+    <tbody id="analysis-body">
+      <!-- Rempli par JS -->
+    </tbody>
+  </table>
+</div>
+
+<div class="footer-note">
+  Capacité d'épargne cash de référence : 30 000 € / an (2 500 € / mois)
 </div>
 
 <script>
-let myChart = null;
+const TOTAL_PROJET = 722700;
+const ACTIONS_MAROC = 80000;
+const ACTIONS_PEA_EUR = 10000;
+const ACTIONS_FACTSET_EUR = 9000;
+const EPARGNE_ANNUELLE_EUR = 30000;
 
-function fmtMAD(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
-function fmtEUR(v) { return new Intl.NumberFormat('fr-FR', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(v); }
+let charts = {};
+
+function fmt(n) { return new Intl.NumberFormat('fr-FR').format(Math.round(n)) + ' MAD'; }
+function fmtE(n) { return new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n)); }
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.innerText.toLowerCase().includes(id.substring(0,3))));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
 
 function compute() {
-    // Data
-    const rate = parseFloat(document.getElementById('rate').value);
-    const attijari = parseFloat(document.getElementById('attijari').value);
-    const fortuneoMAD = parseFloat(document.getElementById('fortuneo').value) * rate;
-    const invests = parseFloat(document.getElementById('invests').value);
-    
-    const soldeZenata = parseFloat(document.getElementById('soldeZenata').value);
-    const detteFes = parseFloat(document.getElementById('detteFes').value);
-    const months = parseInt(document.getElementById('months').value);
+  const eurRate = parseFloat(document.getElementById('eurRate').value);
+  const attijari = parseFloat(document.getElementById('attijari').value);
+  const fortuneoMad = parseFloat(document.getElementById('fortuneo').value) * eurRate;
+  const loyerFes = parseFloat(document.getElementById('loyerFes').value);
+  const dette = parseFloat(document.getElementById('dette').value);
+  const dejaAvance = 100000;
 
-    // Logic
-    const totalCash = attijari + fortuneoMAD;
-    const gapZenata = Math.max(0, soldeZenata - totalCash);
-    const effortMensuelMAD = gapZenata / months;
-    
-    // UI Update
-    document.getElementById('ui-solde').innerText = fmtMAD(soldeZenata);
-    document.getElementById('ui-gap').innerText = fmtMAD(gapZenata);
-    document.getElementById('ui-gap-eur').innerText = "Besoin total : " + fmtEUR(gapZenata/rate);
-    document.getElementById('ui-effort').innerText = fmtEUR(effortMensuelMAD/rate) + "/m";
-    document.getElementById('ui-effort-sub').innerText = "Soit " + fmtMAD(effortMensuelMAD) + " / mois";
+  // Temps restant (base Avril 2026)
+  const now = new Date(2026, 3, 1); 
+  const delivery = new Date(2026, 11, 1);
+  const monthsToDelivery = (delivery.getFullYear() - now.getFullYear()) * 12 + (delivery.getMonth() - now.getMonth());
+  
+  const loyersCumul = loyerFes * monthsToDelivery;
+  const resourcesTotal = attijari + fortuneoMad + loyersCumul;
+  const remainingAppart = TOTAL_PROJET - dejaAvance;
+  const gapAppart = remainingAppart - resourcesTotal;
+  
+  // Épargne de secours
+  const peaMad = ACTIONS_PEA_EUR * eurRate;
+  const factsetMad = ACTIONS_FACTSET_EUR * eurRate;
+  const totalSecours = ACTIONS_MAROC + peaMad + factsetMad;
 
-    // Bars
-    const pctZenata = Math.min(100, (totalCash / soldeZenata) * 100);
-    document.getElementById('bar-zenata').style.width = pctZenata + "%";
-    document.getElementById('footer-zenata').innerText = Math.round(pctZenata) + "% du solde couvert par le cash actuel";
+  // Update UI
+  document.getElementById('valPea').textContent = fmtE(ACTIONS_PEA_EUR) + " (" + Math.round(peaMad/1000) + "k MAD)";
+  document.getElementById('valFactset').textContent = fmtE(ACTIONS_FACTSET_EUR) + " (" + Math.round(factsetMad/1000) + "k MAD)";
+  document.getElementById('totalSecours').textContent = fmt(totalSecours);
+  
+  document.getElementById('remaining').textContent = fmt(remainingAppart);
+  document.getElementById('remainingEur').textContent = fmtE(remainingAppart/eurRate);
+  document.getElementById('resources').textContent = fmt(resourcesTotal);
+  document.getElementById('resourcesEur').textContent = fmtE(resourcesTotal/eurRate);
 
-    // Analyse
-    let html = `• <strong>Logement :</strong> Votre cash couvre actuellement ${Math.round(pctZenata)}% du solde Zenata. `;
-    html += `L'objectif est d'atteindre 100% via l'épargne mensuelle sans toucher aux investissements.<br>`;
-    
-    const coverageDette = (invests / detteFes) * 100;
-    html += `• <strong>Dettes :</strong> Votre poche Investissements (${fmtMAD(invests)}) couvre ${Math.round(coverageDette)}% de la dette de Fès. `;
-    html += `C'est votre filet de sécurité : si l'épargne faiblit, ces actifs liquideront la dette.`;
-    document.getElementById('analysis-text').innerHTML = html;
+  const gapEl = document.getElementById('gapAppart');
+  if(gapAppart <= 0) {
+    gapEl.textContent = "COUVERT";
+    gapEl.className = "card-value green";
+  } else {
+    gapEl.textContent = fmt(gapAppart);
+    gapEl.className = "card-value red";
+  }
+  document.getElementById('gapAppartEur').textContent = gapAppart > 0 ? fmtE(gapAppart/eurRate) : "—";
 
-    drawChart(months, totalCash, effortMensuelMAD, soldeZenata);
+  // Analyse et Suggestions
+  const epargneRequiseMensuelle = gapAppart > 0 ? (gapAppart / monthsToDelivery) / eurRate : 0;
+  const capaciteMensuelle = EPARGNE_ANNUELLE_EUR / 12;
+
+  let html = `
+    <tr><td>Capacité d'épargne habituelle</td><td class="gold" style="text-align:right">${fmtE(capaciteMensuelle)} / mois</td></tr>
+    <tr><td>Effort requis pour l'appartement</td><td class="${epargneRequiseMensuelle > capaciteMensuelle ? 'red' : 'green'}" style="text-align:right">${fmtE(epargneRequiseMensuelle)} / mois</td></tr>
+    <tr class="total-row"><td>Statut Dette Tiers (Priorité 2)</td><td style="text-align:right">${fmt(dette)}</td></tr>
+  `;
+
+  if (gapAppart <= 0) {
+    html += `<tr><td colspan="2" class="green">✓ L'appartement est sécurisé avec le cash actuel. L'épargne d'ici décembre peut être allouée au remboursement de la dette.</td></tr>`;
+  } else if (gapAppart < totalSecours) {
+    html += `<tr><td colspan="2" class="orange">⚠ Le cash est insuffisant pour l'appartement, mais ton <b>épargne de secours</b> couvre largement le besoin. Pas de stress nécessaire.</td></tr>`;
+  } else {
+    html += `<tr><td colspan="2" class="red">⚠ Attention : Le gap dépasse même l'épargne de secours. Revoir le budget ou le taux de change.</td></tr>`;
+  }
+  document.getElementById('analysis-body').innerHTML = html;
+
+  renderWaterfall(remainingAppart, attijari, fortuneoMad, loyersCumul, gapAppart);
+  renderTrajectory(resourcesTotal, remainingAppart, monthsToDelivery, capaciteMensuelle * eurRate);
 }
 
-function drawChart(m, start, step, target) {
-    const ctx = document.getElementById('projectionChart').getContext('2d');
-    const labels = [];
-    const dataPoints = [];
-    const targetPoints = [];
-
-    for (let i = 0; i <= m; i++) {
-        labels.push("M" + i);
-        dataPoints.push(start + (step * i));
-        targetPoints.push(target);
+function renderWaterfall(need, att, fort, loy, gap) {
+  if(charts.wf) charts.wf.destroy();
+  const ctx = document.getElementById('chartWaterfall').getContext('2d');
+  charts.wf = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Besoin Appart', 'Attijari', 'Fortuneo', 'Loyers', 'Gap'],
+      datasets: [{
+        data: [need, -att, -fort, -loy, gap > 0 ? -gap : 0],
+        backgroundColor: ['#c0604a', '#5a8fcf', '#c9a84c', '#6aaa8a', '#2a2a2d']
+      }]
+    },
+    options: { 
+      maintainAspectRatio: false,
+      plugins: { legend: {display: false} },
+      scales: { y: { grid: { color: '#1e1e20' }, ticks: {color: '#7a7670'} }, x: { ticks: {color: '#7a7670'} } }
     }
-
-    if (myChart) myChart.destroy();
-    myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Projection Épargne Cash',
-                data: dataPoints,
-                borderColor: '#c9a84c',
-                borderWidth: 1,
-                pointRadius: 0,
-                tension: 0.2,
-                fill: true,
-                backgroundColor: 'rgba(201, 168, 76, 0.05)'
-            }, {
-                label: 'Cible Zenata',
-                data: targetPoints,
-                borderColor: '#c0604a',
-                borderWidth: 1,
-                borderDash: [5, 5],
-                pointRadius: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670', font: { size: 9 } } },
-                x: { grid: { display: false }, ticks: { color: '#7a7670', font: { size: 9 } } }
-            },
-            plugins: {
-                legend: { labels: { color: '#e8e4dc', font: { family: 'DM Mono', size: 10 } } }
-            }
-        }
-    });
+  });
 }
 
-compute();
-</script>
+function renderTrajectory(currentResources, target, months, monthlySavings) {
+  if(charts.tj) charts.tj.destroy();
+  const labels = [];
+  const data = [];
+  const targetLine = [];
+  
+  for(let i=0; i<=months; i++) {
+    labels.push("M+" + i);
+    data.push(currentResources + (i * monthlySavings));
+    targetLine.push(target);
+  }
 
+  const ctx = document.getElementById('chartTraj').getContext('2d');
+  charts.tj = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Projection Cash', data: data, borderColor: '#c9a84c', tension: 0.3 },
+        { label: 'Cible Appartement', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
+      ]
+    },
+    options: { 
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#7a7670', font: {family: 'DM Mono'} } } },
+      scales: { y: { grid: { color: '#1e1e20' }, ticks: {color: '#7a7670'} }, x: { ticks: {color: '#7a7670'} } }
+    }
+  });
+}
+
+window.onload = compute;
+</script>
 </body>
 </html>
