@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Zenata 2026</title>
+<title>Zenata Strategic Planner 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
@@ -14,61 +14,64 @@
     --red: #c0604a; --green: #6aaa8a; --blue: #5a8fcf;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 20px; font-size: 13px; line-height: 1.4; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; padding: 20px; font-size: 13px; }
   
   .header { text-align: center; margin-bottom: 30px; }
-  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold); letter-spacing: 0.05em; }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--gold); letter-spacing: 0.05em; }
   
-  /* Inputs */
-  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: var(--surface); padding: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
-  .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-  .param-item input { background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 4px 0; outline: none; }
+  /* Inputs Section */
+  .section-label { font-size: 10px; text-transform: uppercase; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 15px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;}
+  .params-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--surface); padding: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+  .param-item label { display: block; font-size: 9px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .param-item input { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); font-family: 'DM Mono'; width: 100%; padding: 8px; border-radius: 2px; outline: none; }
   .param-item input:focus { border-color: var(--gold); }
 
   /* KPI */
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-  .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; position: relative; }
-  .card.highlight { border-top: 3px solid var(--gold); }
-  .card-label { font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--gold); }
-  .card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 25px; }
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: 2px; }
+  .card.gold-border { border-top: 3px solid var(--gold); }
+  .card-label { font-size: 10px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; line-height: 1; }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
 
   /* Charts */
-  .charts-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-  .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 15px; height: 300px; }
-  @media (max-width: 800px) { .charts-section { grid-template-columns: 1fr; } }
+  .charts-section { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; margin-bottom: 25px; }
+  .chart-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; height: 350px; }
+  @media (max-width: 900px) { .charts-section { grid-template-columns: 1fr; } }
 
-  /* Assets Section */
-  .assets-box { background: rgba(201,168,76,0.03); border: 1px solid var(--gold-dim); padding: 20px; margin-bottom: 20px; }
-  .assets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 10px; }
-  .asset-tag { border-left: 2px solid var(--gold-dim); padding-left: 10px; }
+  /* Assets & Security */
+  .security-section { background: rgba(201,168,76,0.02); border: 1px solid var(--gold-dim); padding: 20px; margin-bottom: 25px; }
+  .assets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 15px; }
+  .asset-item { border-left: 1px solid var(--border); padding-left: 15px; }
 
-  /* Suggestions */
-  .suggestions-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
-  .suggest-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  .suggest-title { color: var(--gold); font-size: 11px; text-transform: uppercase; margin-bottom: 5px; display: block; }
+  .suggestion-box { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-left: 4px solid var(--blue); }
   
-  .red { color: var(--red); } .green { color: var(--green); } .blue { color: var(--blue); }
+  .red { color: var(--red); } .green { color: var(--green); } .gold { color: var(--gold); } .blue { color: var(--blue); }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Zenata : Objectif Décembre 2026</h1>
-  <div style="font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase;">Priorité : Règlement Appartement</div>
+  <h1>Dashboard Zenata : Avril 2026</h1>
+  <div style="font-size: 10px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 5px;">Planning Financier & Stratégie Cash</div>
 </div>
 
+<span class="section-label">Configuration des Flux (Inputs)</span>
 <div class="params-grid">
   <div class="param-item">
-    <label>Livraison (Obj. 1)</label>
-    <input type="month" id="deliveryDate" value="2026-12" onchange="compute()">
+    <label>Épargne Mensuelle Fixe (€)</label>
+    <input type="number" id="fixedSavings" value="1900" onchange="compute()">
   </div>
   <div class="param-item">
-    <label>Cash Attijari (MAD)</label>
+    <label>Primes Annuelles / Exceptionnel (€)</label>
+    <input type="number" id="bonusSavings" value="9000" onchange="compute()">
+  </div>
+  <div class="param-item">
+    <label>Solde Attijari (MAD)</label>
     <input type="number" id="attijari" value="162000" onchange="compute()">
   </div>
   <div class="param-item">
-    <label>Cash Fortuneo (€)</label>
+    <label>Solde Fortuneo (€)</label>
     <input type="number" id="fortuneo" value="16000" onchange="compute()">
   </div>
   <div class="param-item">
@@ -80,194 +83,180 @@
     <input type="number" id="eurRate" value="10.8" step="0.1" onchange="compute()">
   </div>
   <div class="param-item">
+    <label>Date de Livraison</label>
+    <input type="month" id="deliveryDate" value="2026-12" onchange="compute()">
+  </div>
+  <div class="param-item">
     <label>Dette Tiers (MAD)</label>
     <input type="number" id="dette" value="100000" onchange="compute()">
   </div>
-  <!-- Inputs fixes demandés -->
-  <input type="hidden" id="dejaAvance" value="100000">
-  <input type="hidden" id="revenuEur" value="7000">
 </div>
 
 <div class="kpi-grid">
-  <div class="card highlight">
-    <div class="card-label">Reste Appartement (Priorité 1)</div>
+  <div class="card gold-border">
+    <div class="card-label">Reste à payer (Zenata)</div>
     <div class="card-value red" id="kpi-remaining">—</div>
     <div class="card-sub" id="kpi-remaining-eur">—</div>
   </div>
   <div class="card">
-    <div class="card-label">Effort Mensuel Requis</div>
-    <div class="card-value" id="kpi-effort">—</div>
-    <div class="card-sub">Jusqu'à livraison (Appart seul)</div>
+    <div class="card-label">Cash Projeté à Livraison</div>
+    <div class="card-value green" id="kpi-total-cash">—</div>
+    <div class="card-sub">Fixe + Primes + Loyers + Actuel</div>
   </div>
   <div class="card">
-    <div class="card-label">Couverture Cash</div>
-    <div class="card-value blue" id="kpi-cash">—</div>
-    <div class="card-sub">Cash dispo + Loyers cumulés</div>
+    <div class="card-label">Surplus / Gap Final</div>
+    <div class="card-value" id="kpi-net">—</div>
+    <div class="card-sub" id="net-sub">Après règlement appartement</div>
   </div>
 </div>
 
+<span class="section-label">Analyses Graphiques</span>
 <div class="charts-section">
   <div class="chart-box">
-    <div class="card-label">Trajectoire vers Objectif 1 (MAD)</div>
+    <div class="card-label">Projection mensuelle de la trésorerie (MAD)</div>
     <canvas id="chartTraj"></canvas>
   </div>
   <div class="chart-box">
-    <div class="card-label">Effort vs Capacité d'Épargne (€)</div>
-    <canvas id="chartEffort"></canvas>
-  </div>
-  <div class="chart-box">
-    <div class="card-label">Structure du Besoin Immob.</div>
-    <canvas id="chartNeed"></canvas>
-  </div>
-  <div class="chart-box">
-    <div class="card-label">Sécurité : Buffer vs Dette</div>
-    <canvas id="chartRadar"></canvas>
+    <div class="card-label">Composition de ton Financement</div>
+    <canvas id="chartStructure"></canvas>
   </div>
 </div>
 
-<div class="assets-box">
-  <div class="card-label" style="color: var(--gold); margin-bottom: 15px;">Filet de Sécurité (Actifs Déc. 2026)</div>
+<span class="section-label">Filet de Sécurité (Actifs Mobiles)</span>
+<div class="security-section">
   <div class="assets-grid">
-    <div class="asset-tag">
-      <div class="card-label">Akdital / SGTM / Cash Plus</div>
+    <div class="asset-item">
+      <div class="card-label">Actions Maroc</div>
       <div style="font-size: 1.2rem;">80 000 MAD</div>
     </div>
-    <div class="asset-tag">
-      <div class="card-label">Actions PEA</div>
+    <div class="asset-item">
+      <div class="card-label">PEA (Total)</div>
       <div style="font-size: 1.2rem;">10 000 €</div>
     </div>
-    <div class="asset-tag">
-      <div class="card-label">Actions FactSet</div>
+    <div class="asset-item">
+      <div class="card-label">FactSet Stocks</div>
       <div style="font-size: 1.2rem;">9 000 €</div>
     </div>
-    <div class="asset-tag" style="background: rgba(106,170,138,0.1); border-left-color: var(--green);">
-      <div class="card-label green">Total Buffer Mobilisable</div>
-      <div style="font-size: 1.2rem;" id="total-buffer">—</div>
+    <div class="asset-item" style="border-left: 2px solid var(--gold);">
+      <div class="card-label gold">Valorisation Sécurité</div>
+      <div style="font-size: 1.2rem; color: var(--gold);" id="total-safety">—</div>
     </div>
   </div>
 </div>
 
-<div class="suggestions-box">
-  <div class="card-label" style="margin-bottom: 15px;">Analyse & Suggestions Dynamiques</div>
-  <div id="suggestions-content"></div>
+<div class="suggestion-box">
+  <div class="card-label" style="color: var(--blue);">Analyse de situation</div>
+  <div id="dynamic-note" style="line-height: 1.6;"></div>
 </div>
 
 <script>
 const TOTAL_APPART = 722700;
-const CAPACITE_NORMALE_EUR = 2500; // 30000 / 12
-const VAL_AKDITAL = 80000;
-const VAL_PEA_EUR = 10000;
-const VAL_FACTSET_EUR = 9000;
+const AVANCE_DEJA_FAITE = 100000;
+const ACTIONS_MA = 80000;
+const ACTIONS_PEA_E = 10000;
+const ACTIONS_FS_E = 9000;
 
 let charts = {};
 
 function fM(v) { return new Intl.NumberFormat('fr-FR').format(Math.round(v)) + ' MAD'; }
 function fE(v) { return new Intl.NumberFormat('fr-FR', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v); }
 
-function getMonthLabels(count) {
-  const labels = [];
-  const start = new Date(2026, 3, 1); // Avril 2026
-  for (let i = 0; i <= count; i++) {
-    const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
-    labels.push(d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }));
-  }
-  return labels;
-}
-
 function compute() {
-  const eurRate = parseFloat(document.getElementById('eurRate').value) || 10.8;
-  const attijari = parseFloat(document.getElementById('attijari').value) || 0;
-  const fortuneoEur = parseFloat(document.getElementById('fortuneo').value) || 0;
-  const loyerFes = parseFloat(document.getElementById('loyerFes').value) || 0;
-  const dejaAvance = 100000;
-  const detteTiers = parseFloat(document.getElementById('dette').value) || 0;
+  const eurRate = parseFloat(document.getElementById('eurRate').value);
+  const attijari = parseFloat(document.getElementById('attijari').value);
+  const fortuneo = parseFloat(document.getElementById('fortuneo').value);
+  const fixedE = parseFloat(document.getElementById('fixedSavings').value);
+  const bonusE = parseFloat(document.getElementById('bonusSavings').value);
+  const loyerFes = parseFloat(document.getElementById('loyerFes').value);
+  const detteTiers = parseFloat(document.getElementById('dette').value);
 
-  // Temps (Base Avril 2026 -> Livraison)
   const deliveryDate = new Date(document.getElementById('deliveryDate').value);
-  const start = new Date(2026, 3, 1);
-  const months = (deliveryDate.getFullYear() - start.getFullYear()) * 12 + (deliveryDate.getMonth() - start.getMonth());
-  
-  const totalCashInit = attijari + (fortuneoEur * eurRate);
-  const cumulatedRent = loyerFes * months;
-  const totalResources = totalCashInit + cumulatedRent;
-  
-  const remainingToPay = TOTAL_APPART - dejaAvance;
-  const gapAppart = Math.max(0, remainingToPay - totalResources);
-  const effortMensuelMad = months > 0 ? gapAppart / months : 0;
-  const effortMensuelEur = effortMensuelMad / eurRate;
+  const now = new Date(2026, 3, 1); // Avril 2026
+  const monthsRemaining = (deliveryDate.getFullYear() - now.getFullYear()) * 12 + (deliveryDate.getMonth() - now.getMonth());
 
-  const totalBufferMad = VAL_AKDITAL + (VAL_PEA_EUR * eurRate) + (VAL_FACTSET_EUR * eurRate);
+  // Calculs Financiers
+  const cashActuelMad = attijari + (fortuneo * eurRate);
+  const epargneFixeTotaleMad = (fixedE * monthsRemaining) * eurRate;
+  const primesTotaleMad = bonusE * eurRate;
+  const loyersTotauxMad = loyerFes * monthsRemaining;
+  
+  const totalCashFinal = cashActuelMad + epargneFixeTotaleMad + primesTotaleMad + loyersTotauxMad;
+  const resteAPayerZenata = TOTAL_APPART - AVANCE_DEJA_FAITE;
+  const balanceFinale = totalCashFinal - resteAPayerZenata;
+  
+  const totalSafetyMad = ACTIONS_MA + ((ACTIONS_PEA_E + ACTIONS_FS_E) * eurRate);
 
   // Update KPI
-  document.getElementById('kpi-remaining').textContent = fM(remainingToPay);
-  document.getElementById('kpi-remaining-eur').textContent = "soit " + fE(remainingToPay / eurRate);
-  document.getElementById('kpi-cash').textContent = fM(totalResources);
-  document.getElementById('kpi-effort').textContent = fE(effortMensuelEur) + " /m";
-  document.getElementById('kpi-effort').className = "card-value " + (effortMensuelEur > CAPACITE_NORMALE_EUR ? "red" : "green");
-  document.getElementById('total-buffer').textContent = fM(totalBufferMad);
-
-  // Suggestions
-  let suggestHtml = "";
-  if (gapAppart > 0) {
-    const totalNeeded = gapAppart;
-    suggestHtml += `
-      <div class="suggest-item">
-        <span class="suggest-title">Stratégie d'épargne</span>
-        L'appartement nécessite un effort de <b>${fE(effortMensuelEur)}/mois</b>. Ta capacité normale est de ${fE(CAPACITE_NORMALE_EUR)}. 
-        ${effortMensuelEur > CAPACITE_NORMALE_EUR ? 
-          `<span class="red">Le besoin dépasse ta capacité habituelle de ${fE(effortMensuelEur - CAPACITE_NORMALE_EUR)}.</span>` : 
-          `<span class="green">C'est inférieur à ta capacité habituelle. Tu es sur la bonne voie.</span>`}
-      </div>`;
-  } else {
-    suggestHtml += `<div class="suggest-item green"><span class="suggest-title">Statut</span>L'appartement est intégralement couvert par ton cash et tes loyers.</div>`;
-  }
-
-  suggestHtml += `
-    <div class="suggest-item">
-      <span class="suggest-title">Note sur la Dette Tiers</span>
-      La priorité est l'appartement. La dette de <b>${fM(detteTiers)}</b> pourra être épongée via ton surplus d'épargne fin 2026 ou via une partie du filet de sécurité qui s'élève à <b>${fM(totalBufferMad)}</b>.
-    </div>`;
+  document.getElementById('kpi-remaining').textContent = fM(resteAPayerZenata);
+  document.getElementById('kpi-remaining-eur').textContent = "soit " + fE(resteAPayerZenata / eurRate);
+  document.getElementById('kpi-total-cash').textContent = fM(totalCashFinal);
   
-  document.getElementById('suggestions-content').innerHTML = suggestHtml;
+  const netKpi = document.getElementById('kpi-net');
+  netKpi.textContent = fM(balanceFinale);
+  netKpi.className = "card-value " + (balanceFinale >= 0 ? "green" : "red");
+  document.getElementById('net-sub').textContent = balanceFinale >= 0 ? "Excédent disponible" : "Gap à combler";
+  document.getElementById('total-safety').textContent = fM(totalSafetyMad);
 
-  updateCharts(months, totalResources, remainingToPay, effortMensuelMad, effortMensuelEur, totalBufferMad, detteTiers);
+  // Note Dynamique
+  let note = `Avec une épargne fixe de <b>${fE(fixedE)}/mois</b> et ta prime de <b>${fE(bonusE)}</b>, tu génères <b>${fM(epargneFixeTotaleMad + primesTotaleMad)}</b> d'ici décembre 2026.<br>`;
+  if(balanceFinale >= 0) {
+    note += `L'appartement est <b class="green">entièrement sécurisé</b> par ton flux de trésorerie. `;
+    if(balanceFinale >= detteTiers) {
+      note += `Ton surplus de ${fM(balanceFinale)} permet de rembourser intégralement la <b>Dette Tiers</b> (${fM(detteTiers)}) sans toucher à tes actions.`;
+    } else {
+      note += `Ton surplus de ${fM(balanceFinale)} couvrira une partie de la Dette Tiers. Le reste pourra être pioché dans ton filet de sécurité de ${fM(totalSafetyMad)}.`;
+    }
+  } else {
+    note += `<b class="red">Attention :</b> Il manque ${fM(Math.abs(balanceFinale))} pour solder l'appartement uniquement via le cash. Tu devras mobiliser environ ${Math.round(Math.abs(balanceFinale) / totalSafetyMad * 100)}% de ton filet de sécurité.`;
+  }
+  document.getElementById('dynamic-note').innerHTML = note;
+
+  updateCharts(monthsRemaining, cashActuelMad, resteAPayerZenata, (fixedE * eurRate) + loyerFes, primesTotaleMad, epargneFixeTotaleMad, loyersTotauxMad);
 }
 
-function updateCharts(months, resources, target, effortMad, effortEur, buffer, dette) {
-  const labels = getMonthLabels(months);
-
+function updateCharts(months, initial, target, monthlyIn, totalBonus, totalFixed, totalLoyers) {
   // 1. Trajectoire
+  const labels = [];
+  const data = [];
+  const targetLine = [];
+  const startMonth = 3; // Avril
+  const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc"];
+
+  for(let i=0; i<=months; i++) {
+    let d = new Date(2026, startMonth + i, 1);
+    labels.push(monthNames[d.getMonth()] + " " + d.getFullYear().toString().slice(-2));
+    // On ajoute le bonus au milieu de la période ou à la fin ? Mettons à la fin pour être conservateur
+    let bonusCurrent = (i === months) ? totalBonus : 0;
+    data.push(initial + (i * monthlyIn) + bonusCurrent);
+    targetLine.push(target);
+  }
+
   if(charts.traj) charts.traj.destroy();
-  const trajData = [];
-  for(let i=0; i<=months; i++) trajData.push(resources + (effortMad * i));
   charts.traj = new Chart(document.getElementById('chartTraj'), {
     type: 'line',
-    data: { labels, datasets: [{ label: 'Projection Cash (Appart)', data: trajData, borderColor: '#c9a84c', fill: true, backgroundColor: 'rgba(201,168,76,0.1)', tension: 0.2 }] },
-    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#2a2a2d' } } } }
+    data: {
+      labels,
+      datasets: [
+        { label: 'Trésorerie Projetée', data: data, borderColor: '#c9a84c', backgroundColor: 'rgba(201,168,76,0.1)', fill: true, tension: 0.3 },
+        { label: 'Cible Zenata', data: targetLine, borderColor: '#c0604a', borderDash: [5,5], pointRadius: 0 }
+      ]
+    },
+    options: { maintainAspectRatio: false, plugins: { legend: { labels: { color: '#7a7670', font: { family: 'DM Mono' } } } }, scales: { y: { grid: { color: '#2a2a2d' }, ticks: { color: '#7a7670' } }, x: { ticks: { color: '#7a7670' } } } }
   });
 
-  // 2. Effort vs Capacité
-  if(charts.effort) charts.effort.destroy();
-  charts.effort = new Chart(document.getElementById('chartEffort'), {
-    type: 'bar',
-    data: { labels: ['Capacité Standard', 'Effort Requis (Appart)'], datasets: [{ data: [CAPACITE_NORMALE_EUR, effortEur], backgroundColor: ['#5a8fcf', effortEur > CAPACITE_NORMALE_EUR ? '#c0604a' : '#6aaa8a'] }] },
-    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-  });
-
-  // 3. Structure Besoin
-  if(charts.need) charts.need.destroy();
-  charts.need = new Chart(document.getElementById('chartNeed'), {
+  // 2. Structure
+  if(charts.struct) charts.struct.destroy();
+  charts.struct = new Chart(document.getElementById('chartStructure'), {
     type: 'doughnut',
-    data: { labels: ['Cash Dispo', 'Effort à fournir'], datasets: [{ data: [resources, target - resources > 0 ? target - resources : 0], backgroundColor: ['#5a8fcf', '#c0604a'], borderWidth: 0 }] },
-    options: { maintainAspectRatio: false, cutout: '70%' }
-  });
-
-  // 4. Buffer vs Dette
-  if(charts.radar) charts.radar.destroy();
-  charts.radar = new Chart(document.getElementById('chartRadar'), {
-    type: 'bar',
-    data: { labels: ['Dette Tiers', 'Filet de Sécurité'], datasets: [{ data: [dette, buffer], backgroundColor: ['#c0604a', '#6aaa8a'] }] },
-    options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, indexAxis: 'y' }
+    data: {
+      labels: ['Cash Actuel', 'Épargne Fixe', 'Primes', 'Loyers Fès'],
+      datasets: [{
+        data: [initial, totalFixed, totalBonus, totalLoyers],
+        backgroundColor: ['#5a8fcf', '#c9a84c', '#6aaa8a', '#d4845a'],
+        borderWidth: 0
+      }]
+    },
+    options: { maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { color: '#7a7670', padding: 20 } } } }
   });
 }
 
