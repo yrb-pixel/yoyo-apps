@@ -86,7 +86,7 @@
     </div>
     <div class="param-item">
       <label>Date remboursement dette</label>
-      <div class="input-wrap"><input type="month" id="detteDate" value="2026-06" onchange="compute()"></div>
+      <div class="input-wrap"><input type="month" id="detteDate" value="2027-02" onchange="compute()"></div>
     </div>
     <div class="param-item">
       <label>Compte Attijari (MAD)</label>
@@ -114,7 +114,7 @@
     </div>
     <div class="param-item">
       <label>Revenu mensuel net (€)</label>
-      <div class="input-wrap"><input type="number" id="revenuEur" value="5000" onchange="compute()"><span class="unit">€/mois</span></div>
+      <div class="input-wrap"><input type="number" id="revenuEur" value="7000" onchange="compute()"><span class="unit">€/mois</span></div>
     </div>
   </div>
 </div>
@@ -252,7 +252,7 @@ function compute() {
   const loyerFes    = parseFloat(document.getElementById('loyerFes').value) || 0;
   const dejaAvance  = parseFloat(document.getElementById('dejaAvance').value) || 0;
   const dette       = parseFloat(document.getElementById('dette').value) || 0;
-  const revenuEur   = parseFloat(document.getElementById('revenuEur').value) || 5000;
+  const revenuEur   = parseFloat(document.getElementById('revenuEur').value) || 7000;
 
   const fortuneoMad = fortuneoEur * eurRate;
   const nowYear = 2026, nowMonth = 3;
