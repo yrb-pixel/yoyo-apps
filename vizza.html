@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visa Explorer — 🇲🇦 + 🇫🇷</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0C1220; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
+    input::placeholder { color: #4B5563; }
+    input:focus { outline: none; border-color: rgba(212,175,55,0.4) !important; }
+    a:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const countries = [
+      // ===== SCHENGEN (29) =====
+      { name: "Allemagne", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Autriche", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Belgique", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Bulgarie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen depuis janvier 2025", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Croatie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Danemark", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Espagne", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Estonie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Finlande", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Grèce", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Hongrie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Islande", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen (hors UE)", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Italie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Lettonie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Liechtenstein", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen (hors UE)", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Lituanie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Luxembourg", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Malte", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Norvège", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen (hors UE)", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Pays-Bas", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Pologne", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Portugal", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français. Inclut Açores et Madère.", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Roumanie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen depuis janvier 2025", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Slovaquie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Slovénie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Suède", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Suisse", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Membre Schengen (hors UE)", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "Tchéquie", region: "Europe", status: "schengen", stay: "90j/180j", notes: "Libre circulation avec titre de séjour français", source: "https://europa.eu/youreurope/citizens/travel/entry-exit/non-eu-nationals/index_fr.htm", tourist: true },
+      { name: "France", region: "Europe", status: "schengen", stay: "Illimité", notes: "Pays de résidence (titre de séjour 10 ans)", source: "https://www.service-public.fr/particuliers/vosdroits/F11217", tourist: false },
+      // ===== EUROPE HORS SCHENGEN via TDS =====
+      { name: "Albanie", region: "Europe", status: "visa-free-titre", stay: "90j/180j", notes: "Sans visa avec titre de séjour Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Andorre", region: "Europe", status: "visa-free-titre", stay: "90j", notes: "Accessible uniquement via France ou Espagne", source: "https://www.visatraveler.com/visa/visa-free-countries-for-schengen-residence-permit/", tourist: true },
+      { name: "Bosnie-Herzégovine", region: "Europe", status: "visa-free-titre", stay: "30j", notes: "Sans visa avec titre de séjour Schengen ou visa Schengen multiple entrée", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Chypre", region: "Europe", status: "visa-free-titre", stay: "90j/180j", notes: "Sans visa avec titre de séjour ou visa Schengen", source: "https://en.wikipedia.org/wiki/Visa_policy_of_the_Schengen_Area", tourist: true },
+      { name: "Géorgie", region: "Europe", status: "visa-free-titre", stay: "90j/180j", notes: "Sans visa avec titre de séjour Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Kosovo", region: "Europe", status: "visa-free-titre", stay: "90j/180j", notes: "Sans visa avec titre de séjour Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Macédoine du Nord", region: "Europe", status: "visa-free-titre", stay: "15j", notes: "Sans visa avec visa/titre Schengen valide, max 15 jours", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Moldavie", region: "Europe", status: "visa-free-titre", stay: "90j", notes: "Sans visa avec titre de séjour Schengen valide ou e-Visa", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Monaco", region: "Europe", status: "visa-free-titre", stay: "90j", notes: "Accessible avec titre de séjour français", source: "https://www.visatraveler.com/visa/visa-free-countries-for-schengen-residence-permit/", tourist: true },
+      { name: "Monténégro", region: "Europe", status: "visa-free-titre", stay: "30j", notes: "Sans visa avec titre de séjour Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Saint-Marin", region: "Europe", status: "visa-free", stay: "90j", notes: "Sans visa, accessible via l'Italie", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Serbie", region: "Europe", status: "visa-free-titre", stay: "90j/180j", notes: "Sans visa avec titre de séjour Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      // ===== EUROPE - Visa =====
+      { name: "Irlande", region: "Europe", status: "visa", stay: "—", notes: "Visa requis. Le titre de séjour Schengen n'est pas valable.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Royaume-Uni", region: "Europe", status: "eta", stay: "6 mois", notes: "ETA requis (Electronic Travel Authorization) depuis 2025", source: "https://www.atlys.com/blog/morocco-passport-visa-free-countries", tourist: true },
+      { name: "Russie", region: "Europe", status: "visa", stay: "—", notes: "Visa requis auprès du consulat russe", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Turquie", region: "Europe", status: "visa-free", stay: "90j", notes: "Sans visa (passeport marocain) pour tourisme, max 90 jours", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Ukraine", region: "Europe", status: "visa", stay: "—", notes: "Visa requis (situation conflictuelle, voyages déconseillés)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      // ===== AFRIQUE DU NORD & MOYEN-ORIENT =====
+      { name: "Tunisie", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Égypte", region: "Afrique", status: "visa-free-titre", stay: "30j", notes: "VOA pour résidents Schengen. Sans titre, visa requis.", source: "https://visalogy.com/passport/Morocco", tourist: true },
+      { name: "Jordanie", region: "Moyen-Orient", status: "voa", stay: "30j", notes: "Visa on arrival ou e-Visa. Restrictions pour femmes 17-35 ans.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Bahreïn", region: "Moyen-Orient", status: "evisa", stay: "14j", notes: "e-Visa ou VOA disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Qatar", region: "Moyen-Orient", status: "evisa", stay: "30j", notes: "e-Visa via le site Hayya", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Oman", region: "Moyen-Orient", status: "evisa", stay: "30j", notes: "e-Visa disponible. Sans visa 14j avec visa Schengen valide.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Émirats Arabes Unis", region: "Moyen-Orient", status: "evisa", stay: "30j", notes: "Visa en ligne requis (Smart service)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Arabie Saoudite", region: "Moyen-Orient", status: "visa", stay: "—", notes: "Visa requis. VOA possible si visa touristique US/UK/Schengen valide.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Liban", region: "Moyen-Orient", status: "voa", stay: "30j", notes: "VOA conditionnel à l'aéroport de Beyrouth avec billet retour", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Iran", region: "Moyen-Orient", status: "evisa", stay: "30j", notes: "e-Visa disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Koweït", region: "Moyen-Orient", status: "visa", stay: "—", notes: "Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Israël", region: "Moyen-Orient", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      // ===== AFRIQUE =====
+      { name: "Sénégal", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Côte d'Ivoire", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Gabon", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Gambie", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Ghana", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa, exemption frais visa", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Guinée", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Bénin", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Burkina Faso", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Mali", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa, entrée possible avec passeport expiré", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Niger", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Togo", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Kenya", region: "Afrique", status: "visa-free", stay: "60j", notes: "Sans visa pour passeport marocain depuis 2024", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Rwanda", region: "Afrique", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Zambie", region: "Afrique", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Angola", region: "Afrique", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Madagascar", region: "Afrique", status: "voa", stay: "60j", notes: "e-Visa ou VOA disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Maurice (Île)", region: "Afrique", status: "voa", stay: "60j", notes: "Visa on arrival pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Seychelles", region: "Afrique", status: "evisa", stay: "90j", notes: "Electronic Border System (gratuit, à remplir en ligne)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Cap-Vert", region: "Afrique", status: "evisa", stay: "90j", notes: "EASE (système électronique d'entrée)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Tanzanie", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa ou VOA (50 USD entrée unique)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Mozambique", region: "Afrique", status: "voa", stay: "30j", notes: "e-Visa ou VOA disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Éthiopie", region: "Afrique", status: "voa", stay: "90j", notes: "e-Visa ou VOA à l'aéroport d'Addis Abeba uniquement", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Ouganda", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Zimbabwe", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Djibouti", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Mauritanie", region: "Afrique", status: "evisa", stay: "30j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Nigeria", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Afrique du Sud", region: "Afrique", status: "evisa", stay: "90j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "São Tomé-et-Príncipe", region: "Afrique", status: "visa-free", stay: "15j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Guinée-Bissau", region: "Afrique", status: "voa", stay: "90j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Comores", region: "Afrique", status: "voa", stay: "45j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Burundi", region: "Afrique", status: "voa", stay: "30j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Sierra Leone", region: "Afrique", status: "voa", stay: "30j", notes: "e-Visa ou VOA disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Congo (Rép.)", region: "Afrique", status: "voa", stay: "30j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      // ===== ASIE =====
+      { name: "Malaisie", region: "Asie", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Thaïlande", region: "Asie", status: "visa-free", stay: "60j", notes: "Sans visa pour passeport marocain (étendu à 60j)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Philippines", region: "Asie", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Kazakhstan", region: "Asie", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Azerbaïdjan", region: "Asie", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Hong Kong", region: "Asie", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Macao", region: "Asie", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Turquie", region: "Asie", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Indonésie", region: "Asie", status: "voa", stay: "30j", notes: "e-VOA ou Visa on arrival (35 USD)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Cambodge", region: "Asie", status: "voa", stay: "30j", notes: "e-Visa ou VOA disponible (30 USD)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Laos", region: "Asie", status: "voa", stay: "30j", notes: "e-Visa ou VOA disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Maldives", region: "Asie", status: "voa", stay: "30j", notes: "Visa gratuit on arrival pour tous", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Népal", region: "Asie", status: "voa", stay: "90j", notes: "Visa en ligne ou on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Timor-Leste", region: "Asie", status: "voa", stay: "30j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Arménie", region: "Asie", status: "voa", stay: "120j", notes: "VOA ou e-Visa.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Sri Lanka", region: "Asie", status: "evisa", stay: "60j", notes: "e-Visa ou VOA (30j pour VOA)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Inde", region: "Asie", status: "evisa", stay: "30j", notes: "e-Visa disponible en ligne", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Vietnam", region: "Asie", status: "evisa", stay: "90j", notes: "e-Visa 90 jours, entrées multiples", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Myanmar", region: "Asie", status: "evisa", stay: "28j", notes: "e-Visa requis (arrivée par certains aéroports uniquement)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Ouzbékistan", region: "Asie", status: "evisa", stay: "30j", notes: "e-Visa disponible. Transit 5j sans visa aux aéroports.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Kirghizistan", region: "Asie", status: "evisa", stay: "60j", notes: "e-Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Tadjikistan", region: "Asie", status: "evisa", stay: "60j", notes: "e-Visa disponible", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Taïwan", region: "Asie", status: "visa-free-titre", stay: "90j", notes: "TAC gratuit en ligne avec titre de séjour Schengen valide", source: "https://www.visatraveler.com/visa/visa-free-countries-for-schengen-residence-permit/", tourist: true },
+      { name: "Corée du Sud", region: "Asie", status: "eta", stay: "90j", notes: "K-ETA requis (autorisation électronique)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Japon", region: "Asie", status: "visa", stay: "—", notes: "Visa requis.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Chine", region: "Asie", status: "visa", stay: "—", notes: "Visa requis (gratuit pour Marocains). Transit 24h sans visa.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Singapour", region: "Asie", status: "visa", stay: "—", notes: "Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      // ===== AMÉRIQUES =====
+      { name: "Brésil", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Colombie", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Équateur", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Haïti", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Barbade", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Dominique", region: "Amériques", status: "visa-free", stay: "21j", notes: "Sans visa. Jusqu'à 6 mois avec visa/TDS Schengen.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Grenade", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Saint-Vincent-et-les-Grenadines", region: "Amériques", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Suriname", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa, frais d'entrée 50 USD/EUR en ligne", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Belize", region: "Amériques", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "République Dominicaine", region: "Amériques", status: "visa-free", stay: "60j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Bermudes", region: "Amériques", status: "visa-free", stay: "90j", notes: "Sans visa pour passeport marocain (territoire UK)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Bolivie", region: "Amériques", status: "voa", stay: "30j", notes: "Visa en ligne ou on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Nicaragua", region: "Amériques", status: "voa", stay: "30j", notes: "VOA. Sans visa avec visa Schengen pour 90j.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Cuba", region: "Amériques", status: "evisa", stay: "90j", notes: "e-Visa (carte touristique), extensible 90j", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Mexique", region: "Amériques", status: "visa-free-titre", stay: "180j", notes: "Sans visa avec titre de séjour Schengen PERMANENT.", source: "https://www.visatraveler.com/visa/visa-free-countries-for-schengen-residence-permit/", tourist: true },
+      { name: "Guatemala", region: "Amériques", status: "visa-free-titre", stay: "90j", notes: "Sans visa avec visa/titre Schengen valide (zone CA-4)", source: "https://www.visatraveler.com/blog/travel-non-schengen-countries-visa-free-with-schengen-visa/", tourist: true },
+      { name: "Honduras", region: "Amériques", status: "visa-free-titre", stay: "90j", notes: "Sans visa avec visa/titre Schengen valide (zone CA-4)", source: "https://www.visatraveler.com/blog/travel-non-schengen-countries-visa-free-with-schengen-visa/", tourist: true },
+      { name: "El Salvador", region: "Amériques", status: "visa-free-titre", stay: "90j", notes: "Sans visa avec visa/titre Schengen valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Costa Rica", region: "Amériques", status: "visa-free-titre", stay: "90j", notes: "Sans visa avec visa Schengen multiple entrée valide", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Panama", region: "Amériques", status: "visa-free-titre", stay: "30j", notes: "Sans visa avec visa/titre Schengen valide (TDS UE uniquement)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "États-Unis", region: "Amériques", status: "visa", stay: "—", notes: "Visa B1/B2 requis (validité 10 ans). Pas d'exemption avec TDS Schengen.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Canada", region: "Amériques", status: "visa", stay: "—", notes: "Visa requis. eTA possible si ancien visa canadien <10 ans ou visa US valide.", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Argentine", region: "Amériques", status: "visa", stay: "—", notes: "Visa requis (gratuit pour Marocains)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Pérou", region: "Amériques", status: "visa", stay: "—", notes: "Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Chili", region: "Amériques", status: "visa", stay: "—", notes: "Visa requis (gratuit pour Marocains)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      // ===== OCÉANIE =====
+      { name: "Vanuatu", region: "Océanie", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Micronésie", region: "Océanie", status: "visa-free", stay: "30j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Samoa", region: "Océanie", status: "visa-free", stay: "60j", notes: "Sans visa pour passeport marocain", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Palaos", region: "Océanie", status: "voa", stay: "30j", notes: "Visa gratuit on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Îles Marshall", region: "Océanie", status: "voa", stay: "90j", notes: "Visa on arrival", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: false },
+      { name: "Australie", region: "Océanie", status: "visa", stay: "—", notes: "Visa requis (Visitor e600 en ligne)", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Nouvelle-Zélande", region: "Océanie", status: "visa", stay: "—", notes: "Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+      { name: "Fidji", region: "Océanie", status: "visa", stay: "—", notes: "Visa requis", source: "https://en.wikipedia.org/wiki/Visa_requirements_for_Moroccan_citizens", tourist: true },
+    ];
+
+    const statusConfig = {
+      "schengen":        { label: "Schengen",       color: "#0F766E", bg: "#CCFBF1", emoji: "🏛️", priority: 0 },
+      "visa-free":       { label: "Sans Visa",       color: "#15803D", bg: "#DCFCE7", emoji: "✅", priority: 1 },
+      "visa-free-titre": { label: "Sans Visa (TDS)", color: "#1D4ED8", bg: "#DBEAFE", emoji: "🪪", priority: 2 },
+      "voa":             { label: "Visa on Arrival", color: "#A16207", bg: "#FEF9C3", emoji: "🛬", priority: 3 },
+      "evisa":           { label: "e-Visa",          color: "#9333EA", bg: "#F3E8FF", emoji: "💻", priority: 4 },
+      "eta":             { label: "ETA",             color: "#C2410C", bg: "#FFF7ED", emoji: "📋", priority: 5 },
+      "visa":            { label: "Visa Requis",     color: "#DC2626", bg: "#FEE2E2", emoji: "🚫", priority: 6 },
+    };
+
+    const regionOrder = ["Europe", "Afrique", "Asie", "Moyen-Orient", "Amériques", "Océanie"];
+
+    function VisaExplorer() {
+      const [search, setSearch] = useState("");
+      const [selectedRegion, setSelectedRegion] = useState("Tous");
+      const [selectedStatus, setSelectedStatus] = useState("Tous");
+      const [touristOnly, setTouristOnly] = useState(true);
+      const [sortBy, setSortBy] = useState("region");
+      const [expandedCountry, setExpandedCountry] = useState(null);
+
+      const filtered = useMemo(() => {
+        let result = countries.filter(c => {
+          if (touristOnly && !c.tourist) return false;
+          if (selectedRegion !== "Tous" && c.region !== selectedRegion) return false;
+          if (selectedStatus !== "Tous" && c.status !== selectedStatus) return false;
+          if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
+          return true;
+        });
+        if (sortBy === "region") {
+          result.sort((a, b) => {
+            const ri = regionOrder.indexOf(a.region) - regionOrder.indexOf(b.region);
+            if (ri !== 0) return ri;
+            return statusConfig[a.status].priority - statusConfig[b.status].priority;
+          });
+        } else if (sortBy === "status") {
+          result.sort((a, b) => statusConfig[a.status].priority - statusConfig[b.status].priority);
+        } else {
+          result.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        return result;
+      }, [search, selectedRegion, selectedStatus, touristOnly, sortBy]);
+
+      const stats = useMemo(() => {
+        const tourist = countries.filter(c => c.tourist);
+        const easy = tourist.filter(c => ["schengen","visa-free","visa-free-titre","voa","evisa","eta"].includes(c.status));
+        const noVisa = tourist.filter(c => ["schengen","visa-free","visa-free-titre"].includes(c.status));
+        return { total: tourist.length, easy: easy.length, noVisa: noVisa.length };
+      }, []);
+
+      return (
+        <div style={{
+          fontFamily: "'Newsreader', 'Georgia', serif",
+          background: "linear-gradient(135deg, #0C1220 0%, #162032 50%, #1A1A2E 100%)",
+          minHeight: "100vh",
+          color: "#E8E6E3",
+        }}>
+          {/* Header */}
+          <div style={{
+            background: "linear-gradient(180deg, rgba(212,175,55,0.15) 0%, transparent 100%)",
+            borderBottom: "1px solid rgba(212,175,55,0.2)",
+            padding: "28px 16px 20px",
+          }}>
+            <div style={{ maxWidth: 800, margin: "0 auto" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                <span style={{ fontSize: 28 }}>🇲🇦</span>
+                <span style={{ fontSize: 20, color: "rgba(212,175,55,0.5)" }}>+</span>
+                <span style={{ fontSize: 28 }}>🇫🇷</span>
+              </div>
+              <h1 style={{
+                fontSize: 22, fontWeight: 700, color: "#D4AF37",
+                margin: "0 0 6px", letterSpacing: "-0.5px", lineHeight: 1.2,
+              }}>Visa Explorer</h1>
+              <p style={{ fontSize: 13, color: "#9CA3AF", margin: 0, lineHeight: 1.4 }}>
+                Passeport marocain + Titre de séjour français 10 ans
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginTop: 16 }}>
+                {[
+                  { n: stats.noVisa, label: "Sans visa", color: "#34D399" },
+                  { n: stats.easy, label: "Accès facile", color: "#D4AF37" },
+                  { n: stats.total, label: "Destinations", color: "#9CA3AF" },
+                ].map((s, i) => (
+                  <div key={i} style={{
+                    background: "rgba(255,255,255,0.04)", borderRadius: 10,
+                    padding: "10px 8px", textAlign: "center",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}>
+                    <div style={{ fontSize: 24, fontWeight: 800, color: s.color, fontFamily: "sans-serif" }}>{s.n}</div>
+                    <div style={{ fontSize: 10, color: "#6B7280", textTransform: "uppercase", letterSpacing: 1 }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 16px 0" }}>
+            <input
+              type="text"
+              placeholder="Rechercher un pays..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              style={{
+                width: "100%", padding: "10px 14px", borderRadius: 10,
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "rgba(255,255,255,0.05)", color: "#E8E6E3",
+                fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box",
+              }}
+            />
+            {/* Region pills */}
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", marginTop: 10, paddingBottom: 4 }}>
+              {["Tous", ...regionOrder].map(r => (
+                <button key={r} onClick={() => setSelectedRegion(r)} style={{
+                  padding: "5px 12px", borderRadius: 20, border: "none",
+                  fontSize: 12, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                  fontFamily: "sans-serif",
+                  background: selectedRegion === r ? "#D4AF37" : "rgba(255,255,255,0.07)",
+                  color: selectedRegion === r ? "#0C1220" : "#9CA3AF",
+                  transition: "all 0.15s",
+                }}>{r}</button>
+              ))}
+            </div>
+            {/* Status pills */}
+            <div style={{ display: "flex", gap: 6, overflowX: "auto", marginTop: 8, paddingBottom: 4 }}>
+              <button onClick={() => setSelectedStatus("Tous")} style={{
+                padding: "5px 12px", borderRadius: 20, border: "none",
+                fontSize: 11, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                fontFamily: "sans-serif",
+                background: selectedStatus === "Tous" ? "#D4AF37" : "rgba(255,255,255,0.07)",
+                color: selectedStatus === "Tous" ? "#0C1220" : "#9CA3AF",
+              }}>Tous</button>
+              {Object.entries(statusConfig).map(([key, cfg]) => (
+                <button key={key} onClick={() => setSelectedStatus(key)} style={{
+                  padding: "5px 10px", borderRadius: 20, border: "none",
+                  fontSize: 11, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
+                  fontFamily: "sans-serif",
+                  background: selectedStatus === key ? cfg.color : "rgba(255,255,255,0.07)",
+                  color: selectedStatus === key ? "#fff" : "#9CA3AF",
+                }}>{cfg.emoji} {cfg.label}</button>
+              ))}
+            </div>
+            {/* Sort + toggle */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, gap: 10 }}>
+              <div style={{ display: "flex", gap: 4 }}>
+                {[{ key: "region", label: "Région" }, { key: "status", label: "Statut" }, { key: "alpha", label: "A→Z" }].map(s => (
+                  <button key={s.key} onClick={() => setSortBy(s.key)} style={{
+                    padding: "4px 10px", borderRadius: 6,
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    fontSize: 11, cursor: "pointer", fontFamily: "sans-serif",
+                    background: sortBy === s.key ? "rgba(212,175,55,0.15)" : "transparent",
+                    color: sortBy === s.key ? "#D4AF37" : "#6B7280",
+                  }}>{s.label}</button>
+                ))}
+              </div>
+              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#6B7280", cursor: "pointer" }}>
+                <input type="checkbox" checked={touristOnly}
+                  onChange={e => setTouristOnly(e.target.checked)}
+                  style={{ accentColor: "#D4AF37" }} />
+                Touristiques
+              </label>
+            </div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 8 }}>{filtered.length} pays affichés</div>
+          </div>
+
+          {/* Country list */}
+          <div style={{ maxWidth: 800, margin: "0 auto", padding: "10px 16px 100px" }}>
+            {filtered.map((c, i) => {
+              const cfg = statusConfig[c.status];
+              const isExpanded = expandedCountry === i;
+              return (
+                <div key={c.name + c.region} onClick={() => setExpandedCountry(isExpanded ? null : i)} style={{
+                  background: isExpanded ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.02)",
+                  borderRadius: 10, padding: "12px 14px", marginBottom: 6, cursor: "pointer",
+                  border: `1px solid ${isExpanded ? "rgba(212,175,55,0.2)" : "rgba(255,255,255,0.04)"}`,
+                  transition: "all 0.15s",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                      <span style={{ fontSize: 16 }}>{cfg.emoji}</span>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{
+                          fontSize: 14, fontWeight: 600, color: "#E8E6E3",
+                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                        }}>{c.name}</div>
+                        <div style={{ fontSize: 11, color: "#6B7280" }}>{c.region}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                      {c.stay !== "—" && (
+                        <span style={{ fontSize: 11, color: "#9CA3AF", fontFamily: "sans-serif" }}>{c.stay}</span>
+                      )}
+                      <span style={{
+                        fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 6,
+                        background: cfg.bg, color: cfg.color,
+                        whiteSpace: "nowrap", fontFamily: "sans-serif",
+                      }}>{cfg.label}</span>
+                    </div>
+                  </div>
+                  {isExpanded && (
+                    <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                      <p style={{ fontSize: 13, color: "#D1D5DB", margin: "0 0 8px", lineHeight: 1.5 }}>{c.notes}</p>
+                      <a href={c.source} target="_blank" rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        style={{
+                          fontSize: 11, color: "#D4AF37", textDecoration: "none",
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          padding: "4px 10px", borderRadius: 6,
+                          background: "rgba(212,175,55,0.1)",
+                          border: "1px solid rgba(212,175,55,0.2)",
+                        }}>🔗 Source officielle</a>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Footer legend */}
+          <div style={{
+            position: "fixed", bottom: 0, left: 0, right: 0,
+            background: "linear-gradient(transparent, #0C1220 30%)",
+            padding: "30px 16px 14px",
+          }}>
+            <div style={{
+              maxWidth: 800, margin: "0 auto",
+              display: "flex", justifyContent: "center",
+              flexWrap: "wrap", gap: "6px 12px",
+            }}>
+              {Object.entries(statusConfig).slice(0, 5).map(([key, cfg]) => (
+                <span key={key} style={{ fontSize: 10, color: "#6B7280", display: "flex", alignItems: "center", gap: 3 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: cfg.color, display: "inline-block" }} />
+                  {cfg.label}
+                </span>
+              ))}
+            </div>
+            <div style={{ textAlign: "center", fontSize: 9, color: "#4B5563", marginTop: 4 }}>
+              Données avril 2026 — Vérifiez toujours auprès de l'ambassade avant de voyager
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<VisaExplorer />);
+  </script>
+</body>
+</html>
