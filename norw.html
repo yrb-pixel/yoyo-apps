@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norvège — Itinéraire · 2–15 mai</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1a2e;
+    --fog: #f0eff0;
+    --fjord: #1a4a6b;
+    --glacier: #4a9aba;
+    --aurora: #2ec4a0;
+    --muted: #7a8494;
+    --card: #ffffff;
+    --border: rgba(15,26,46,0.08);
+    --transit: #e8640a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--fog); color: var(--ink); line-height: 1.6; }
+
+  /* HERO */
+  .hero { background: var(--fjord); color: #fff; padding: 3.5rem 2rem 2.5rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 80px); }
+  .hero-inner { position: relative; max-width: 900px; margin: 0 auto; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--glacier); margin-bottom: 0.75rem; font-weight: 500; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 400; line-height: 1.15; margin-bottom: 1rem; }
+  .hero h1 em { font-style: italic; color: var(--glacier); }
+
+  /* SUMMARY BLOCK */
+  .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  .sum-col h3 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.75rem; font-weight: 500; }
+
+  .flight-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .flight-cities { display: flex; align-items: center; gap: 8px; flex: 1; }
+  .city { font-size: 13px; font-weight: 500; color: #fff; }
+  .fl-line { flex: 1; height: 1px; background: rgba(255,255,255,0.2); position: relative; }
+  .fl-line::after { content: '›'; position: absolute; right: -6px; top: -10px; font-size: 12px; color: rgba(255,255,255,0.4); }
+  .fl-meta { font-size: 11px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+  .fl-price { font-size: 13px; font-weight: 500; color: var(--aurora); min-width: 40px; text-align: right; }
+
+  .car-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .car-label { font-size: 13px; color: rgba(255,255,255,0.8); }
+  .car-price { font-size: 13px; font-weight: 500; color: var(--aurora); }
+
+  .divider { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0; }
+
+  .total-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .total-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .total-val { font-size: 22px; font-weight: 500; color: #fff; }
+  .total-pp { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  /* ROUTE TIMELINE */
+  .route-timeline { display: flex; align-items: center; gap: 0; margin-top: 2rem; overflow-x: auto; padding-bottom: 4px; }
+  .rt-stop { text-align: center; flex-shrink: 0; }
+  .rt-dot-row { display: flex; align-items: center; }
+  .rt-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.9); flex-shrink: 0; }
+  .rt-dot.transit-dot { background: var(--transit); }
+  .rt-dot.lofoten-dot { background: var(--aurora); }
+  .rt-line { height: 1px; background: rgba(255,255,255,0.2); flex: 1; min-width: 30px; }
+  .rt-line.transit-line { background: rgba(232,100,10,0.4); }
+  .rt-line.lofoten-line { background: rgba(46,196,160,0.4); }
+  .rt-name { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; white-space: nowrap; }
+  .rt-date { font-size: 10px; color: rgba(255,255,255,0.4); }
+
+  /* CONTAINER */
+  .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+
+  /* SECTION */
+  .section-label { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  .pill { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 14px; border-radius: 999px; font-weight: 500; white-space: nowrap; }
+  .pill-fjord { background: var(--fjord); color: #fff; }
+  .pill-transit { background: var(--transit); color: #fff; }
+  .pill-lofoten { background: var(--aurora); color: var(--ink); }
+  .section-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+
+  /* DAY CARDS */
+  .days-grid { display: flex; flex-direction: column; gap: 0; }
+  .day { display: grid; grid-template-columns: 76px 1fr; position: relative; }
+  .day:not(:last-child) .day-left::after { content: ''; position: absolute; left: 37px; top: 60px; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--glacier), transparent); opacity: 0.2; }
+  .day-left { display: flex; flex-direction: column; align-items: center; padding-top: 20px; position: relative; }
+  .day-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; z-index: 1; }
+  .day-date-label { font-size: 10px; color: var(--muted); margin-top: 4px; text-align: center; line-height: 1.3; }
+  .num-fjord { background: var(--fjord); color: #fff; }
+  .num-transit { background: var(--transit); color: #fff; }
+  .num-lofoten { background: var(--aurora); color: var(--ink); }
+
+  .day-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; margin: 0.45rem 0 0.45rem 0.75rem; }
+  .day-card:hover { box-shadow: 0 4px 20px rgba(15,26,46,0.06); }
+  .transit-card { background: linear-gradient(135deg, #fff8f3, #fff); border-color: rgba(232,100,10,0.15); }
+
+  .day-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 0.8rem; }
+  .day-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; line-height: 1.3; }
+  .day-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .day-tag { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  .tag-fjord { background: #e8f2f9; color: var(--fjord); }
+  .tag-cascade { background: #e0f5ef; color: #0f6e56; }
+  .tag-glacier { background: #edeefe; color: #4a45c0; }
+  .tag-transit { background: #fef0e6; color: var(--transit); }
+  .tag-lofoten { background: #e0f7f3; color: #1a8a72; }
+  .tag-rando { background: #f5ede8; color: #8a3e1a; }
+  .tag-depart { background: #fde8e8; color: #a32020; }
+  .tag-arrivee { background: #e8f2f9; color: var(--fjord); }
+
+  .steps { display: flex; flex-direction: column; gap: 4px; }
+  .step { display: flex; gap: 10px; align-items: baseline; }
+  .step-time { font-size: 11px; color: var(--glacier); font-weight: 500; min-width: 52px; flex-shrink: 0; }
+  .step-text { font-size: 13px; color: #2a3545; line-height: 1.5; }
+  .step-note { font-size: 11px; color: var(--muted); margin-left: 62px; font-style: italic; margin-bottom: 1px; }
+
+  /* NIGHT CHIP — prominent */
+  .night-strip { display: flex; align-items: center; gap: 10px; margin-top: 1rem; padding: 8px 12px; background: #f8f6f0; border-radius: 8px; border-left: 3px solid var(--fjord); }
+  .night-strip.lofoten { border-left-color: var(--aurora); }
+  .night-strip.transit { border-left-color: var(--transit); }
+  .night-icon { font-size: 14px; }
+  .night-text { font-size: 12px; color: var(--muted); }
+  .night-place { font-size: 13px; font-weight: 500; color: var(--ink); }
+
+  .day-footer { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .info-chip { font-size: 11px; padding: 3px 9px; border-radius: 6px; background: var(--fog); color: var(--muted); font-weight: 500; }
+  .info-chip strong { color: var(--ink); font-weight: 500; }
+
+  .transit-arrow { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--transit); font-weight: 500; margin-bottom: 10px; }
+  .arrow-line { flex: 1; height: 1px; background: linear-gradient(to right, var(--transit), transparent); }
+
+  /* WARNING BOX */
+  .warning { background: #fff8e6; border: 1px solid #f0c040; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #6b4e00; margin-top: 1rem; }
+  .warning strong { font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .summary { grid-template-columns: 1fr; }
+    .day { grid-template-columns: 60px 1fr; }
+    .day-left::after { left: 29px; }
+    .day-card { margin-left: 0.5rem; padding: 1rem; }
+    .hero { padding: 2.5rem 1.25rem 2rem; }
+    .container { padding: 2rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Option A — Bergen & Fjords · puis Îles Lofoten</div>
+    <h1>Norvège en couple<br><em>2 → 15 mai 2025</em></h1>
+
+    <div class="summary">
+      <!-- COLONNE VOLS + VOITURES -->
+      <div class="sum-col">
+        <h3>Transport</h3>
+
+        <div class="flight-row">
+          <div class="flight-cities">
+            <span class="city">Paris</span>
+            <div class="fl-line"></div>
+            <span class="city">Bergen</span>
+          </div>
+          <span class="fl-meta">2 mai · 09h05→11h20</span>
+          <span class="fl-price">192 €</span>
+        </div>
+
+        <div class="car-row">
+          <span class="car-label">🚗 Location voiture — Boucle 1 (Bergen)</span>
+          <span class="car-price">400 €</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="flight-row">
+          <div class="flight-cities">
+            <span class="city">Bergen</span>
+            <div class="fl-line"></div>
+            <span class="city">Bodø</span>
+          </div>
+          <span class="fl-meta">9 mai · 17h55→19h45</span>
+          <span class="fl-price">100 €</span>
+        </div>
+
+        <div class="car-row">
+          <span class="car-label">🚗 Location voiture — Boucle 2 (Bodø)</span>
+          <span class="car-price">500 €</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="flight-row">
+          <div class="flight-cities">
+            <span class="city">Bodø</span>
+            <div class="fl-line"></div>
+            <span class="city">Paris</span>
+          </div>
+          <span class="fl-meta">15 mai · 14h55→19h40</span>
+          <span class="fl-price">113 €</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="car-row" style="margin-top:4px;">
+          <span class="car-label" style="font-size:12px;color:rgba(255,255,255,0.5);">Vols + voitures (pour 1 pers.)</span>
+          <span class="car-price">805 €</span>
+        </div>
+        <div class="car-row">
+          <span class="car-label" style="font-size:12px;color:rgba(255,255,255,0.5);">Vols + voitures (pour 2 pers.)</span>
+          <span class="car-price">1 610 €</span>
+        </div>
+      </div>
+
+      <!-- COLONNE BUDGET TOTAL -->
+      <div class="sum-col">
+        <h3>Budget estimé · 2 personnes</h3>
+
+        <div class="car-row"><span class="car-label">Vols × 2 pers.</span><span class="car-price">810 €</span></div>
+        <div class="car-row"><span class="car-label">2 locations voiture</span><span class="car-price">900 €</span></div>
+        <div class="car-row"><span class="car-label">Ferry Bodø ↔ Lofoten</span><span class="car-price">~160 €</span></div>
+        <div class="car-row"><span class="car-label">Ferries fjords (boucle 1)</span><span class="car-price">~120 €</span></div>
+        <div class="car-row"><span class="car-label">Hébergement (13 nuits)</span><span class="car-price">1 650 €</span></div>
+        <div class="car-row"><span class="car-label">Nourriture</span><span class="car-price">650–900 €</span></div>
+        <div class="car-row"><span class="car-label">Activités</span><span class="car-price">300–500 €</span></div>
+
+        <div class="divider"></div>
+
+        <div class="total-row">
+          <div>
+            <div class="total-label">Total pour 2</div>
+            <div class="total-val">4 590–5 340 €</div>
+            <div class="total-pp">soit 2 295–2 670 € / pers.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROUTE TIMELINE -->
+    <div class="route-timeline">
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-dot"></div><div class="rt-line"></div></div>
+        <div class="rt-name">Paris</div><div class="rt-date">2 mai 9h05</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line"></div><div class="rt-dot"></div><div class="rt-line"></div></div>
+        <div class="rt-name">Bergen</div><div class="rt-date">2–9 mai</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line"></div><div class="rt-dot"></div><div class="rt-line"></div></div>
+        <div class="rt-name">Fjords</div><div class="rt-date">3–8 mai</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line transit-line"></div><div class="rt-dot transit-dot"></div><div class="rt-line transit-line"></div></div>
+        <div class="rt-name">Bodø</div><div class="rt-date">9 mai 19h45</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line lofoten-line"></div><div class="rt-dot lofoten-dot"></div><div class="rt-line lofoten-line"></div></div>
+        <div class="rt-name">Lofoten</div><div class="rt-date">10–14 mai</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line transit-line"></div><div class="rt-dot transit-dot"></div><div class="rt-line"></div></div>
+        <div class="rt-name">Bodø</div><div class="rt-date">15 mai 14h55</div>
+      </div>
+      <div class="rt-stop">
+        <div class="rt-dot-row"><div class="rt-line"></div><div class="rt-dot"></div></div>
+        <div class="rt-name">Paris</div><div class="rt-date">15 mai 19h40</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- BOUCLE 1 -->
+  <div class="section-label">
+    <span class="pill pill-fjord">Boucle 1 — Bergen & Fjords</span>
+    <hr>
+    <span style="font-size:12px;color:var(--muted);white-space:nowrap;">2 → 9 mai · voiture Bergen A/R</span>
+  </div>
+
+  <div class="days-grid">
+
+    <!-- J1 — 2 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J1</div><div class="day-date-label">2 mai<br>ven.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Arrivée Bergen — 11h20</div><div class="day-sub">Vol Paris 09h05 → Bergen 11h20 · récupération voiture · Bryggen</div></div>
+          <span class="day-tag tag-arrivee">Arrivée</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">09h05</span><span class="step-text">Décollage Paris (CDG ou Orly — vérifier aéroport)</span></div>
+          <div class="step"><span class="step-time">11h20</span><span class="step-text">Atterrissage Bergen Flesland</span></div>
+          <div class="step"><span class="step-time">12h</span><span class="step-text">Récupération voiture à l'aéroport</span></div>
+          <div class="step-note">Restitution à Bergen le 9 mai avant 17h. Boîte auto recommandée.</div>
+          <div class="step"><span class="step-time">13h</span><span class="step-text">Déjeuner en route vers le centre-ville (20 min)</span></div>
+          <div class="step"><span class="step-time">14h</span><span class="step-text">Check-in hytte · dépôt bagages</span></div>
+          <div class="step"><span class="step-time">15h</span><span class="step-text">Quartier Bryggen (UNESCO) — maisons en bois colorées, musée</span></div>
+          <div class="step"><span class="step-time">17h</span><span class="step-text">Fløibanen (funiculaire) — vue panoramique sur Bergen et le fjord</span></div>
+          <div class="step-note">Ticket ~10 €/pers. Dernier retour ~23h en mai.</div>
+          <div class="step"><span class="step-time">19h30</span><span class="step-text">Dîner marché Fisketorget ou supermarché Kiwi</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 1 — à réserver à Bergen</div><div class="night-place">Bergen centrum ou Flesland (centre recommandé) — 120 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~15</span><span class="info-chip"><strong>Héberg. :</strong> 120 €</span></div>
+      </div>
+    </div>
+
+    <!-- J2 — 3 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J2</div><div class="day-date-label">3 mai<br>sam.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Bergen & Steinsdalsfossen</div><div class="day-sub">Cascade · lac Bondhusvatnet · premier fjord</div></div>
+          <span class="day-tag tag-cascade">Nature</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">9h</span><span class="step-text">Musée Bryggens ou marché du samedi au port</span></div>
+          <div class="step"><span class="step-time">11h</span><span class="step-text">Steinsdalsfossen — cascade où l'on passe derrière l'eau (30 km de Bergen)</span></div>
+          <div class="step-note">Gratuit. 30 min d'arrêt suffisent. Très photogénique.</div>
+          <div class="step"><span class="step-time">13h</span><span class="step-text">Pique-nique sur la route du Hardanger</span></div>
+          <div class="step"><span class="step-time">14h30</span><span class="step-text">Randonnée lac Bondhusvatnet — glacier Folgefonna au fond (3h A/R)</span></div>
+          <div class="step-note">Parking ~10 €. Facile. Vue sur glacier encore bien enneigé en mai.</div>
+          <div class="step"><span class="step-time">18h</span><span class="step-text">Retour Bergen · courses Kiwi · cuisine hytte</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 2 — à réserver à Bergen</div><div class="night-place">Bergen (même logement que J1 — 2 nuits consécutives) — 120 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~60</span><span class="info-chip"><strong>Héberg. :</strong> 120 €</span></div>
+      </div>
+    </div>
+
+    <!-- J3 — 4 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J3</div><div class="day-date-label">4 mai<br>dim.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Hardangerfjord & Vøringsfossen</div><div class="day-sub">Route des fjords · vergers en fleurs · cascade 182 m</div></div>
+          <span class="day-tag tag-cascade">Cascade</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h</span><span class="step-text">Départ Bergen → Hardangerfjord via E16</span></div>
+          <div class="step"><span class="step-time">10h</span><span class="step-text">Route des rives du Hardangerfjord — pommiers en pleine floraison début mai</span></div>
+          <div class="step-note">Timing parfait : floraison des cerisiers et pommiers le long du fjord.</div>
+          <div class="step"><span class="step-time">12h</span><span class="step-text">Pique-nique au bord du Hardangerfjord</span></div>
+          <div class="step"><span class="step-time">14h</span><span class="step-text">Vøringsfossen — cascade la plus connue de Norvège (182 m)</span></div>
+          <div class="step-note">Débit maximal en mai (fonte des neiges). Point de vue gratuit. Plateforme ~5 €.</div>
+          <div class="step"><span class="step-time">17h</span><span class="step-text">Arrivée Eidfjord — check-in</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 3 — à réserver à Eidfjord ou Ulvik</div><div class="night-place">Ulvik (bord du Hardangerfjord) — 120 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~160</span><span class="info-chip"><strong>Héberg. :</strong> 120 €</span></div>
+      </div>
+    </div>
+
+    <!-- J4 — 5 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J4</div><div class="day-date-label">5 mai<br>lun.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Stalheim · Nærøyfjord · Flåm</div><div class="day-sub">Ferry Gudvangen → Kaupanger · croisière UNESCO 2h30</div></div>
+          <span class="day-tag tag-fjord">Fjord UNESCO</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h30</span><span class="step-text">Belvédère de Stalheim — vue spectaculaire sur la vallée</span></div>
+          <div class="step"><span class="step-time">10h</span><span class="step-text">Gudvangen — bout du Nærøyfjord (250 m de large par endroits)</span></div>
+          <div class="step"><span class="step-time">11h</span><span class="step-text">🚢 Ferry Gudvangen → Kaupanger (Nærøyfjord + Sognefjord)</span></div>
+          <div class="step-note">~25 €/voiture. Horaires sur fjordtours.com. Peu fréquenté en mai.</div>
+          <div class="step"><span class="step-time">13h30</span><span class="step-text">Arrivée Kaupanger → Flåm (30 min)</span></div>
+          <div class="step"><span class="step-time">15h</span><span class="step-text">Flåm — balade, village au fond du Aurlandsfjord</span></div>
+          <div class="step"><span class="step-time">16h</span><span class="step-text">Option Flåmsbana — train de montagne (~45 €/pers, réserver)</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 4 — à réserver à Flåm ou Aurland</div><div class="night-place">Aurland (villages au bord de l'Aurlandsfjord) — 160 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~130</span><span class="info-chip"><strong>Héberg. :</strong> 160 €</span></div>
+      </div>
+    </div>
+
+    <!-- J5 — 6 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J5</div><div class="day-date-label">6 mai<br>mar.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Sognefjord · Borgund · Stegastein · Solvorn</div><div class="day-sub">Plus long fjord du monde · église XIIe · plateforme suspendue</div></div>
+          <span class="day-tag tag-fjord">Sognefjord</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h</span><span class="step-text">Route Sognefjord direction Lærdal</span></div>
+          <div class="step"><span class="step-time">10h</span><span class="step-text">Borgund Stavkirke — église en bois debout du XIIe siècle (~12 €/pers)</span></div>
+          <div class="step"><span class="step-time">12h</span><span class="step-text">Tunnel de Lærdal (24,5 km, le plus long du monde — gratuit)</span></div>
+          <div class="step"><span class="step-time">13h30</span><span class="step-text">Stegastein — plateforme suspendue au-dessus de l'Aurlandsfjord</span></div>
+          <div class="step-note">Gratuit. Vue vertigineuse. Route praticable en mai.</div>
+          <div class="step"><span class="step-time">17h</span><span class="step-text">Solvorn — village de rêve au bord du Lustrafjord</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 5 — à réserver à Solvorn ou Sogndal</div><div class="night-place">Sogndal (plus de choix d'hébergements) — 130 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~180</span><span class="info-chip"><strong>Héberg. :</strong> 130 €</span></div>
+      </div>
+    </div>
+
+    <!-- J6 — 7 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J6</div><div class="day-date-label">7 mai<br>mer.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Glacier Briksdalsbreen & Olden</div><div class="day-sub">Parc Jostedalbreen · lac Lovatnet turquoise · route panoramique</div></div>
+          <span class="day-tag tag-glacier">Glacier</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h</span><span class="step-text">Route via Gaularfjellet — route panoramique nationale</span></div>
+          <div class="step"><span class="step-time">11h</span><span class="step-text">Briksdalsbreen — randonnée vers la langue glaciaire (5 km A/R facile)</span></div>
+          <div class="step-note">Glacier spectaculaire en mai. Parking ~10 €. Chaussures waterproof recommandées.</div>
+          <div class="step"><span class="step-time">13h</span><span class="step-text">Lac Lovatnet — turquoise irréel, pique-nique</span></div>
+          <div class="step"><span class="step-time">15h</span><span class="step-text">Strynefjellsveg — route panoramique le long du lac Strynevatnet</span></div>
+          <div class="step-note">Vérifier ouverture sur nasjonaleturistveger.no (parfois encore fermée début mai).</div>
+          <div class="step"><span class="step-time">17h30</span><span class="step-text">Arrivée Olden ou Stryn</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 6 — à réserver à Olden ou Stryn</div><div class="night-place">Olden (vallée des glaciers) — 130 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~150</span><span class="info-chip"><strong>Héberg. :</strong> 130 €</span></div>
+      </div>
+    </div>
+
+    <!-- J7 — 8 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J7</div><div class="day-date-label">8 mai<br>jeu.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Geirangerfjord — joyau UNESCO</div><div class="day-sub">Dalsnibba · Ørnesvingen · croisière · Sept Sœurs</div></div>
+          <span class="day-tag tag-fjord">Fjord UNESCO</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h</span><span class="step-text">Dalsnibba (1 476 m) — vue plongeante sur le Geirangerfjord</span></div>
+          <div class="step-note">Péage ~15 €. Ouvre début mai selon enneigement — vérifier la veille.</div>
+          <div class="step"><span class="step-time">10h30</span><span class="step-text">Ørnesvingen — vue iconique sur les 11 virages de la descente</span></div>
+          <div class="step"><span class="step-time">12h</span><span class="step-text">🚢 Croisière Geirangerfjord (2h) — cascades des Sept Sœurs</span></div>
+          <div class="step-note">~35–50 €/pers. Débit maximal des cascades en mai. Le meilleur moment de l'année.</div>
+          <div class="step"><span class="step-time">15h</span><span class="step-text">Randonnée Skageflå — ferme suspendue avec vue verticale (2h A/R)</span></div>
+          <div class="step"><span class="step-time">19h+</span><span class="step-text">Lumière dorée de mai sur le fjord — coucher de soleil très tardif</span></div>
+        </div>
+        <div class="night-strip"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 7 — à réserver à Geiranger</div><div class="night-place">Geiranger (réserver tôt — peu d'hébergements) — 160 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~120</span><span class="info-chip"><strong>Héberg. :</strong> 160 €</span></div>
+      </div>
+    </div>
+
+    <!-- J8 — 9 mai — journée chargée avec vol 17h55 -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-fjord">J8</div><div class="day-date-label">9 mai<br>ven.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Trollstigen · Ålesund → Bergen · vol 17h55</div><div class="day-sub">Route des Trolls · Art Nouveau · restitution voiture · vol Bergen→Bodø</div></div>
+          <span class="day-tag tag-transit">Jour chargé</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">7h30</span><span class="step-text">Départ Geiranger → ferry Eidsdal → Linge (~10 min, ~15 €)</span></div>
+          <div class="step"><span class="step-time">9h30</span><span class="step-text">Trollstigen — route des Trolls (11 lacets, cascade Stigfossen)</span></div>
+          <div class="step-note">Ouvre mi-mai — vérifier statut la veille sur nasjonaleturistveger.no. Plan B : route alternative via Andalsnes.</div>
+          <div class="step"><span class="step-time">11h30</span><span class="step-text">Ålesund — rapide balade port + mont Aksla si le temps le permet</span></div>
+          <div class="step-note">Ålesund est à 1h de Bergen sur la route du retour — ne pas y rester trop longtemps.</div>
+          <div class="step"><span class="step-time">13h</span><span class="step-text">Départ Ålesund → Bergen (240 km, ~3h)</span></div>
+          <div class="step"><span class="step-time">16h</span><span class="step-text">Arrivée Bergen · restitution voiture à l'aéroport Flesland</span></div>
+          <div class="step-note">Prévoir 1h de marge pour l'état des lieux + enregistrement. Aéroport Flesland = même lieu que récupération J1.</div>
+          <div class="step"><span class="step-time">17h55</span><span class="step-text">✈ Vol Bergen → Bodø (1h10)</span></div>
+          <div class="step"><span class="step-time">19h45</span><span class="step-text">Arrivée Bodø · récupération 2e voiture · nuit Bodø</span></div>
+        </div>
+        <div class="warning">⚠️ <strong>Journée serrée :</strong> le vol Bergen→Bodø est à 17h55. Le trajet Geiranger→Bergen fait ~4h avec Trollstigen. Partir impérativement avant 8h de Geiranger. Si Trollstigen est fermée, économiser 30 min sur la route.</div>
+        <div class="night-strip night-transit"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 8 — à réserver à Bodø</div><div class="night-place">Bodø (proche aéroport — hôtel ou B&amp;B) — 90 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~380</span><span class="info-chip"><strong>Héberg. :</strong> 90 €</span></div>
+      </div>
+    </div>
+
+  </div><!-- /boucle 1 -->
+
+  <!-- TRANSIT -->
+  <div class="section-label" style="margin-top:2.5rem;">
+    <span class="pill pill-transit">Transit — Bodø → Lofoten</span>
+    <hr>
+    <span style="font-size:12px;color:var(--muted);white-space:nowrap;">10 mai</span>
+  </div>
+
+  <div class="days-grid">
+    <div class="day">
+      <div class="day-left"><div class="day-num num-transit">🚢</div><div class="day-date-label">10 mai<br>sam.</div></div>
+      <div class="day-card transit-card">
+        <div class="transit-arrow">
+          <span>Bodø</span><div class="arrow-line"></div>
+          <span>Moskenes</span><div class="arrow-line"></div>
+          <span>Lofoten</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">Matin</span><span class="step-text">🚢 Ferry Bodø → Moskenes (3–4h)</span></div>
+          <div class="step-note">Départs matinaux disponibles. Réserver sur reiseliv.no. ~40 €/pers piéton (voiture déjà à Bodø).</div>
+          <div class="step"><span class="step-time">Bodø</span><span class="step-text">Voiture louée à Bodø embarque sur le ferry avec vous</span></div>
+          <div class="step-note">Vérifier que le loueur autorise le ferry — la plupart le permettent. Sinon louer depuis Moskenes.</div>
+          <div class="step"><span class="step-time">Après-midi</span><span class="step-text">Arrivée Moskenes → route vers Reine (10 km)</span></div>
+          <div class="step"><span class="step-time">Soir</span><span class="step-text">Check-in rorbu à Reine — première vue sur le Reinefjord</span></div>
+        </div>
+        <div class="night-strip night-transit"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 9 — à réserver à Reine</div><div class="night-place">Reine (rorbu — cabane de pêcheurs sur pilotis) — 120 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Frais one-way :</strong> 0 €</span><span class="info-chip"><strong>Héberg. :</strong> 120 €</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOUCLE 2 -->
+  <div class="section-label" style="margin-top:2.5rem;">
+    <span class="pill pill-lofoten">Boucle 2 — Îles Lofoten</span>
+    <hr>
+    <span style="font-size:12px;color:var(--muted);white-space:nowrap;">10 → 15 mai · E10 · ~500 km</span>
+  </div>
+
+  <div class="days-grid">
+
+    <!-- J10 — 11 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-lofoten">J10</div><div class="day-date-label">11 mai<br>dim.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Reine & Reinebringen</div><div class="day-sub">Randonnée panoramique · Nusfjord · village de Å</div></div>
+          <span class="day-tag tag-lofoten">Lofoten</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h</span><span class="step-text">🥾 Reinebringen — randonnée emblématique (450 m D+, 2–3h A/R)</span></div>
+          <div class="step-note">Vue 360° sur le Reinefjord. Neige possible en mai — chaussures waterproof. Partir tôt.</div>
+          <div class="step"><span class="step-time">12h</span><span class="step-text">Pique-nique au bord du Reinefjord</span></div>
+          <div class="step"><span class="step-time">14h</span><span class="step-text">Nusfjord — village de pêcheurs le mieux conservé des Lofoten (~8 €)</span></div>
+          <div class="step"><span class="step-time">16h30</span><span class="step-text">Village de Å — tout au bout de l'E10, musée de la pêche traditionnelle</span></div>
+        </div>
+        <div class="night-strip lofoten"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 10 — à réserver à Reine</div><div class="night-place">Reine (2e nuit consécutive — même rorbu) — 120 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~50</span><span class="info-chip"><strong>Héberg. :</strong> 120 €</span></div>
+      </div>
+    </div>
+
+    <!-- J11 — 12 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-lofoten">J11</div><div class="day-date-label">12 mai<br>lun.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Haukland Beach · Henningsvær</div><div class="day-sub">Plage de sable blanc · village sur îlots · galeries d'art</div></div>
+          <span class="day-tag tag-rando">Côte</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">8h30</span><span class="step-text">Départ plein nord via E10 direction Leknes</span></div>
+          <div class="step"><span class="step-time">10h</span><span class="step-text">Haukland Beach — sable blanc, eau turquoise arctique, montagne en fond</span></div>
+          <div class="step-note">Eau froide en mai (~8°C) mais paysage irréel. Randonnée côtière vers Uttakleiv Beach (1h A/R).</div>
+          <div class="step"><span class="step-time">13h</span><span class="step-text">Route vers Henningsvær</span></div>
+          <div class="step"><span class="step-time">14h30</span><span class="step-text">Henningsvær — village perché sur des îlots reliés par ponts</span></div>
+          <div class="step-note">Stade de foot avec vue sur fjord. Klatrekafeen café. Galeries d'artistes.</div>
+          <div class="step"><span class="step-time">17h</span><span class="step-text">Check-in hytte ou rorbu secteur Henningsvær / Leknes</span></div>
+        </div>
+        <div class="night-strip lofoten"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 11 — à réserver à Henningsvær ou Leknes</div><div class="night-place">Henningsvær (idéal) — 130 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~100</span><span class="info-chip"><strong>Héberg. :</strong> 130 €</span></div>
+      </div>
+    </div>
+
+    <!-- J12 — 13 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-lofoten">J12</div><div class="day-date-label">13 mai<br>mar.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Svolvær · Trollfjord</div><div class="day-sub">Croisière Trollfjord · aigles de mer · point le plus au nord</div></div>
+          <span class="day-tag tag-lofoten">Croisière</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">Matin</span><span class="step-text">Svolvær — balade port, galeries, café local</span></div>
+          <div class="step"><span class="step-time">11h</span><span class="step-text">🚢 Croisière Trollfjord (3h) — fjord étroit, aigles de mer</span></div>
+          <div class="step-note">~120 €/pers. Réserver sur lofoten-explorer.no. Moment fort du séjour Lofoten.</div>
+          <div class="step"><span class="step-time">14h30</span><span class="step-text">Randonnée Fløya depuis Svolvær (2h A/R) — vue sur l'archipel</span></div>
+          <div class="step"><span class="step-time">18h</span><span class="step-text">Dîner poisson frais à Svolvær — dernière grande soirée aux Lofoten</span></div>
+        </div>
+        <div class="night-strip lofoten"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 12 — à réserver à Svolvær</div><div class="night-place">Svolvær — 130 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~60</span><span class="info-chip"><strong>Héberg. :</strong> 130 €</span></div>
+      </div>
+    </div>
+
+    <!-- J13 — 14 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-lofoten">J13</div><div class="day-date-label">14 mai<br>mer.</div></div>
+      <div class="day-card">
+        <div class="day-header">
+          <div><div class="day-title">Dernière journée Lofoten</div><div class="day-sub">Route vers Moskenes · plages · préparation retour</div></div>
+          <span class="day-tag tag-lofoten">Lofoten</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">Matin</span><span class="step-text">Route retour plein sud Svolvær → Moskenes (120 km, 2h15)</span></div>
+          <div class="step-note">Prendre son temps — derniers stops photos en route sur l'E10.</div>
+          <div class="step"><span class="step-time">Après-midi</span><span class="step-text">Flakstad Beach ou Ramberg Beach — plage de sable blanc en route</span></div>
+          <div class="step"><span class="step-time">16h</span><span class="step-text">Arrivée Moskenes — check-in · préparation pour ferry J14</span></div>
+          <div class="step"><span class="step-time">Soir</span><span class="step-text">Coucher de soleil sur le Vestfjord depuis Moskenes</span></div>
+        </div>
+        <div class="night-strip lofoten"><span class="night-icon">🌙</span><div><div class="night-text">Nuit 13 — à réserver à Moskenes</div><div class="night-place">Moskenes (proche du ferry) — 150 €</div></div></div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> ~120</span><span class="info-chip"><strong>Héberg. :</strong> 150 €</span></div>
+      </div>
+    </div>
+
+    <!-- J14 — 15 mai -->
+    <div class="day">
+      <div class="day-left"><div class="day-num num-transit">J14</div><div class="day-date-label">15 mai<br>jeu.</div></div>
+      <div class="day-card transit-card">
+        <div class="day-header">
+          <div><div class="day-title">Retour — Moskenes → Bodø → Paris</div><div class="day-sub">Ferry matin · restitution voiture · vol 14h55 · arrivée Paris 19h40</div></div>
+          <span class="day-tag tag-depart">Retour</span>
+        </div>
+        <div class="steps">
+          <div class="step"><span class="step-time">Tôt matin</span><span class="step-text">🚢 Ferry Moskenes → Bodø (3–4h) — prendre le ferry du matin</span></div>
+          <div class="step-note">Prévoir ferry ~8h–9h pour arriver Bodø ~12h–13h. Vol décolle à 14h55 — marge serrée.</div>
+          <div class="step"><span class="step-time">~12h</span><span class="step-text">Arrivée Bodø · restitution voiture à l'aéroport</span></div>
+          <div class="step-note">Prévoir 1h pour restitution + enregistrement. Aéroport de Bodø est petit — rapide.</div>
+          <div class="step"><span class="step-time">14h55</span><span class="step-text">✈ Vol Bodø → (escale 50 min) → Paris</span></div>
+          <div class="step-note">Escale de 50 min — courte mais suffisante si correspondance interne Norvège. Vérifier aéroport d'escale.</div>
+          <div class="step"><span class="step-time">19h40</span><span class="step-text">Arrivée Paris CDG</span></div>
+        </div>
+        <div class="warning">⚠️ <strong>Le ferry du matin est critique :</strong> prendre impérativement le ferry Moskenes→Bodø avant 10h pour attraper le vol 14h55. Réserver l'aller ET le retour Bodø↔Lofoten sur reiseliv.no dès maintenant.</div>
+        <div class="day-footer"><span class="info-chip"><strong>Km :</strong> 0 + ferry</span><span class="info-chip"><strong>Héberg. :</strong> —</span></div>
+      </div>
+    </div>
+
+  </div><!-- /boucle 2 -->
+
+</div>
+</body>
+</html>
