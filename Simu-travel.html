@@ -592,7 +592,12 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 <div class="mbg" id="importModal">
   <div class="modal">
     <div class="mtitle">Dupliquer / Save As</div>
-    <div class="msub">Charge une simulation existante sous un nouveau nom pour la modifier.</div>
+    <div style="display:flex;gap:6px;margin-bottom:14px;">
+  <button class="mode-btn active" id="imp-mode-dup" onclick="setImportMode('dup')">⧉ Dupliquer</button>
+  <button class="mode-btn" id="imp-mode-edit" onclick="setImportMode('edit')">✎ Éditer</button>
+</div>
+<div class="msub" id="imp-mode-desc">Charge sous un nouveau nom — l'original est conservé.</div>
+<div class="fg" id="imp-name-fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
     <div class="fg"><label class="fl">Simulation source</label><select class="fs" id="import-sel"><option value="">— Choisir —</option></select></div>
     <div class="fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
     <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" onclick="confirmImport()">Charger & dupliquer</button></div>
@@ -636,6 +641,17 @@ let sources=[];
 let catState={};
 let budgetMode='auto';
 let cmpSlots=['',''];
+  let importMode = 'dup';
+
+function setImportMode(mode) {
+  importMode = mode;
+  document.getElementById('imp-mode-dup').className = 'mode-btn' + (mode==='dup'?' active':'');
+  document.getElementById('imp-mode-edit').className = 'mode-btn' + (mode==='edit'?' active':'');
+  document.getElementById('imp-mode-desc').textContent = mode === 'dup'
+    ? "Charge sous un nouveau nom — l'original est conservé."
+    : "Charge pour modifier directement — la sauvegarde écrasera l'original.";
+  document.getElementById('imp-name-fg').style.display = mode === 'dup' ? '' : 'none';
+}
 let pie1=null,bar1=null,anPie=null,anBar=null;
 
 // Flight arrival state
@@ -1436,15 +1452,31 @@ function showImportModal(){
   sel.innerHTML='<option value="">— Choisir —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
   document.getElementById('import-name').value='';
   document.getElementById('importModal').classList.add('show');
+  importMode = 'dup';
+  setImportMode('dup');
 }
 function confirmImport(){
-  const id=document.getElementById('import-sel').value;
-  const name=document.getElementById('import-name').value.trim();
-  if(!id||!name){toast('Choisis une source et un nom','⚠');return;}
-  const sim=sims.find(s=>s.id===id);if(!sim)return;
-  closeModal('importModal');curId=null;
-  setFormData({...sim});document.getElementById('simName').value=name;
-  showTab('form');toast(`Dupliqué depuis "${sim.simName}" — modifie et sauvegarde`,'📋');
+  const id = document.getElementById('import-sel').value;
+  if (!id) { toast('Choisis une simulation source','⚠'); return; }
+  const sim = sims.find(s => s.id === id); if (!sim) return;
+
+  if (importMode === 'edit') {
+    closeModal('importModal');
+    curId = id;
+    setFormData({...sim});
+    showTab('form');
+    toast(`"${sim.simName}" chargée — édition directe`,'✎');
+    return;
+  }
+
+  const name = document.getElementById('import-name').value.trim();
+  if (!name) { toast('Donne un nom à la copie','⚠'); return; }
+  closeModal('importModal');
+  curId = null;
+  setFormData({...sim});
+  document.getElementById('simName').value = name;
+  showTab('form');
+  toast(`Dupliqué depuis "${sim.simName}" — modifie et sauvegarde`,'📋');
 }
 function importAs(id){
   const sim=sims.find(s=>s.id===id);if(!sim)return;
