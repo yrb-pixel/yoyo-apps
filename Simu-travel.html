@@ -58,6 +58,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,165,90,.2),transparent);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .ctitle{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.c-val{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);}
 
 /* FORM BASE */
 .fg{margin-bottom:11px;}
@@ -68,48 +69,6 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .fi[readonly]{opacity:.7;cursor:default;}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-/* DATE PICKER STYLES */
-.dp-wrap{position:relative;}
-.dp-trigger{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s,box-shadow .2s;user-select:none;min-height:38px;}
-.dp-trigger:hover{border-color:rgba(201,165,90,.3);}
-.dp-trigger.active{border-color:rgba(201,165,90,.45);box-shadow:0 0 0 3px rgba(201,165,90,.07);}
-.dp-trigger .dp-icon{color:var(--muted);font-size:14px;flex-shrink:0;}
-.dp-trigger .dp-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dp-trigger .dp-text.empty{color:var(--muted);}
-.dp-trigger .dp-clear{color:var(--muted);font-size:12px;padding:2px 5px;border-radius:4px;transition:all .15s;flex-shrink:0;}
-.dp-trigger .dp-clear:hover{color:var(--rose);background:rgba(212,119,106,.1);}
-
-.dp-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:300;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px;box-shadow:0 12px 48px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s ease;min-width:280px;}
-.dp-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
-.dp-dropdown.right{left:auto;right:0;}
-
-.dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.dp-month-label{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:default;}
-.dp-nav{display:flex;gap:4px;}
-.dp-nav button{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
-.dp-nav button:hover{border-color:rgba(201,165,90,.35);color:var(--gold);background:var(--gold-bg);}
-
-.dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
-.dp-weekdays span{text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:4px 0;}
-
-.dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.dp-day{text-align:center;padding:6px 2px;border-radius:6px;font-size:12.5px;cursor:pointer;transition:all .12s;color:var(--text);position:relative;}
-.dp-day:hover{background:rgba(201,165,90,.1);color:var(--gold);}
-.dp-day.other-month{color:var(--muted2);cursor:default;}
-.dp-day.today{font-weight:600;color:var(--sky);}
-.dp-day.selected{background:var(--gold);color:#0d0f14;font-weight:600;}
-.dp-day.in-range{background:rgba(201,165,90,.08);}
-
-/* FLIGHT ARRIVAL OPTIONS */
-.flight-opts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
-.flight-opt-group{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;}
-.flight-opt-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
-.flight-opt-title .fo-icon{font-size:13px;}
-.flight-opt-btns{display:flex;gap:5px;}
-.fo-btn{flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;line-height:1.35;}
-.fo-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.35);font-weight:500;}
-.fo-btn .fo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
-
 /* NIGHTS RESULT BANNER */
 .nights-banner{margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,rgba(122,173,130,.08),rgba(122,173,130,.03));border:1px solid rgba(122,173,130,.2);border-radius:10px;display:none;}
 .nights-banner.show{display:flex;align-items:center;gap:11px;}
@@ -118,11 +77,32 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .nb-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--sage);margin-bottom:2px;}
 .nb-breakdown{font-size:11px;color:var(--muted);line-height:1.5;}
 
-/* BUTTONS */
+/* FLIGHT ARRIVAL OPTIONS */
+.flight-opts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.flight-opt-group{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;}
+.flight-opt-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.flight-opt-btns{display:flex;gap:5px;}
+.fo-btn{flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;line-height:1.35;}
+.fo-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.35);font-weight:500;}
+.fo-btn .fo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+
+/* LISTS & BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;transition:all .15s;white-space:nowrap;}
 .bg{background:var(--gold);color:#0d0f14;}.bg:hover{background:var(--gold2);transform:translateY(-1px);}
 .bo{background:transparent;color:var(--text);border:1px solid var(--border2);}.bo:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);}
 .bsm{padding:5px 10px;font-size:11.5px;border-radius:7px;}
+.br{background:rgba(212,119,106,.15);color:var(--rose);}.br:hover{background:rgba(212,119,106,.25);}
+
+/* DATE PICKER (SIMPLIFIÉ POUR LA STRUCTURE) */
+.dp-trigger{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;}
+
+/* CITIES LIST */
+#cities-list{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.city-item{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px;display:grid;grid-template-columns:1fr 80px 100px auto;gap:10px;align-items:end;animation:fadeUp .2s ease both;}
+
+/* TOAST */
+#toast{position:fixed;bottom:25px;right:25px;background:var(--bg2);border:1px solid var(--gold);padding:12px 20px;border-radius:12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);z-index:1000;}
+#toast.show{transform:translateY(0);opacity:1;}
 </style>
 </head>
 <body>
@@ -132,7 +112,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
     <div class="logo">Budget <em>Voyage</em></div>
     <div class="sync-row"><div class="sdot" id="sdot"></div><span id="slbl">Connecté</span></div>
     <div class="hbtns">
-      <button class="btn bo bsm" onclick="newSimulation()">+ Nouveau</button>
+      <button class="btn bo bsm" onclick="newSim()">+ Nouveau</button>
       <button class="btn bg bsm" onclick="saveSimulation()">↑ Sauvegarder</button>
     </div>
   </div>
@@ -140,150 +120,212 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 
 <div class="tabs">
   <div class="tabs-in">
-    <div class="tab active" onclick="showTab('form')">✦ Simulation</div>
-    <div class="tab">📊 Analyse</div>
-    <div class="tab">🗺 Itinéraire</div>
+    <div class="tab active" id="tab-form" onclick="showPage('form')">✦ Simulation</div>
+    <div class="tab" id="tab-list" onclick="showPage('list')">📂 Mes Simulations</div>
   </div>
 </div>
-
-<input type="hidden" id="dateFrom" value="">
-<input type="hidden" id="dateTo" value="">
 
 <div class="page active" id="page-form">
-<div class="con">
-<div class="g2">
-
-<div style="display:flex;flex-direction:column;gap:16px;">
-  <div class="card">
-    <div class="ctitle">✈ Voyage</div>
-    <div class="fg"><label class="fl">Nom de la simulation</label>
-      <input class="fi" id="simName" type="text" placeholder="Norvège — Option A" oninput="updateCalc()">
-    </div>
-    
-    <div class="fr">
-      <div class="fg">
-        <label class="fl">Départ</label>
-        <div class="dp-wrap">
-          <div class="dp-trigger" id="dp-from-trigger" onclick="toggleDP('from')">
-            <span class="dp-icon">📅</span>
-            <span class="dp-text empty" id="dp-from-text">Choisir une date</span>
+  <div class="con">
+    <div class="g2">
+      
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="ctitle">✈ Voyage</div>
+          <div class="fg">
+            <label class="fl">Nom de la simulation</label>
+            <input class="fi" id="simName" type="text" placeholder="Ex: Japon Automne" oninput="updateCalc()">
           </div>
-          <div class="dp-dropdown" id="dp-from-dropdown"></div>
-        </div>
-      </div>
-      <div class="fg">
-        <label class="fl">Retour</label>
-        <div class="dp-wrap">
-          <div class="dp-trigger" id="dp-to-trigger" onclick="toggleDP('to')">
-            <span class="dp-icon">📅</span>
-            <span class="dp-text empty" id="dp-to-text">Choisir une date</span>
+          
+          <div class="fr">
+            <div class="fg">
+              <label class="fl">Départ</label>
+              <input type="date" class="fi" id="dateFrom" onchange="updateCalc()">
+            </div>
+            <div class="fg">
+              <label class="fl">Retour</label>
+              <input type="date" class="fi" id="dateTo" onchange="updateCalc()">
+            </div>
           </div>
-          <div class="dp-dropdown right" id="dp-to-dropdown"></div>
+
+          <div class="flight-opts" id="flight-opts" style="display:none">
+            <div class="flight-opt-group">
+              <div class="flight-opt-title">🛬 Vol aller — arrivée sur place</div>
+              <div class="flight-opt-btns">
+                <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('same')">Jour même</button>
+                <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('next')">Lendemain <span class="fo-sub">(vol de nuit)</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="nights-banner" id="nights-banner">
+            <div class="nb-number" id="nb-number">0</div>
+            <div class="nb-detail">
+              <div class="nb-label">Nuits d'hôtel à prévoir</div>
+              <div class="nb-breakdown" id="nb-breakdown"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="ctitle">💰 Budget & Change</div>
+          <div class="fg">
+            <label class="fl">Budget Total (€)</label>
+            <input class="fi" id="budget" type="number" value="3000" oninput="updateCalc()">
+          </div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Devise</label><input class="fi" id="currency" value="JPY" oninput="updateCalc()"></div>
+            <div class="fg"><label class="fl">Taux (1€ = )</label><input class="fi" id="fxRate" type="number" value="160" oninput="updateCalc()"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="flight-opts" id="flight-opts" style="display:none">
-      <div class="flight-opt-group">
-        <div class="flight-opt-title"><span class="fo-icon">🛬</span> Vol aller — arrivée sur place</div>
-        <div class="flight-opt-btns">
-          <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('dep','same')">
-            Jour même <span class="fo-sub"></span>
-          </button>
-          <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('dep','next')">
-            Lendemain <span class="fo-sub">(vol de nuit)</span>
-          </button>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <div class="ctitle">🗺 Itinéraire
+            <span class="c-val" id="total-nights-alloc">0 nuits allouées</span>
+          </div>
+          <div id="cities-list"></div>
+          <button class="btn bo bsm" style="margin-top:12px; width:100%" onclick="addCity()">+ Ajouter une étape</button>
+        </div>
+
+        <div class="card">
+          <div class="ctitle">📊 Récapitulatif</div>
+          <div style="height: 200px; position: relative;">
+            <canvas id="budgetChart"></canvas>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="nights-banner" id="nights-banner">
-      <div class="nb-number" id="nb-number">—</div>
-      <div class="nb-detail">
-        <div class="nb-label">Nuits d'hôtel à prévoir</div>
-        <div class="nb-breakdown" id="nb-breakdown"></div>
-      </div>
     </div>
   </div>
 </div>
 
+<div class="page" id="page-list">
+  <div class="con">
+    <div id="sim-list-container" class="g3"></div>
+  </div>
 </div>
-</div>
-</div>
+
+<div id="toast"><span id="ti">✓</span><span id="tt">Enregistré</span></div>
 
 <script>
 let flightDepOpt = 'same';
-let flightRetOpt = 'same'; // Gardé en interne pour compatibilité mais ignoré par le calcul
+let cities = [];
+let chart = null;
 
-function setFlightOpt(type, val) {
-  if(type === 'dep') {
-    flightDepOpt = val;
-    document.getElementById('fo-dep-same').classList.toggle('active', val === 'same');
-    document.getElementById('fo-dep-next').classList.toggle('active', val === 'next');
-  }
-  updateCalc();
-}
-
+// LOGIQUE DE CALCUL AJUSTÉE
 function updateCalc() {
-  const from = document.getElementById('dateFrom').value;
-  const to = document.getElementById('dateTo').value;
+  const d1 = new Date(document.getElementById('dateFrom').value);
+  const d2 = new Date(document.getElementById('dateTo').value);
   
-  if(!from || !to) {
-    document.getElementById('nights-banner').classList.remove('show');
-    return;
-  }
+  if(!isNaN(d1) && !isNaN(d2)) {
+    let diffDays = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+    let nights = diffDays;
+    
+    // Seul le vol aller influe sur le calcul
+    if(flightDepOpt === 'next') nights -= 1;
+    nights = Math.max(0, nights);
 
-  const d1 = new Date(from);
-  const d2 = new Date(to);
-  let diffDays = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+    document.getElementById('flight-opts').style.display = 'flex';
+    document.getElementById('nights-banner').classList.add('show');
+    document.getElementById('nb-number').textContent = nights;
+    document.getElementById('nb-breakdown').textContent = `Basé sur ${diffDays} jours d'écart ${flightDepOpt === 'next' ? '(-1 nuit vol de nuit)' : ''}`;
+    
+    document.getElementById('total-nights-alloc').textContent = `${sumNights()} / ${nights} nuits`;
+  }
   
-  // NOUVELLE LOGIQUE : Seul le vol aller influe sur le nb de nuits
-  let totalNights = diffDays;
-  let detailText = `Calcul basé sur ${diffDays} jours d'écart.`;
-
-  if (flightDepOpt === 'next') {
-    totalNights -= 1;
-    detailText = `${diffDays} jours d'écart - 1 nuit dans l'avion (arrivée lendemain).`;
-  }
-
-  const result = Math.max(0, totalNights);
-  document.getElementById('nb-number').textContent = result;
-  document.getElementById('nb-breakdown').textContent = detailText;
-  document.getElementById('nights-banner').classList.add('show');
-  document.getElementById('flight-opts').style.display = 'flex';
+  renderChart();
 }
 
-// Fonctions minimales pour le fonctionnement du sélecteur de date (Démo)
-function toggleDP(type) {
-  const dd = document.getElementById(`dp-${type}-dropdown`);
-  dd.classList.toggle('open');
-  if(dd.classList.contains('open')) renderCalendar(type);
-}
-
-function renderCalendar(type) {
-  const dd = document.getElementById(`dp-${type}-dropdown`);
-  const today = new Date();
-  dd.innerHTML = `
-    <div class="dp-header">Avril 2024</div>
-    <div class="dp-days">
-      ${Array.from({length: 30}, (_, i) => `
-        <div class="dp-day" onclick="selectDate('${type}', '2024-04-${String(i+1).padStart(2,'0')}')">${i+1}</div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function selectDate(type, dateStr) {
-  document.getElementById(`date${type.charAt(0).toUpperCase() + type.slice(1)}`).value = dateStr;
-  document.getElementById(`dp-${type}-text`).textContent = dateStr;
-  document.getElementById(`dp-${type}-text`).classList.remove('empty');
-  document.getElementById(`dp-${type}-dropdown`).classList.remove('open');
+function setFlightOpt(val) {
+  flightDepOpt = val;
+  document.getElementById('fo-dep-same').classList.toggle('active', val === 'same');
+  document.getElementById('fo-dep-next').classList.toggle('active', val === 'next');
   updateCalc();
 }
 
-function saveSimulation() { alert("Simulaton sauvegardée !"); }
-function newSimulation() { window.location.reload(); }
-function showTab(tab) { console.log("Onglet : " + tab); }
+function addCity(name = '', nights = 0, price = 0) {
+  const id = Date.now() + Math.random();
+  cities.push({id, name, nights, price});
+  renderCities();
+}
+
+function renderCities() {
+  const container = document.getElementById('cities-list');
+  container.innerHTML = '';
+  cities.forEach((c, idx) => {
+    const div = document.createElement('div');
+    div.className = 'city-item';
+    div.innerHTML = `
+      <div class="fg"><label class="fl">Ville</label><input class="fi" value="${c.name}" oninput="updateCity(${idx}, 'name', this.value)"></div>
+      <div class="fg"><label class="fl">Nuits</label><input class="fi" type="number" value="${c.nights}" oninput="updateCity(${idx}, 'nights', this.value)"></div>
+      <div class="fg"><label class="fl">Prix/Nuit</label><input class="fi" type="number" value="${c.price}" oninput="updateCity(${idx}, 'price', this.value)"></div>
+      <button class="btn br bsm" onclick="removeCity(${idx})">✕</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function updateCity(idx, key, val) {
+  cities[idx][key] = key === 'name' ? val : parseFloat(val) || 0;
+  updateCalc();
+}
+
+function removeCity(idx) {
+  cities.splice(idx, 1);
+  renderCities();
+  updateCalc();
+}
+
+function sumNights() { return cities.reduce((sum, c) => sum + c.nights, 0); }
+
+function renderChart() {
+  const ctx = document.getElementById('budgetChart').getContext('2d');
+  const totalHotel = cities.reduce((sum, c) => sum + (c.nights * c.price), 0);
+  const budget = parseFloat(document.getElementById('budget').value) || 0;
+  const reste = Math.max(0, budget - totalHotel);
+
+  if(chart) chart.destroy();
+  chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Hôtels', 'Reste'],
+      datasets: [{
+        data: [totalHotel, reste],
+        backgroundColor: ['#c9a55a', '#1a1e28'],
+        borderColor: 'rgba(255,255,255,0.1)'
+      }]
+    },
+    options: { cutout: '70%', plugins: { legend: { display: false } } }
+  });
+}
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.getElementById('tab-' + p).classList.add('active');
+}
+
+function toast(txt) {
+  const t = document.getElementById('toast');
+  document.getElementById('tt').textContent = txt;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function saveSimulation() {
+  toast("Simulation enregistrée !");
+  // Ici ta logique de fetch vers Google Apps Script
+}
+
+function newSim() {
+  if(confirm("Créer une nouvelle simulation ?")) window.location.reload();
+}
+
+// Init
+addCity('Étape 1', 0, 0);
 </script>
 
 </body>
