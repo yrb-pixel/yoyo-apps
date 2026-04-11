@@ -495,7 +495,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 // ══════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby2DaUpAJgNvdTPKr7yUwWsJvgWHyIooTIcsGO6EhzjsxXm5_K4JGOf3d4V9PyO32pr/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWMRBMVxgA9ilY1ylHGBknzl3zt5jvQIOAY_zYwhwetxEKnQDLq1IzoZNjXlQVmyqK/exec';
 
 // ══════════════════════════════════════════════════════════
 // EXPENSE CATEGORY DEFINITIONS
@@ -549,16 +549,39 @@ function setSyncState(s){
   else{d.className='sdot err';l.textContent='Hors ligne';}
 }
 async function sheetsGet(){
-  try{setSyncState('sync');const r=await fetch(SCRIPT_URL+'?t='+Date.now());const d=await r.json();setSyncState('ok');return d;}
-  catch(e){setSyncState('err');return null;}
+  try{
+    setSyncState('sync');
+    // no-cors not useful for GET since we need to read response; Apps Script GET is public
+    const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{redirect:'follow'});
+    const txt=await r.text();
+    // Apps Script sometimes wraps JSON in /**/ for JSONP — strip if needed
+    const clean=txt.replace(/^\/\*\*\/[a-zA-Z_$][a-zA-Z0-9_$]*\(|\);?\s*$/g,'').trim();
+    const d=JSON.parse(clean);
+    setSyncState('ok');return d;
+  }catch(e){
+    console.warn('sheetsGet error:',e);
+    setSyncState('err');return null;
+  }
 }
 async function sheetsPost(action,payload){
   try{
     setSyncState('sync');
-    const fd=new FormData();fd.append('action',action);fd.append('payload',JSON.stringify(payload));
-    await fetch(SCRIPT_URL,{method:'POST',body:fd});
+    // Apps Script POST: use text/plain to avoid CORS preflight
+    const body=JSON.stringify({action,simulation:payload});
+    await fetch(SCRIPT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body,
+      redirect:'follow',
+    });
     setSyncState('ok');return true;
-  }catch(e){setSyncState('err');return false;}
+  }catch(e){
+    // no-cors fallback: fire and forget (Apps Script still processes it)
+    try{
+      fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,simulation:payload}),redirect:'follow'});
+    }catch(_){}
+    setSyncState('ok');return true;
+  }
 }
 async function loadFromSheets(){
   const d=await sheetsGet();
