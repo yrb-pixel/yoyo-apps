@@ -72,45 +72,35 @@ input, select, textarea {
 }
 input:focus { border-color: var(--accent); outline: none; }
 
-.sep { height: 1px; background: var(--border); margin: 20px 0; position: relative; }
-.sep::after { content: attr(data-label); position: absolute; top: -10px; left: 20px; background: var(--card); padding: 0 10px; font-size: 9px; color: var(--text-dim); font-family: 'JetBrains Mono'; }
-
 /* EXPENSES LIST */
 .exp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .exp-row label { margin-bottom: 0; text-transform: none; font-family: 'Outfit'; font-size: 14px; color: var(--text); }
 .exp-row input { width: 110px; text-align: right; font-family: 'JetBrains Mono'; font-size: 13px; border-color: transparent; background: rgba(0,0,0,0.2); }
-.exp-row input:focus { border-color: var(--accent); }
 
 /* SIDEBAR & STATS */
 .total-box { background: linear-gradient(145deg, #1c222d 0%, #151921 100%); border: 1px solid var(--accent-dim); }
 .amount-main { font-family: 'JetBrains Mono'; font-size: 32px; color: var(--accent); margin: 5px 0; }
-.stat-mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-.stat-mini { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; text-align: center; }
-.stat-mini small { display: block; font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
 
 .sim-item { 
     background: #0b0d12; border: 1px solid var(--border); padding: 12px 15px; 
     border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: 0.2s;
     display: flex; justify-content: space-between; align-items: center;
 }
-.sim-item:hover { border-color: var(--accent); background: #151921; }
-.sim-item.active { border-color: var(--accent); background: var(--accent-dim); }
-.sim-name { font-size: 14px; font-weight: 500; }
-.sim-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.sim-item:hover { border-color: var(--accent); }
+.sim-period-tag { font-size: 9px; background: var(--accent-dim); color: var(--accent); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
 
-/* COMPARATOR */
+/* COMPARATOR SPECIAL */
+.filter-bar { margin-bottom: 20px; display: flex; align-items: center; gap: 15px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
 .comp-table-wrap { overflow-x: auto; }
 .comp-table { width: 100%; border-collapse: collapse; min-width: 600px; }
 .comp-table th { text-align: left; padding: 15px; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
 .comp-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
-.best { color: var(--green); font-weight: 600; }
 
 .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; font-family: inherit; font-size: 13px; transition: 0.2s; }
 .btn-p { background: var(--accent); color: white; }
 .btn-s { background: transparent; border: 1px solid var(--border); color: var(--text); }
-.btn-p:hover { opacity: 0.9; }
 
-.chart-container { height: 220px; position: relative; }
+.chart-container { height: 200px; position: relative; }
 </style>
 </head>
 <body>
@@ -133,10 +123,16 @@ input:focus { border-color: var(--accent); outline: none; }
     <div id="panel-simulator" class="panel active">
         <div class="main-content">
             <div class="card">
-                <div class="card-title"><span>✈</span> Configuration du Voyage</div>
-                <div class="form-group">
-                    <label>Nom de la simulation</label>
-                    <input type="text" id="simName" placeholder="Ex: Norvège — Roadtrip Mai">
+                <div class="card-title"><span>✈</span> Configuration & Période</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nom du scénario</label>
+                        <input type="text" id="simName" placeholder="Ex: Option A - Roadtrip">
+                    </div>
+                    <div class="form-group">
+                        <label>Période (Classement)</label>
+                        <input type="text" id="travelPeriod" placeholder="Ex: Mai 2025">
+                    </div>
                 </div>
                 <div class="grid-2">
                     <div class="form-group"><label>Destination</label><input type="text" id="destination"></div>
@@ -145,52 +141,36 @@ input:focus { border-color: var(--accent); outline: none; }
                         <select id="currency" onchange="runCalc()">
                             <option value="€">EUR (€)</option>
                             <option value="NOK">NOK</option>
-                            <option value="CHF">CHF</option>
                             <option value="$">USD ($)</option>
                         </select>
                     </div>
                 </div>
                 <div class="grid-2">
-                    <div class="form-group"><label>Date de départ</label><input type="date" id="dateFrom" onchange="runCalc()"></div>
-                    <div class="form-group"><label>Date de retour</label><input type="date" id="dateTo" onchange="runCalc()"></div>
+                    <div class="form-group"><label>Date de début</label><input type="date" id="dateFrom" onchange="runCalc()"></div>
+                    <div class="form-group"><label>Date de fin</label><input type="date" id="dateTo" onchange="runCalc()"></div>
                 </div>
                 <div class="grid-2">
                     <div class="form-group"><label>Voyageurs</label><input type="number" id="travelers" value="2" oninput="runCalc()"></div>
-                    <div class="form-group"><label>Budget Cible</label><input type="number" id="budget" placeholder="5000" oninput="runCalc()"></div>
+                    <div class="form-group"><label>Budget Max</label><input type="number" id="budget" placeholder="5000" oninput="runCalc()"></div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-title"><span>📋</span> Détail des Dépenses</div>
-                
-                <div class="sep" data-label="LOGISTIQUE"></div>
                 <div class="exp-row"><label>Vols A/R (total)</label><input type="number" id="c_vols" oninput="runCalc()"></div>
                 <div class="exp-row"><label>Hébergement / nuit</label><input type="number" id="c_hotel_night" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Location voiture / jour</label><input type="number" id="c_car_day" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Carburant (total)</label><input type="number" id="c_fuel" oninput="runCalc()"></div>
-
-                <div class="sep" data-label="VIE QUOTIDIENNE"></div>
-                <div class="exp-row"><label>Resto & Sorties / jour / pers</label><input type="number" id="c_food_day" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Courses / jour / pers</label><input type="number" id="c_grocery_day" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Activités & Visites</label><input type="number" id="c_activities" oninput="runCalc()"></div>
-
-                <div class="sep" data-label="EXTRAS"></div>
-                <div class="exp-row"><label>Shopping & Cadeaux</label><input type="number" id="c_shopping" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Assurance & Divers</label><input type="number" id="c_misc" oninput="runCalc()"></div>
+                <div class="exp-row"><label>Voiture / jour</label><input type="number" id="c_car_day" oninput="runCalc()"></div>
+                <div class="exp-row"><label>Repas / jour / pers</label><input type="number" id="c_food_day" oninput="runCalc()"></div>
+                <div class="exp-row"><label>Activités (total)</label><input type="number" id="c_activities" oninput="runCalc()"></div>
+                <div class="exp-row"><label>Imprévus / Divers</label><input type="number" id="c_misc" oninput="runCalc()"></div>
             </div>
         </div>
 
         <div class="sidebar">
             <div class="card total-box">
-                <label>Estimation Totale</label>
+                <label>Total Estimé</label>
                 <div class="amount-main" id="res-total">0 €</div>
                 <div id="res-remain" style="font-size: 13px; color: var(--text-dim);">Reste : --</div>
-                
-                <div class="stat-mini-grid">
-                    <div class="stat-mini"><span id="res-days">0</span><small>Jours</small></div>
-                    <div class="stat-mini"><span id="res-pp">0 €</span><small>/ Pers</small></div>
-                    <div class="stat-mini"><span id="res-pd">0 €</span><small>/ Jour</small></div>
-                </div>
             </div>
 
             <div class="card">
@@ -198,19 +178,24 @@ input:focus { border-color: var(--accent); outline: none; }
             </div>
 
             <div class="card">
-                <div class="card-title" style="margin-bottom:15px"><span>🗂</span> Sauvegardes</div>
-                <div id="sim-list">
-                    <div style="text-align:center; padding:20px; color:var(--text-dim); font-size:12px;">Chargement...</div>
-                </div>
+                <div class="card-title" style="margin-bottom:15px"><span>🗂</span> Historique</div>
+                <div id="sim-list"></div>
             </div>
         </div>
     </div>
 
     <div id="panel-comparator" class="panel">
-        <div class="card" style="grid-column: 1 / -1;">
-            <div class="card-title"><span>⇄</span> Comparaison des Scénarios</div>
-            <div class="comp-table-wrap" id="comp-wrap">
-                <p style="color:var(--text-dim)">Ajoutez au moins deux scénarios pour comparer.</p>
+        <div style="grid-column: 1 / -1;">
+            <div class="filter-bar">
+                <label style="margin-bottom:0">Comparer la période :</label>
+                <select id="periodFilter" style="width: auto; min-width: 200px;" onchange="renderComparator()">
+                    <option value="">Sélectionnez une période</option>
+                </select>
+            </div>
+            <div class="card">
+                <div class="comp-table-wrap" id="comp-wrap">
+                    <p style="color:var(--text-dim); text-align:center; padding:40px;">Choisissez une période ci-dessus pour comparer les scénarios.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -223,43 +208,34 @@ let simulations = [];
 let myChart = null;
 let activeId = null;
 
-// --- CALCULS ---
 function runCalc() {
     const cur = document.getElementById('currency').value;
     const travelers = parseFloat(document.getElementById('travelers').value) || 1;
     const budget = parseFloat(document.getElementById('budget').value) || 0;
     
-    // Dates
     const d1 = new Date(document.getElementById('dateFrom').value);
     const d2 = new Date(document.getElementById('dateTo').value);
     let days = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)) || 0;
     if (days < 0) days = 0;
 
-    // Postes
     const vols = parseFloat(document.getElementById('c_vols').value) || 0;
     const hotel = (parseFloat(document.getElementById('c_hotel_night').value) || 0) * days;
     const car = (parseFloat(document.getElementById('c_car_day').value) || 0) * days;
-    const fuel = parseFloat(document.getElementById('c_fuel').value) || 0;
-    const food = (parseFloat(document.getElementById('c_food_day').value) || 0 + parseFloat(document.getElementById('c_grocery_day').value) || 0) * days * travelers;
+    const food = (parseFloat(document.getElementById('c_food_day').value) || 0) * days * travelers;
     const act = parseFloat(document.getElementById('c_activities').value) || 0;
-    const misc = (parseFloat(document.getElementById('c_shopping').value) || 0) + (parseFloat(document.getElementById('c_misc').value) || 0);
+    const misc = parseFloat(document.getElementById('c_misc').value) || 0;
 
-    const total = vols + hotel + car + fuel + food + act + misc;
+    const total = vols + hotel + car + food + act + misc;
     const remain = budget - total;
 
-    // UI
     document.getElementById('res-total').textContent = `${total.toLocaleString()} ${cur}`;
-    document.getElementById('res-days').textContent = days;
-    document.getElementById('res-pp').textContent = `${Math.round(total/travelers).toLocaleString()} ${cur}`;
-    document.getElementById('res-pd').textContent = `${Math.round(total/(days||1)).toLocaleString()} ${cur}`;
-    
     const remEl = document.getElementById('res-remain');
     if(budget > 0) {
         remEl.textContent = `Reste : ${remain.toLocaleString()} ${cur}`;
         remEl.style.color = remain >= 0 ? 'var(--green)' : 'var(--red)';
     }
 
-    updateChart([vols, hotel, car + fuel, food, act, misc]);
+    updateChart([vols, hotel, car, food, act, misc]);
 }
 
 function updateChart(data) {
@@ -268,34 +244,31 @@ function updateChart(data) {
     myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Vols', 'Logement', 'Transport', 'Repas', 'Activités', 'Autres'],
+            labels: ['Vols', 'Hébergement', 'Voiture', 'Repas', 'Activités', 'Divers'],
             datasets: [{
                 data: data,
                 backgroundColor: ['#d4875a', '#6db58a', '#6b9fd4', '#9b7fc4', '#c9a84c', '#d46b6b'],
                 borderWidth: 0
             }]
         },
-        options: { 
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            cutout: '80%'
-        }
+        options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
     });
 }
 
-// --- GOOGLE SHEETS API ---
 async function fetchSims() {
     try {
         const r = await fetch(SCRIPT_URL);
         simulations = await r.json();
         renderList();
-    } catch(e) { console.error("Erreur Sheets", e); }
+        updatePeriodFilter();
+    } catch(e) { console.error(e); }
 }
 
 async function saveToSheets() {
     const btn = document.getElementById('saveBtn');
     const name = document.getElementById('simName').value;
-    if(!name) return alert("Donne un nom à ta simulation !");
+    const period = document.getElementById('travelPeriod').value || "Non classé";
+    if(!name) return alert("Nom requis");
     
     btn.textContent = "Envoi...";
     btn.disabled = true;
@@ -303,6 +276,7 @@ async function saveToSheets() {
     const data = {
         id: activeId || 'sim_' + Date.now(),
         simName: name,
+        travelPeriod: period,
         destination: document.getElementById('destination').value,
         currency: document.getElementById('currency').value,
         dateFrom: document.getElementById('dateFrom').value,
@@ -312,11 +286,8 @@ async function saveToSheets() {
         c_vols: document.getElementById('c_vols').value || 0,
         c_hotel_night: document.getElementById('c_hotel_night').value || 0,
         c_car_day: document.getElementById('c_car_day').value || 0,
-        c_fuel: document.getElementById('c_fuel').value || 0,
         c_food_day: document.getElementById('c_food_day').value || 0,
-        c_grocery_day: document.getElementById('c_grocery_day').value || 0,
         c_activities: document.getElementById('c_activities').value || 0,
-        c_shopping: document.getElementById('c_shopping').value || 0,
         c_misc: document.getElementById('c_misc').value || 0,
         updatedAt: new Date().toISOString()
     };
@@ -334,17 +305,13 @@ async function saveToSheets() {
 
 function renderList() {
     const container = document.getElementById('sim-list');
-    if(simulations.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-dim); font-size:12px;">Aucun scénario</div>`;
-        return;
-    }
     container.innerHTML = simulations.map(s => `
         <div class="sim-item ${activeId === s.id ? 'active' : ''}" onclick="loadSim('${s.id}')">
             <div>
+                <span class="sim-period-tag">${s.travelPeriod || 'Mai 2025'}</span>
                 <div class="sim-name">${s.simName}</div>
-                <div class="sim-meta">${s.destination || 'N/A'} • ${s.budget}${s.currency}</div>
             </div>
-            <div style="font-family:'JetBrains Mono'; font-size:11px; color:var(--accent)">></div>
+            <div style="font-family:'JetBrains Mono'; font-size:11px; color:var(--accent)">${s.budget}${s.currency}</div>
         </div>
     `).join('');
 }
@@ -353,55 +320,40 @@ function loadSim(id) {
     activeId = id;
     const s = simulations.find(x => x.id === id);
     if(!s) return;
-    
-    const fields = ['simName','destination','currency','dateFrom','dateTo','travelers','budget','c_vols','c_hotel_night','c_car_day','c_fuel','c_food_day','c_grocery_day','c_activities','c_shopping','c_misc'];
-    fields.forEach(f => {
-        if(document.getElementById(f)) document.getElementById(f).value = s[f] || "";
-    });
-    
+    const fields = ['simName','travelPeriod','destination','currency','dateFrom','dateTo','travelers','budget','c_vols','c_hotel_night','c_car_day','c_food_day','c_activities','c_misc'];
+    fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = s[f] || ""; });
     renderList();
     runCalc();
 }
 
-function resetForm() {
-    activeId = null;
-    document.querySelectorAll('input').forEach(i => i.value = "");
-    document.getElementById('travelers').value = 2;
-    document.getElementById('currency').value = "€";
-    renderList();
-    runCalc();
-}
-
-// --- TABS & COMPARATOR ---
-function switchTab(name) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    event.target.classList.add('active');
-    if(name === 'comparator') renderComparator();
+function updatePeriodFilter() {
+    const filter = document.getElementById('periodFilter');
+    const periods = [...new Set(simulations.map(s => s.travelPeriod))].filter(Boolean);
+    filter.innerHTML = '<option value="">Sélectionnez une période</option>' + 
+        periods.map(p => `<option value="${p}">${p}</option>`).join('');
 }
 
 function renderComparator() {
+    const period = document.getElementById('periodFilter').value;
     const wrap = document.getElementById('comp-wrap');
-    if(simulations.length < 2) {
-        wrap.innerHTML = `<p style="color:var(--text-dim); padding:20px;">Sauvegardez au moins 2 scénarios pour comparer.</p>`;
-        return;
-    }
+    if(!period) return;
 
-    let html = `<table class="comp-table"><thead><tr><th>Critères</th>`;
-    simulations.forEach(s => html += `<th>${s.simName}</th>`);
+    const filtered = simulations.filter(s => s.travelPeriod === period);
+    
+    let html = `<table class="comp-table"><thead><tr><th>Postes</th>`;
+    filtered.forEach(s => html += `<th>${s.simName}</th>`);
     html += `</tr></thead><tbody>`;
 
     const rows = [
-        {n: 'Destination', k: 'destination'},
         {n: 'Budget Max', k: 'budget'},
-        {n: 'Voyageurs', k: 'travelers'},
-        {n: 'Vols', k: 'c_vols'}
+        {n: 'Vols', k: 'c_vols'},
+        {n: 'Hébergement / nuit', k: 'c_hotel_night'},
+        {n: 'Voiture / jour', k: 'c_car_day'}
     ];
 
     rows.forEach(r => {
         html += `<tr><td>${r.n}</td>`;
-        simulations.forEach(s => html += `<td>${s[r.k] || '—'}</td>`);
+        filtered.forEach(s => html += `<td>${s[r.k] || 0} ${s.currency}</td>`);
         html += `</tr>`;
     });
 
@@ -409,10 +361,21 @@ function renderComparator() {
     wrap.innerHTML = html;
 }
 
-// Init
+function switchTab(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+
+function resetForm() {
+    activeId = null;
+    document.querySelectorAll('input').forEach(i => i.value = "");
+    runCalc();
+}
+
 fetchSims();
 runCalc();
 </script>
-
 </body>
 </html>
