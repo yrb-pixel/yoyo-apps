@@ -2,258 +2,1220 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Budget Voyage ✦ Expert</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Voyage ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root {
-  --bg: #0d0f14; --bg2: #13161d; --bg3: #1a1e28;
-  --accent: #d4875a; --text: #e8e4dc; --muted: rgba(232,228,220,0.5);
-  --border: rgba(255,255,255,0.08); --radius: 16px;
+:root{
+  --bg:#0d0f14;--bg2:#13161d;--bg3:#1a1e28;--bg4:#1f2330;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e8e4dc;--muted:rgba(232,228,220,0.42);--muted2:rgba(232,228,220,0.16);
+  --gold:#c9a55a;--gold2:#e8c87a;--gold-bg:rgba(201,165,90,0.1);
+  --sage:#7aad82;--rose:#d4776a;--sky:#6fa8c8;--lavender:#9b8fd4;
+  --amber:#d4a26a;--teal:#5fb3a0;--pink:#c8a0b8;
+  --r:14px;--shadow:0 8px 40px rgba(0,0,0,0.45);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-  background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; 
-  background-image: radial-gradient(circle at 50% 0%, #1e2535 0%, var(--bg) 80%);
-  padding: 20px;
-}
-.container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1fr 420px; gap: 25px; }
-.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
-h2 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 20px; color: var(--accent); }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 
-/* Formulaire */
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.f-group { margin-bottom: 15px; }
-label { display: block; font-size: 11px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-family: 'JetBrains Mono'; }
-input, select { 
-  width: 100%; background: var(--bg3); border: 1px solid var(--border); 
-  border-radius: 8px; padding: 12px; color: white; font-family: inherit;
-}
-input:focus { border-color: var(--accent); outline: none; }
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:200;background:rgba(13,15,20,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;}
+.hdr-in{max-width:1440px;margin:0 auto;height:56px;display:flex;align-items:center;gap:14px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1;}
+.logo em{color:var(--gold);font-style:italic;}
+.sync-row{display:flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--sage);transition:background .3s;}
+.sdot.syncing{background:var(--gold);animation:blink .7s infinite;}
+.sdot.err{background:var(--rose);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hbtns{display:flex;gap:7px;align-items:center;}
 
-/* Multi-villes */
-.city-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
-.btn-add { background: none; border: 1px dashed var(--accent); color: var(--accent); padding: 10px; width: 100%; cursor: pointer; border-radius: 8px; }
+/* TABS */
+.tabs{position:sticky;top:56px;z-index:190;background:rgba(13,15,20,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;}
+.tabs-in{max-width:1440px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;}
+.tabs-in::-webkit-scrollbar{display:none;}
+.tab{padding:12px 16px;font-size:12.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* What If */
-.wi-card { border: 1px solid var(--accent); background: rgba(212, 135, 90, 0.05); }
-.wi-total { font-size: 28px; font-family: 'JetBrains Mono'; color: var(--accent); }
+/* PAGES */
+.page{display:none;}.page.active{display:block;}
+.con{max-width:1440px;margin:0 auto;padding:24px 28px;}
+@media(max-width:768px){.con{padding:12px;}.hdr{padding:0 12px;}.tabs{padding:0 8px;}}
 
-/* Recaps */
-.pill { background: var(--bg3); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-size: 12px; margin-right: 5px; }
-.total-main { font-size: 48px; font-family: 'JetBrains Mono'; color: var(--accent); margin: 10px 0; }
+/* GRID */
+.g2{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;}
+.g2s{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:1100px){.g2{grid-template-columns:1fr;}}
+@media(max-width:700px){.g2s{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
 
-#itineraryRecap { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); }
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;animation:fadeUp .3s ease both;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,165,90,.22),transparent);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ctitle{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.cbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);}
+
+/* FORM */
+.fg{margin-bottom:12px;}
+.fl{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:4px;}
+.fi,.fs{width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+.fi:focus,.fs:focus{border-color:rgba(201,165,90,.45);box-shadow:0 0 0 3px rgba(201,165,90,.07);}
+.fs option{background:var(--bg3);}
+.fi.mono{font-family:'JetBrains Mono',monospace;font-size:17px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+textarea.fi{resize:vertical;min-height:58px;line-height:1.5;}
+
+/* SECTIONS */
+.esec{margin-bottom:16px;}
+.esec-lbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+.esec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.erow{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-bottom:6px;}
+.elbl{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(232,228,220,.72);}
+.edot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.einput{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 10px;}
+.ecomp{display:flex;justify-content:space-between;padding:3px 0 6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);}
+.ecomp span:last-child{color:var(--gold);}
+
+/* FX */
+.fxbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(201,165,90,.05);border:1px solid rgba(201,165,90,.13);border-radius:8px;margin-bottom:12px;flex-wrap:wrap;}
+.fxlbl{font-size:11.5px;color:var(--muted);flex:1;min-width:60px;}
+.fxi{width:76px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.fxr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:14px 0;}
+
+/* TOTAL BLOCK */
+.tblock{background:linear-gradient(135deg,rgba(201,165,90,.09),rgba(201,165,90,.03));border:1px solid rgba(201,165,90,.2);border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.tlbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:2px;}
+.tamt{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:500;}
+.tamt.ok{color:var(--sage);}.tamt.ov{color:var(--rose);}
+.tfxl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;}
+.p-ok{background:rgba(122,173,130,.1);color:var(--sage);border:1px solid rgba(122,173,130,.2);}
+.p-ov{background:rgba(212,119,106,.1);color:var(--rose);border:1px solid rgba(212,119,106,.2);}
+.p-n{background:rgba(232,228,220,.05);color:var(--muted);border:1px solid var(--border);}
+.p-g{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(201,165,90,.2);}
+.p-sky{background:rgba(111,168,200,.1);color:var(--sky);border:1px solid rgba(111,168,200,.2);}
+
+/* METRICS */
+.mcard{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 13px;text-align:center;}
+.mval{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:500;margin-bottom:2px;}
+.mlbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+
+/* SCORE RING */
+.sring-wrap{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);margin-bottom:16px;}
+.sring{width:72px;height:72px;flex-shrink:0;position:relative;}
+.sring svg{transform:rotate(-90deg);}
+.sr-track{fill:none;stroke:var(--border2);stroke-width:6;}
+.sr-fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .6s ease,stroke .3s;}
+.sr-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;}
+.sinfo-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;margin-bottom:2px;}
+.sinfo-desc{font-size:11.5px;color:var(--muted);line-height:1.55;}
+
+/* PROGRESS */
+.pw{margin-bottom:10px;}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.pname{font-size:11.5px;display:flex;align-items:center;gap:5px;}
+.pvals{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.pbar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.pfill{height:100%;border-radius:3px;transition:width .5s ease;}
+
+/* BUDGET SOURCES */
+.src-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.src-row .fi{flex:1;}
+.src-row .fi.src-amt{width:100px;flex:none;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.src-del-btn{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:13px;flex-shrink:0;transition:all .15s;}
+.src-del-btn:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.src-total{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);padding:4px 0;}
+
+/* ACCOMMODATION STOPS */
+.stop-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;position:relative;}
+.stop-card .stop-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.stop-num{width:22px;height:22px;border-radius:50%;background:var(--gold-bg);border:1px solid rgba(201,165,90,.3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);flex-shrink:0;}
+.stop-name{flex:1;font-size:13px;font-weight:500;}
+.stop-del{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:12px;transition:all .15s;}
+.stop-del:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.stop-subtotal{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);text-align:right;margin-top:6px;}
+
+/* ITINERARY */
+.itin-step{display:flex;gap:14px;margin-bottom:0;}
+.itin-line{display:flex;flex-direction:column;align-items:center;}
+.itin-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.itin-connector{width:2px;flex:1;background:var(--border2);margin:3px 0;}
+.itin-body{padding-bottom:20px;flex:1;}
+.itin-city{font-size:14px;font-weight:600;font-family:'Cormorant Garamond',serif;}
+.itin-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+.itin-cost{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-top:3px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;transition:all .15s;white-space:nowrap;}
+.bg{background:var(--gold);color:#0d0f14;}.bg:hover{background:var(--gold2);transform:translateY(-1px);}
+.bo{background:transparent;color:var(--text);border:1px solid var(--border2);}.bo:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);}
+.bgh{background:transparent;color:var(--muted);border:1px solid var(--border);}.bgh:hover{color:var(--text);}
+.bsm{padding:5px 10px;font-size:11.5px;border-radius:7px;}
+.bdng{background:rgba(212,119,106,.1);color:var(--rose);border:1px solid rgba(212,119,106,.2);}
+.bdng:hover{background:rgba(212,119,106,.18);}
+.add-btn{width:100%;padding:9px;border:1px dashed var(--border2);border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;transition:all .15s;margin-top:4px;}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
+
+/* WHAT-IF */
+.wi-res{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px;margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;}
+.wiv{font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:2px;}
+.wil{font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.slider-row{padding:11px 0;}
+.shd{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.shd .sv{font-family:'JetBrains Mono',monospace;color:var(--gold);}
+input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
+
+/* TOGGLE */
+.trow{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+.tgl{position:relative;width:32px;height:18px;flex-shrink:0;}
+.tgl input{opacity:0;width:0;height:0;}
+.tsl{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;cursor:pointer;transition:all .2s;}
+.tsl::before{content:'';position:absolute;left:3px;top:3px;width:10px;height:10px;border-radius:50%;background:var(--muted);transition:all .2s;}
+.tgl input:checked+.tsl{background:rgba(201,165,90,.18);border-color:rgba(201,165,90,.36);}
+.tgl input:checked+.tsl::before{transform:translateX(14px);background:var(--gold);}
+
+/* CHART */
+.cwrap{position:relative;height:200px;}.cwrap-sm{position:relative;height:170px;}
+
+/* SIMULATION LIST */
+.sim-item{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:7px;}
+.sim-item:hover{border-color:var(--border2);transform:translateX(3px);}
+.sim-item.active{border-color:rgba(201,165,90,.36);background:rgba(201,165,90,.04);}
+.sico{width:34px;height:34px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid var(--border);}
+.sbody{flex:1;min-width:0;}
+.sname{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.smeta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:2px;}
+.sbadge{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 8px;border-radius:5px;flex-shrink:0;}
+.sdel{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:12px;transition:all .15s;flex-shrink:0;}
+.sdel:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.sim-actions{display:flex;gap:4px;flex-shrink:0;}
+
+/* COMPARE */
+.cmp-col-wrap{min-width:200px;flex:1;}
+.cmp-hd{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;padding:10px 0;border-bottom:1px solid var(--border);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.cmp-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12.5px;}
+.cmp-row .cl{color:var(--muted);font-size:11.5px;}
+.cmp-row .cv{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.cv.win{color:var(--sage);}.cv.los{color:var(--rose);}
+.cmp-add-col{display:flex;align-items:flex-start;justify-content:center;padding-top:14px;}
+.cmp-table{overflow-x:auto;}
+.cmp-labels-col{min-width:130px;flex-shrink:0;}
+.cmp-labels-col .cmp-hd{color:var(--muted);font-size:13px;}
+.cmp-table-inner{display:flex;gap:0;}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mbg.show{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:28px;width:100%;max-width:440px;margin:12px;transform:scale(.95);transition:transform .2s;max-height:90vh;overflow-y:auto;}
+.mbg.show .modal{transform:scale(1);}
+.mtitle{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin-bottom:4px;}
+.msub{font-size:12.5px;color:var(--muted);margin-bottom:20px;}
+.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:12px 18px;font-size:12.5px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);z-index:999;transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:290px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* EMPTY */
+.empty{text-align:center;padding:32px 16px;color:var(--muted);}
+.ei{font-size:32px;margin-bottom:9px;}.et{font-size:12.5px;line-height:1.65;}
+
+/* SECTION ACTIONS */
+.sa{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="main">
-    <div class="card">
-      <h2>🌍 Configuration du Voyage</h2>
-      <div class="grid">
-        <div class="f-group"><label>Nom Simulation</label><input type="text" id="simName"></div>
-        <div class="f-group"><label>Période (ex: Mai 2025)</label><input type="text" id="travelPeriod"></div>
-      </div>
-      <div class="grid">
-        <div class="f-group"><label>Date Début</label><input type="date" id="dateFrom" onchange="calcNights()"></div>
-        <div class="f-group"><label>Date Fin</label><input type="date" id="dateTo" onchange="calcNights()"></div>
-      </div>
-      <div class="grid">
-        <div class="f-group"><label>Destination</label><input type="text" id="destination"></div>
-        <div class="f-group"><label>Budget Max (Total)</label><input type="number" id="budget"></div>
-      </div>
+<!-- ── HEADER ── -->
+<div class="hdr">
+  <div class="hdr-in">
+    <div class="logo">Budget <em>Voyage</em></div>
+    <div class="sync-row"><div class="sdot" id="sdot"></div><span id="slbl">Connecté</span></div>
+    <div class="hbtns">
+      <button class="btn bo bsm" onclick="showImportModal()">⬇ Importer</button>
+      <button class="btn bo bsm" onclick="newSimulation()">+ Nouveau</button>
+      <button class="btn bg bsm" onclick="saveSimulation()">↑ Sauvegarder</button>
     </div>
-
-    <div class="card">
-      <h2>✈️ Vols</h2>
-      <div class="grid" style="grid-template-columns: 1fr auto;">
-        <div class="f-group"><label>Prix Total des Vols</label><input type="number" id="flightsTotal" oninput="updateAll()"></div>
-        <div class="f-group" style="display:flex; align-items:flex-end;">
-          <button class="btn-add" onclick="fetchFlightApi()" style="padding:12px; border-style:solid;">🔍 Scanner Vols</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>🏨 Hébergement (Multi-villes)</h2>
-      <div id="cityList"></div>
-      <button class="btn-add" onclick="addCity()">+ Ajouter une étape/ville</button>
-    </div>
-
-    <div class="card">
-      <h2>🏷️ Autre & Imprévus</h2>
-      <div class="grid">
-        <div class="f-group"><label>Montant (ex: Escale)</label><input type="number" id="otherTotal" oninput="updateAll()"></div>
-        <div class="f-group"><label>Commentaire</label><input type="text" id="otherComment" placeholder="Nuit d'hôtel escale, visa..."></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sidebar">
-    <div class="card">
-      <label>Coût Total Estimé</label>
-      <div class="total-main" id="displayTotal">0 €</div>
-      <div id="statusBudget"></div>
-      
-      <div id="itineraryRecap">
-        <em>Remplissez les dates et les villes...</em>
-      </div>
-    </div>
-
-    <div class="card">
-      <canvas id="chartBudget" height="200"></canvas>
-    </div>
-
-    <div class="card wi-card">
-      <h2>🤔 Et si... (What-If)</h2>
-      <div class="f-group">
-        <label>Ajouter des nuits (+ prix moy/nuit)</label>
-        <input type="range" id="wi_nights" min="0" max="14" value="0" oninput="updateWhatIf()">
-        <span id="wi_nights_label" class="pill">0 nuit sup.</span>
-      </div>
-      <div class="f-group">
-        <label>Extra Budget Repas / Jour</label>
-        <input type="range" id="wi_food" min="0" max="200" value="0" oninput="updateWhatIf()">
-        <span id="wi_food_label" class="pill">0 € / jour</span>
-      </div>
-      <div class="wi-total" id="wi_total_display">0 €</div>
-    </div>
-
-    <button class="btn-add" id="saveBtn" onclick="saveToSheet()" style="background:var(--accent); color:black; font-weight:bold; border:none; height:50px;">💾 Sauvegarder dans Google Sheet</button>
   </div>
 </div>
 
-<script>
-let cities = [{city: '', nights: 0, total: 0}];
-let myChart = null;
-let currentTotal = 0;
+<!-- ── TABS ── -->
+<div class="tabs">
+  <div class="tabs-in">
+    <div class="tab active" onclick="showTab('form')">✦ Simulation</div>
+    <div class="tab" onclick="showTab('analysis')">📊 Analyse</div>
+    <div class="tab" onclick="showTab('compare')">⇄ Comparer</div>
+    <div class="tab" onclick="showTab('itinerary')">🗺 Itinéraire</div>
+    <div class="tab" onclick="showTab('simulations')">🗂 Historique</div>
+  </div>
+</div>
 
-function addCity() {
-  cities.push({city: '', nights: 0, total: 0});
-  renderCities();
-}
+<!-- ══════════════════════════════════════
+     PAGE SIMULATION
+══════════════════════════════════════ -->
+<div class="page active" id="page-form">
+<div class="con">
+<div class="g2">
 
-function renderCities() {
-  const container = document.getElementById('cityList');
-  container.innerHTML = cities.map((c, i) => `
-    <div class="city-row">
-      <input type="text" placeholder="Ville" value="${c.city}" oninput="updateCity(${i}, 'city', this.value)">
-      <input type="number" placeholder="Nuits" value="${c.nights}" oninput="updateCity(${i}, 'nights', this.value)">
-      <input type="number" placeholder="Prix Total" value="${c.total}" oninput="updateCity(${i}, 'total', this.value)">
-      <button onclick="removeCity(${i})" style="background:none; border:none; color:red; cursor:pointer;">✕</button>
+<!-- LEFT -->
+<div style="display:flex;flex-direction:column;gap:18px;">
+
+  <!-- INFO CARD -->
+  <div class="card">
+    <div class="ctitle">✈ Voyage</div>
+    <div class="fg"><label class="fl">Nom de la simulation</label><input class="fi" id="simName" type="text" placeholder="Norvège — Option A" oninput="updateCalc()"></div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Destination</label><input class="fi" id="destination" type="text" placeholder="Bergen, Lofoten…" oninput="updateCalc()"></div>
+      <div class="fg"><label class="fl">Voyageurs</label><input class="fi" id="travelers" type="number" value="2" min="1" oninput="updateCalc()"></div>
     </div>
-  `).join('');
-  updateAll();
-}
+    <div class="fr">
+      <div class="fg"><label class="fl">Départ</label><input class="fi" id="dateFrom" type="date" oninput="calcDays()"></div>
+      <div class="fg"><label class="fl">Retour</label><input class="fi" id="dateTo" type="date" oninput="calcDays()"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Devise</label>
+        <select class="fs" id="currency" onchange="updateCalc()">
+          <option value="€">€ EUR</option><option value="NOK">NOK</option><option value="CHF">CHF</option>
+          <option value="$">$ USD</option><option value="£">£ GBP</option><option value="MAD">MAD</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Budget total</label><input class="fi mono" id="budget" type="number" placeholder="5000" oninput="updateCalc()"></div>
+    </div>
+    <div class="fxbar" id="fxbar" style="display:none">
+      <span class="fxlbl">1 € =</span>
+      <input class="fi fxi" id="fxRate" type="number" step="0.01" placeholder="11.5" oninput="updateCalc()">
+      <span id="fx-curr" class="fxr">NOK</span>
+      <span id="fx-equiv" class="fxr"></span>
+    </div>
+    <div class="fg"><label class="fl">Notes</label><textarea class="fi" id="notes" placeholder="Idées, contraintes, liens utiles…"></textarea></div>
+  </div>
 
-function updateCity(i, key, val) {
-  cities[i][key] = (key === 'city') ? val : parseFloat(val || 0);
-  updateAll();
-}
+  <!-- BUDGET SOURCES CARD -->
+  <div class="card">
+    <div class="ctitle">💰 Sources de budget
+      <span id="src-covered" class="cbadge" style="display:none">—</span>
+    </div>
+    <div id="src-list"></div>
+    <button class="add-btn" onclick="addSource()">+ Ajouter une source</button>
+    <div class="src-total" id="src-total" style="margin-top:8px;display:none">
+      <span>Total fléché</span><span id="src-total-val">—</span>
+    </div>
+  </div>
 
-function removeCity(i) {
-  cities.splice(i, 1);
-  renderCities();
-}
+  <!-- DÉPENSES CARD -->
+  <div class="card">
+    <div class="ctitle">📋 Dépenses <span class="cbadge" id="days-badge" style="display:none">—</span></div>
 
-function calcNights() {
-  const d1 = new Date(document.getElementById('dateFrom').value);
-  const d2 = new Date(document.getElementById('dateTo').value);
-  if (d1 && d2 && d2 > d1) {
-    const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
-    // Optionnel : Alerte si le total des villes != diff nuits
+    <!-- VOLS -->
+    <div class="esec">
+      <div class="esec-lbl">Vols</div>
+      <div class="erow">
+        <div class="elbl"><span class="edot" style="background:#d4776a"></span>Vols A/R (total)</div>
+        <input class="fi einput" id="c_vols" type="number" placeholder="0" oninput="updateCalc()">
+      </div>
+    </div>
+
+    <!-- LOGEMENT MULTI-ÉTAPES -->
+    <div class="esec">
+      <div class="esec-lbl">Logement par étape</div>
+      <div id="stops-list"></div>
+      <button class="add-btn" onclick="addStop()">+ Ajouter une étape</button>
+      <div class="ecomp" id="hotel-total-row" style="margin-top:8px"><span>Total logement</span><span id="hotel-total">—</span></div>
+    </div>
+
+    <!-- TRANSPORT -->
+    <div class="esec">
+      <div class="esec-lbl">Transport local</div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#c9a55a"></span>Location voiture</div><input class="fi einput" id="c_carrent" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#d4a26a"></span>Carburant</div><input class="fi einput" id="c_fuel" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#e8c87a"></span>Ferries / Bus / Train</div><input class="fi einput" id="c_transport" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+
+    <!-- REPAS -->
+    <div class="esec">
+      <div class="esec-lbl">Repas (total voyage)</div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#6fa8c8"></span>Restaurants</div><input class="fi einput" id="c_food" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#5fb3a0"></span>Picnic / Supermarché</div><input class="fi einput" id="c_picnic" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+
+    <!-- LOISIRS -->
+    <div class="esec">
+      <div class="esec-lbl">Loisirs & Achats</div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#9b8fd4"></span>Activités & Visites</div><input class="fi einput" id="c_activities" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#c8a0b8"></span>Shopping perso</div><input class="fi einput" id="c_shopping" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#e8a08a"></span>Cadeaux & Souvenirs</div><input class="fi einput" id="c_gifts" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+
+    <!-- AUTRE -->
+    <div class="esec">
+      <div class="esec-lbl">Autre</div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#a8b5a3"></span>Assurance voyage</div><input class="fi einput" id="c_insurance" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#8faab5"></span>Visa & Admin</div><input class="fi einput" id="c_visa" type="number" placeholder="0" oninput="updateCalc()"></div>
+      <div class="erow"><div class="elbl"><span class="edot" style="background:#b0a090"></span>Imprévus</div><input class="fi einput" id="c_misc" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+
+    <!-- OTHER / COMMENT -->
+    <div class="esec">
+      <div class="esec-lbl">Divers</div>
+      <div class="fr" style="margin-bottom:6px">
+        <div><label class="fl">Montant autres</label><input class="fi einput" id="otherTotal" style="width:100%;text-align:left" type="number" placeholder="0" oninput="updateCalc()"></div>
+        <div><label class="fl">Description</label><input class="fi" id="otherComment" type="text" placeholder="Ex: Parking aéroport…"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="tblock">
+      <div>
+        <div class="tlbl">Total dépenses</div>
+        <div class="tamt" id="total-amount">—</div>
+        <div class="tfxl" id="fx-total-line" style="display:none"></div>
+      </div>
+      <span class="pill p-n" id="status-pill">Budget non défini</span>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div style="display:flex;flex-direction:column;gap:18px;">
+
+  <!-- SCORE -->
+  <div class="card">
+    <div class="ctitle">Score Confort</div>
+    <div class="sring-wrap">
+      <div class="sring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle class="sr-track" cx="36" cy="36" r="28"/>
+          <circle class="sr-fill" id="sr-fill" cx="36" cy="36" r="28" stroke-dasharray="175.9" stroke-dashoffset="175.9" stroke="var(--sage)"/>
+        </svg>
+        <div class="sr-center" id="sr-pct">—</div>
+      </div>
+      <div><div class="sinfo-title" id="sr-title">En attente…</div><div class="sinfo-desc" id="sr-desc">Saisis ton budget et tes dépenses.</div></div>
+    </div>
+    <div class="g4">
+      <div class="mcard"><div class="mval" id="met-days">—</div><div class="mlbl">Jours</div></div>
+      <div class="mcard"><div class="mval" id="met-nights">—</div><div class="mlbl">Nuits</div></div>
+      <div class="mcard"><div class="mval" id="met-remain">—</div><div class="mlbl">Restant</div></div>
+      <div class="mcard"><div class="mval" id="met-ppd">—</div><div class="mlbl">/jour</div></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="g2s">
+    <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Répartition</div><div class="cwrap-sm"><canvas id="pieChart"></canvas></div></div>
+    <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Budget vs Dépenses</div><div class="cwrap-sm"><canvas id="barChart"></canvas></div></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="card">
+    <div class="ctitle" style="margin-bottom:12px">Détail par catégorie</div>
+    <div id="progress-bars"><div class="empty" style="padding:12px 0"><div class="et">Remplis les dépenses</div></div></div>
+  </div>
+
+  <!-- WHAT-IF -->
+  <div class="card">
+    <div class="ctitle">Projection "Et si…"</div>
+    <div class="slider-row"><div class="shd"><span>Nuits supplémentaires</span><span class="sv" id="wi-nv">+0</span></div><input type="range" id="wi-nights" min="0" max="14" value="0" oninput="updateWhatIf()"></div>
+    <div class="slider-row"><div class="shd"><span>Dépense restaurant extra</span><span class="sv" id="wi-fv">+0</span></div><input type="range" id="wi-food" min="0" max="2000" value="0" step="50" oninput="updateWhatIf()"></div>
+    <div class="slider-row"><div class="shd"><span>Activités supplémentaires</span><span class="sv" id="wi-av">+0</span></div><input type="range" id="wi-act" min="0" max="2000" value="0" step="50" oninput="updateWhatIf()"></div>
+    <div class="wi-res">
+      <div><div class="wiv" id="wi-total">—</div><div class="wil">Nouveau total</div></div>
+      <div><div class="wiv" id="wi-delta">—</div><div class="wil">Delta</div></div>
+      <div><div class="wiv" id="wi-remain">—</div><div class="wil">Restant</div></div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /g2 -->
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE ANALYSE
+══════════════════════════════════════ -->
+<div class="page" id="page-analysis">
+<div class="con">
+  <div class="sa">
+    <select class="fs" id="an-sel" onchange="loadAnalysisSim()" style="max-width:260px"><option value="">— Simulation —</option></select>
+  </div>
+  <div class="g3" style="margin-bottom:16px">
+    <div class="mcard"><div class="mval" id="an-total">—</div><div class="mlbl">Total</div></div>
+    <div class="mcard"><div class="mval" id="an-ppd">—</div><div class="mlbl">/jour</div></div>
+    <div class="mcard"><div class="mval" id="an-remain">—</div><div class="mlbl">Restant</div></div>
+  </div>
+  <div class="g2s" style="margin-bottom:16px">
+    <div class="card"><div class="ctitle" style="font-size:14px">Répartition</div><div class="cwrap"><canvas id="an-pie"></canvas></div></div>
+    <div class="card"><div class="ctitle" style="font-size:14px">Par catégorie</div><div class="cwrap"><canvas id="an-bar"></canvas></div></div>
+  </div>
+  <div class="card"><div class="ctitle">Détail complet</div><div id="an-prog"></div></div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE COMPARER — multi-colonnes
+══════════════════════════════════════ -->
+<div class="page" id="page-compare">
+<div class="con">
+  <div class="sa" id="cmp-selects-row">
+    <!-- selects added dynamically -->
+  </div>
+  <button class="btn bo bsm" style="margin-bottom:16px" onclick="addCompareSlot()">+ Ajouter une simulation</button>
+  <div id="compare-body">
+    <div class="empty"><div class="ei">⇄</div><div class="et">Sélectionne au moins deux simulations.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE ITINÉRAIRE
+══════════════════════════════════════ -->
+<div class="page" id="page-itinerary">
+<div class="con">
+  <div class="sa">
+    <select class="fs" id="itin-sel" onchange="renderItinerary()" style="max-width:260px"><option value="">— Simulation —</option></select>
+  </div>
+  <div id="itin-body">
+    <div class="empty"><div class="ei">🗺</div><div class="et">Sélectionne une simulation avec des étapes.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE HISTORIQUE
+══════════════════════════════════════ -->
+<div class="page" id="page-simulations">
+<div class="con">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">Historique <span class="pill p-g" id="hist-count" style="font-size:10.5px;vertical-align:middle">0</span></div>
+    <button class="btn bo bsm" onclick="showTab('form');newSimulation()">+ Nouvelle</button>
+  </div>
+  <div id="hist-list"><div class="empty"><div class="ei">🌍</div><div class="et">Aucune simulation encore.</div></div></div>
+</div>
+</div>
+
+<!-- ── MODAL SAVE ── -->
+<div class="mbg" id="saveModal">
+  <div class="modal">
+    <div class="mtitle">Sauvegarder</div>
+    <div class="msub">Donne un nom à cette simulation.</div>
+    <div class="fg"><label class="fl">Nom</label><input class="fi" id="modal-name" type="text" placeholder="Ex: Norvège — Option B"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('saveModal')">Annuler</button><button class="btn bg" onclick="confirmSave()">Sauvegarder ↑</button></div>
+  </div>
+</div>
+
+<!-- ── MODAL IMPORT / SAVE AS ── -->
+<div class="mbg" id="importModal">
+  <div class="modal">
+    <div class="mtitle">Importer / Save As</div>
+    <div class="msub">Charge une simulation existante pour la modifier et la sauvegarder sous un nouveau nom.</div>
+    <div class="fg"><label class="fl">Simulation source</label>
+      <select class="fs" id="import-sel"><option value="">— Choisir —</option></select>
+    </div>
+    <div class="fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" onclick="confirmImport()">Charger & dupliquer</button></div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"><span id="ti">✓</span><span id="tt">OK</span></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_WWx--3BH6Q4CkEgBbDmq2teCSQ5dZxJytaVhdLBi8fvvAOPBsCTceCKKuOYMa1SG/exec';
+
+// ═══════════════════════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════════════════════
+const CATS = [
+  {id:'c_vols',      label:'Vols A/R',           color:'#d4776a'},
+  {id:'c_hotel',     label:'Logement',            color:'#7aad82'},
+  {id:'c_carrent',   label:'Location voiture',   color:'#c9a55a'},
+  {id:'c_fuel',      label:'Carburant',           color:'#d4a26a'},
+  {id:'c_transport', label:'Ferries/Transport',   color:'#e8c87a'},
+  {id:'c_food',      label:'Restaurants',         color:'#6fa8c8'},
+  {id:'c_picnic',    label:'Picnic/Supermarché',  color:'#5fb3a0'},
+  {id:'c_activities',label:'Activités',           color:'#9b8fd4'},
+  {id:'c_shopping',  label:'Shopping',            color:'#c8a0b8'},
+  {id:'c_gifts',     label:'Cadeaux',             color:'#e8a08a'},
+  {id:'c_insurance', label:'Assurance',           color:'#a8b5a3'},
+  {id:'c_visa',      label:'Visa & Admin',        color:'#8faab5'},
+  {id:'c_misc',      label:'Imprévus',            color:'#b0a090'},
+  {id:'c_other',     label:'Divers',              color:'#9a8a7a'},
+];
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let sims = [], curId = null;
+let stops = [];      // [{city, nights, pricePerNight}]
+let sources = [];    // [{label, amount}]
+let cmpSlots = ['',''];
+let pie1=null, bar1=null, anPie=null, anBar=null;
+
+// ═══════════════════════════════════════════════════════
+// SYNC
+// ═══════════════════════════════════════════════════════
+function setSyncState(s){
+  const d=document.getElementById('sdot'),l=document.getElementById('slbl');
+  if(s==='sync'){d.className='sdot syncing';l.textContent='Sync…';}
+  else if(s==='ok'){d.className='sdot';l.textContent='Connecté';}
+  else{d.className='sdot err';l.textContent='Hors ligne';}
+}
+async function sheetsGet(){
+  try{
+    setSyncState('sync');
+    const r=await fetch(SCRIPT_URL+'?action=get&t='+Date.now());
+    const txt=await r.text();
+    let d;
+    try{d=JSON.parse(txt);}catch(e){
+      // Apps Script doGet returns HTML if not configured correctly; try fallback
+      setSyncState('err');return null;
+    }
+    setSyncState('ok');return d;
+  }catch(e){setSyncState('err');return null;}
+}
+async function sheetsPost(action,payload){
+  try{
+    setSyncState('sync');
+    const fd=new FormData();
+    fd.append('action',action);
+    fd.append('payload',JSON.stringify(payload));
+    await fetch(SCRIPT_URL,{method:'POST',body:fd});
+    setSyncState('ok');return true;
+  }catch(e){setSyncState('err');return false;}
+}
+async function loadFromSheets(){
+  const d=await sheetsGet();
+  if(d&&Array.isArray(d)&&d.length>=0){
+    sims=d.map(r=>{
+      try{if(typeof r.accommodationJSON==='string')r.cities=JSON.parse(r.accommodationJSON);}catch(e){r.cities=[];}
+      return r;
+    });
+    toast('Simulations chargées ☁','☁');
+  }else{
+    try{sims=JSON.parse(localStorage.getItem('voy-sims')||'[]');}catch(e){sims=[];}
   }
+  renderAll();
+}
+function saveLocal(){try{localStorage.setItem('voy-sims',JSON.stringify(sims));}catch(e){}}
+
+// ═══════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════
+function showTab(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  const tabs=['form','analysis','compare','itinerary','simulations'];
+  document.querySelectorAll('.tab')[tabs.indexOf(n)]?.classList.add('active');
+  if(n==='analysis'){refreshSel('an-sel');loadAnalysisSim();}
+  if(n==='compare'){initCompareSelects();renderCompare();}
+  if(n==='itinerary'){refreshSel('itin-sel');renderItinerary();}
+  if(n==='simulations')renderHist();
 }
 
-function updateAll() {
-  const flights = parseFloat(document.getElementById('flightsTotal').value || 0);
-  const others = parseFloat(document.getElementById('otherTotal').value || 0);
-  const hotelTotal = cities.reduce((sum, c) => sum + (c.total || 0), 0);
-  
-  currentTotal = flights + others + hotelTotal;
-  document.getElementById('displayTotal').innerText = currentTotal.toLocaleString() + ' €';
-  
-  // Itinéraire Recap
-  const itinerary = cities.filter(c => c.city).map(c => `<b>${c.nights}j</b> à ${c.city}`).join(', ');
-  document.getElementById('itineraryRecap').innerHTML = itinerary ? "📍 Trajet : " + itinerary : "<em>En attente d'étapes...</em>";
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function gv(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function gcurr(){return document.getElementById('currency')?.value||'€';}
+function fmt(v,curr){
+  curr=curr||gcurr();const abs=Math.abs(v),sign=v<0?'-':'';
+  if(['€','$','£'].includes(curr))return sign+curr+abs.toLocaleString('fr-FR',{maximumFractionDigits:0});
+  return sign+abs.toLocaleString('fr-FR',{maximumFractionDigits:0})+' '+curr;
+}
+function getDays(){
+  const f=document.getElementById('dateFrom').value,t=document.getElementById('dateTo').value;
+  if(f&&t){const d=Math.round((new Date(t)-new Date(f))/86400000);return d>0?d:0;}
+  return 0;
+}
+function calcDays(){updateCalc();}
 
-  updateChart(flights, hotelTotal, others);
+// ═══════════════════════════════════════════════════════
+// ACCOMMODATION STOPS
+// ═══════════════════════════════════════════════════════
+function addStop(data={}){
+  const id=Date.now()+''+Math.random().toString(36).slice(2,5);
+  stops.push({id,city:data.city||'',nights:data.nights||1,ppn:data.ppn||0});
+  renderStops();
+}
+function removeStop(id){stops=stops.filter(s=>s.id!==id);renderStops();}
+function renderStops(){
+  const el=document.getElementById('stops-list');
+  el.innerHTML=stops.map((s,i)=>`
+    <div class="stop-card" id="stop-${s.id}">
+      <div class="stop-hd">
+        <div class="stop-num">${i+1}</div>
+        <div class="stop-name">Étape ${i+1}</div>
+        <button class="stop-del" onclick="removeStop('${s.id}')">✕</button>
+      </div>
+      <div class="fr3">
+        <div><label class="fl">Ville</label><input class="fi" value="${s.city}" placeholder="Bergen" oninput="updateStop('${s.id}','city',this.value)"></div>
+        <div><label class="fl">Nuits</label><input class="fi" type="number" value="${s.nights}" min="1" oninput="updateStop('${s.id}','nights',this.value);updateCalc()"></div>
+        <div><label class="fl">Prix/nuit</label><input class="fi" type="number" value="${s.ppn||''}" placeholder="0" oninput="updateStop('${s.id}','ppn',this.value);updateCalc()"></div>
+      </div>
+      <div class="stop-subtotal">${fmt((parseFloat(s.nights)||0)*(parseFloat(s.ppn)||0))}</div>
+    </div>`).join('');
+  updateCalc();
+}
+function updateStop(id,field,val){
+  const s=stops.find(x=>x.id===id);if(s){s[field]=field==='city'?val:(parseFloat(val)||0);}
+  // update subtotal live
+  const card=document.getElementById('stop-'+id);
+  if(card){const sub=card.querySelector('.stop-subtotal');if(sub){const st=stops.find(x=>x.id===id);sub.textContent=st?fmt((st.nights||0)*(st.ppn||0)):'';}  }
+}
+function getHotelTotal(){return stops.reduce((s,st)=>s+(st.nights||0)*(st.ppn||0),0);}
+function getTotalNights(){return stops.reduce((s,st)=>s+(parseInt(st.nights)||0),0);}
+
+// ═══════════════════════════════════════════════════════
+// BUDGET SOURCES
+// ═══════════════════════════════════════════════════════
+function addSource(data={}){
+  const id=Date.now()+''+Math.random().toString(36).slice(2,5);
+  sources.push({id,label:data.label||'',amount:data.amount||0});
+  renderSources();
+}
+function removeSource(id){sources=sources.filter(s=>s.id!==id);renderSources();}
+function renderSources(){
+  const el=document.getElementById('src-list');
+  el.innerHTML=sources.map(s=>`
+    <div class="src-row">
+      <input class="fi" value="${s.label}" placeholder="Ex: Épargne Revolut" oninput="updateSource('${s.id}','label',this.value)">
+      <input class="fi src-amt" type="number" value="${s.amount||''}" placeholder="0" oninput="updateSource('${s.id}','amount',this.value);updateCalc()">
+      <button class="src-del-btn" onclick="removeSource('${s.id}')">✕</button>
+    </div>`).join('');
+  updateSourceTotal();
+}
+function updateSource(id,field,val){const s=sources.find(x=>x.id===id);if(s)s[field]=field==='label'?val:(parseFloat(val)||0);updateSourceTotal();}
+function updateSourceTotal(){
+  const total=sources.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  const budget=gv('budget');
+  const el=document.getElementById('src-total');
+  const elv=document.getElementById('src-total-val');
+  const badge=document.getElementById('src-covered');
+  if(sources.length&&budget){
+    el.style.display='flex';
+    elv.textContent=fmt(total)+' / '+fmt(budget)+' ('+Math.round(total/budget*100)+'%)';
+    badge.style.display='';
+    badge.textContent=Math.round(total/budget*100)+'% fléché';
+  }else if(sources.length){
+    el.style.display='flex';elv.textContent=fmt(total);badge.style.display='none';
+  }else{el.style.display='none';badge.style.display='none';}
+}
+
+// ═══════════════════════════════════════════════════════
+// MAIN CALC
+// ═══════════════════════════════════════════════════════
+function getBreakdown(){
+  const hotelTotal=getHotelTotal();
+  return {
+    c_vols:gv('c_vols'),
+    c_hotel:hotelTotal,
+    c_carrent:gv('c_carrent'),
+    c_fuel:gv('c_fuel'),
+    c_transport:gv('c_transport'),
+    c_food:gv('c_food'),
+    c_picnic:gv('c_picnic'),
+    c_activities:gv('c_activities'),
+    c_shopping:gv('c_shopping'),
+    c_gifts:gv('c_gifts'),
+    c_insurance:gv('c_insurance'),
+    c_visa:gv('c_visa'),
+    c_misc:gv('c_misc'),
+    c_other:gv('otherTotal'),
+  };
+}
+
+function updateCalc(){
+  const curr=gcurr(), budget=gv('budget');
+  const bd=getBreakdown();
+  const total=CATS.reduce((s,c)=>s+(bd[c.id]||0),0);
+  const remain=budget-total;
+  const days=getDays(); const nights=getTotalNights();
+  const ppd=days?total/days:0;
+  const fxRate=gv('fxRate');
+
+  // FX
+  const needFx=['NOK','CHF','$','£','MAD'].includes(curr);
+  document.getElementById('fxbar').style.display=needFx?'flex':'none';
+  document.getElementById('fx-curr').textContent=curr;
+  if(needFx&&fxRate&&budget)document.getElementById('fx-equiv').textContent='= '+fmt(budget/fxRate,'€')+' (budget)';
+  if(needFx&&fxRate&&total){document.getElementById('fx-total-line').style.display='block';document.getElementById('fx-total-line').textContent='≈ '+fmt(total/fxRate,'€')+' EUR';}
+  else document.getElementById('fx-total-line').style.display='none';
+
+  // Hotel
+  document.getElementById('hotel-total').textContent=getHotelTotal()?fmt(getHotelTotal()):'—';
+
+  // Days badge
+  if(days){document.getElementById('days-badge').style.display='';document.getElementById('days-badge').textContent=days+'j / '+nights+'n';}
+
+  // Total
+  const ta=document.getElementById('total-amount');ta.textContent=fmt(total);
+  const pill=document.getElementById('status-pill');
+  if(!budget){ta.className='tamt';pill.className='pill p-n';pill.textContent='Budget non défini';}
+  else if(remain>=0){ta.className='tamt ok';pill.className='pill p-ok';pill.textContent='+'+fmt(remain)+' restant';}
+  else{ta.className='tamt ov';pill.className='pill p-ov';pill.textContent=fmt(remain)+' dépassé';}
+
+  // Metrics
+  document.getElementById('met-days').textContent=days||'—';
+  document.getElementById('met-nights').textContent=nights||'—';
+  document.getElementById('met-remain').textContent=budget?fmt(Math.round(remain)):'—';
+  document.getElementById('met-ppd').textContent=ppd?fmt(Math.round(ppd)):'—';
+
+  // Score
+  updateScore(total,budget);
+
+  // Charts & progress
+  updateCharts(bd,total,budget,curr);
+  updateProgress(bd,total,curr);
   updateWhatIf();
+  updateSourceTotal();
 }
 
-function updateChart(f, h, o) {
-  const ctx = document.getElementById('chartBudget').getContext('2d');
-  if (myChart) myChart.destroy();
-  myChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Vols', 'Hébergement', 'Autres'],
-      datasets: [{
-        data: [f, h, o],
-        backgroundColor: ['#d4875a', '#74b9ff', '#a29bfe'],
-        borderWidth: 0
-      }]
-    },
-    options: { cutout: '80%', plugins: { legend: { display: false } } }
+// ═══════════════════════════════════════════════════════
+// SCORE
+// ═══════════════════════════════════════════════════════
+function updateScore(total,budget){
+  const fill=document.getElementById('sr-fill'),pct=document.getElementById('sr-pct');
+  const title=document.getElementById('sr-title'),desc=document.getElementById('sr-desc');
+  const C=175.9;
+  if(!budget||!total){fill.style.strokeDashoffset=C;pct.textContent='—';title.textContent='En attente…';desc.textContent='Saisis ton budget et tes dépenses.';return;}
+  const ratio=total/budget,score=Math.round(Math.min(ratio*100,100));
+  fill.style.strokeDashoffset=C-(score/100)*C;pct.textContent=score+'%';
+  if(ratio<=.7){fill.style.stroke='#7aad82';title.textContent='Très à l\'aise';desc.textContent='Large marge. Tu peux te faire plaisir !';}
+  else if(ratio<=.9){fill.style.stroke='#c9a55a';title.textContent='Bien maîtrisé';desc.textContent='Bon équilibre. Garde un œil sur les imprévus.';}
+  else if(ratio<=1){fill.style.stroke='#d4a26a';title.textContent='Serré mais OK';desc.textContent='Dans le budget, peu de marge de manœuvre.';}
+  else{fill.style.stroke='#d4776a';title.textContent='Budget dépassé';desc.textContent='Dépassement de '+fmt(total-budget)+'. Ajuste les postes.';}
+}
+
+// ═══════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════
+function updateCharts(bd,total,budget,curr){
+  const active=CATS.filter(c=>bd[c.id]>0);
+  if(pie1)pie1.destroy();
+  pie1=new Chart(document.getElementById('pieChart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:active.map(c=>c.label),datasets:[{data:active.length?active.map(c=>bd[c.id]):[1],backgroundColor:active.length?active.map(c=>c.color):['#1a1e28'],borderWidth:2,borderColor:'#13161d'}]},
+    options:{cutout:'65%',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>active.length?ctx.label+': '+fmt(ctx.raw,curr):''}}}}
+  });
+  if(bar1)bar1.destroy();
+  bar1=new Chart(document.getElementById('barChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:['Budget','Dépenses'],datasets:[{data:[budget||0,total],backgroundColor:[total<=budget?'#7aad82':'#8faab5',total>budget?'#d4776a':'#c9a55a'],borderRadius:7,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.raw,curr)}}},scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(232,228,220,.35)',font:{family:'JetBrains Mono',size:9}}},x:{grid:{display:false},ticks:{color:'rgba(232,228,220,.55)',font:{family:'Outfit',size:12}}}}}
   });
 }
-
-function updateWhatIf() {
-  const addNights = parseInt(document.getElementById('wi_nights').value);
-  const addFood = parseInt(document.getElementById('wi_food').value);
-  
-  document.getElementById('wi_nights_label').innerText = addNights + " nuits sup.";
-  document.getElementById('wi_food_label').innerText = addFood + " € / jour";
-
-  const nights = cities.reduce((sum, c) => sum + (c.nights || 0), 0) || 1;
-  const avgNight = currentTotal / nights;
-  
-  const wiTotal = currentTotal + (addNights * avgNight) + (addFood * nights);
-  document.getElementById('wi_total_display').innerText = Math.round(wiTotal).toLocaleString() + ' €';
+function updateProgress(bd,total,curr){
+  const el=document.getElementById('progress-bars');
+  const active=CATS.filter(c=>bd[c.id]>0).sort((a,b)=>bd[b.id]-bd[a.id]);
+  if(!active.length){el.innerHTML='<div class="empty" style="padding:10px 0"><div class="et">Remplis les dépenses</div></div>';return;}
+  el.innerHTML=active.map(cat=>{
+    const val=bd[cat.id],pct=total?Math.round(val/total*100):0;
+    return `<div class="pw"><div class="ph"><span class="pname"><span style="width:7px;height:7px;border-radius:50%;background:${cat.color};display:inline-block;flex-shrink:0"></span>${cat.label}</span><span class="pvals">${fmt(val,curr)} · ${pct}%</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${cat.color}"></div></div></div>`;
+  }).join('');
 }
 
-function fetchFlightApi() {
-  const dest = document.getElementById('destination').value;
-  if(!dest) return alert("Précisez d'abord la destination");
-  
-  alert("Recherche du meilleur prix (1 escale max) pour " + dest + "...");
-  // Ici on simule l'appel API (FlightAPI.io ou Amadeus)
-  setTimeout(() => {
-    const fakePrice = Math.floor(Math.random() * 500) + 400;
-    document.getElementById('flightsTotal').value = fakePrice;
-    updateAll();
-  }, 1500);
+// ═══════════════════════════════════════════════════════
+// WHAT-IF
+// ═══════════════════════════════════════════════════════
+function updateWhatIf(){
+  const curr=gcurr(),bd=getBreakdown();
+  const total=CATS.reduce((s,c)=>s+(bd[c.id]||0),0),budget=gv('budget');
+  const en=parseInt(document.getElementById('wi-nights').value)||0;
+  const ef=parseInt(document.getElementById('wi-food').value)||0;
+  const ea=parseInt(document.getElementById('wi-act').value)||0;
+  const avgPPN=stops.length?stops.reduce((s,st)=>s+(st.ppn||0),0)/stops.length:0;
+  document.getElementById('wi-nv').textContent='+'+en;
+  document.getElementById('wi-fv').textContent='+'+fmt(ef,curr);
+  document.getElementById('wi-av').textContent='+'+fmt(ea,curr);
+  const delta=avgPPN*en+ef+ea;
+  const nt=total+delta,nr=budget-nt;
+  document.getElementById('wi-total').textContent=fmt(nt,curr);
+  document.getElementById('wi-delta').textContent=(delta>=0?'+':'')+fmt(delta,curr);
+  document.getElementById('wi-remain').textContent=budget?fmt(nr,curr):'—';
+  document.getElementById('wi-total').style.color=nt>budget&&budget?'var(--rose)':'var(--text)';
+  document.getElementById('wi-remain').style.color=nr<0&&budget?'var(--rose)':'var(--sage)';
 }
 
-function saveToSheet() {
-  const btn = document.getElementById('saveBtn');
-  btn.innerText = "⏳ Enregistrement...";
-  
-  const payload = {
-    simName: document.getElementById('simName').value,
-    travelPeriod: document.getElementById('travelPeriod').value,
-    destination: document.getElementById('destination').value,
-    dateFrom: document.getElementById('dateFrom').value,
-    dateTo: document.getElementById('dateTo').value,
-    budget: document.getElementById('budget').value,
-    currency: "€",
-    flightsTotal: document.getElementById('flightsTotal').value,
-    cities: cities,
-    otherTotal: document.getElementById('otherTotal').value,
-    otherComment: document.getElementById('otherComment').value,
-    totalCost: currentTotal
+// ═══════════════════════════════════════════════════════
+// FORM DATA
+// ═══════════════════════════════════════════════════════
+function getFormData(){
+  const bd=getBreakdown(),total=CATS.reduce((s,c)=>s+(bd[c.id]||0),0),budget=gv('budget');
+  const nights=getTotalNights(),days=getDays();
+  return {
+    simName:document.getElementById('simName').value,
+    destination:document.getElementById('destination').value,
+    currency:document.getElementById('currency').value,
+    dateFrom:document.getElementById('dateFrom').value,
+    dateTo:document.getElementById('dateTo').value,
+    travelPeriod:document.getElementById('dateFrom').value&&document.getElementById('dateTo').value?document.getElementById('dateFrom').value+' → '+document.getElementById('dateTo').value:'',
+    travelers:document.getElementById('travelers').value,
+    budget,
+    fxRate:document.getElementById('fxRate').value,
+    notes:document.getElementById('notes').value,
+    flightsTotal:bd.c_vols,
+    accommodationJSON:JSON.stringify(stops.map(s=>({city:s.city,nights:s.nights,ppn:s.ppn}))),
+    cities:stops.map(s=>({city:s.city,nights:s.nights,ppn:s.ppn})),
+    otherTotal:gv('otherTotal'),
+    otherComment:document.getElementById('otherComment').value,
+    sources:JSON.stringify(sources.map(s=>({label:s.label,amount:s.amount}))),
+    // flat cats for analysis
+    c_vols:bd.c_vols,c_hotel:bd.c_hotel,c_carrent:bd.c_carrent,c_fuel:bd.c_fuel,
+    c_transport:bd.c_transport,c_food:bd.c_food,c_picnic:bd.c_picnic,
+    c_activities:bd.c_activities,c_shopping:bd.c_shopping,c_gifts:bd.c_gifts,
+    c_insurance:bd.c_insurance,c_visa:bd.c_visa,c_misc:bd.c_misc,c_other:bd.c_other,
+    totalCost:total,remain:budget-total,totalNights:nights,totalDays:days,
   };
-
-  google.script.run.withSuccessHandler(() => {
-    btn.innerText = "✅ Sauvegardé !";
-    setTimeout(() => btn.innerText = "💾 Sauvegarder dans Google Sheet", 2000);
-  }).saveData(payload);
 }
 
-// Init
-renderCities();
+function setFormData(d){
+  const fields=['simName','destination','currency','dateFrom','dateTo','travelers','budget','fxRate','notes','otherTotal','otherComment'];
+  fields.forEach(k=>{const el=document.getElementById(k);if(el)el.value=d[k]||'';});
+  // stops
+  stops=[];
+  let cities=d.cities;
+  if(!cities&&d.accommodationJSON){try{cities=JSON.parse(d.accommodationJSON);}catch(e){cities=[];}}
+  (cities||[]).forEach(c=>addStop({city:c.city,nights:c.nights,ppn:c.ppn}));
+  if(!stops.length)renderStops();
+  // sources
+  sources=[];
+  if(d.sources){try{JSON.parse(d.sources).forEach(s=>addSource(s));}catch(e){}}
+  if(!sources.length)renderSources();
+  updateCalc();
+}
+
+// ═══════════════════════════════════════════════════════
+// SAVE / LOAD / DELETE
+// ═══════════════════════════════════════════════════════
+function newSimulation(){
+  curId=null;
+  const fields=['simName','destination','budget','fxRate','notes','otherTotal','otherComment','dateFrom','dateTo'];
+  fields.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('travelers').value=2;document.getElementById('currency').value='€';
+  stops=[];sources=[];renderStops();renderSources();
+  document.getElementById('wi-nights').value=0;document.getElementById('wi-food').value=0;document.getElementById('wi-act').value=0;
+  updateCalc();toast('Nouveau formulaire','✦');renderAll();
+}
+
+function saveSimulation(){
+  const name=document.getElementById('simName').value.trim();
+  if(!name){document.getElementById('modal-name').value='';document.getElementById('saveModal').classList.add('show');setTimeout(()=>document.getElementById('modal-name').focus(),120);return;}
+  doSave(name);
+}
+function confirmSave(){
+  const name=document.getElementById('modal-name').value.trim();if(!name)return;
+  document.getElementById('simName').value=name;closeModal('saveModal');doSave(name);
+}
+async function doSave(name){
+  const data=getFormData();data.simName=name;const now=new Date().toISOString();
+  if(curId){
+    const idx=sims.findIndex(s=>s.id===curId);
+    if(idx>-1){sims[idx]={...sims[idx],...data,updatedAt:now};await sheetsPost('save',sims[idx]);}
+  }else{
+    const id='SIM_'+Date.now();const sim={id,...data,createdAt:now,updatedAt:now};
+    sims.unshift(sim);curId=id;await sheetsPost('save',sim);
+  }
+  saveLocal();renderAll();toast(`"${name}" sauvegardée`,'✓');
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+function loadSim(id){
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  curId=id;setFormData(sim);showTab('form');toast(`"${sim.simName}" chargée`,'📂');renderAll();
+}
+async function deleteSim(id,e){
+  e&&e.stopPropagation();
+  const sim=sims.find(s=>s.id===id);
+  if(!sim||!confirm(`Supprimer "${sim.simName}" ?`))return;
+  sims=sims.filter(s=>s.id!==id);if(curId===id)curId=null;
+  await sheetsPost('delete',sim);saveLocal();renderAll();toast('Supprimée','🗑');
+}
+
+// Save As / Import
+function showImportModal(){
+  const sel=document.getElementById('import-sel');
+  sel.innerHTML='<option value="">— Choisir —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
+  document.getElementById('import-name').value='';
+  document.getElementById('importModal').classList.add('show');
+}
+function confirmImport(){
+  const id=document.getElementById('import-sel').value;
+  const name=document.getElementById('import-name').value.trim();
+  if(!id||!name){toast('Choisis une source et un nom','⚠');return;}
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  closeModal('importModal');
+  curId=null; // force new
+  setFormData({...sim});
+  document.getElementById('simName').value=name;
+  showTab('form');
+  toast(`Dupliqué depuis "${sim.simName}"  — modifie et sauvegarde`,'📋');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER LISTS
+// ═══════════════════════════════════════════════════════
+function simBreakdown(sim){
+  const cities=sim.cities||(sim.accommodationJSON?JSON.parse(sim.accommodationJSON||'[]'):[]);
+  const hotel=cities.reduce((s,c)=>(s+(parseInt(c.nights)||0)*(parseFloat(c.ppn)||0)),0);
+  const bd={c_hotel:hotel};
+  ['c_vols','c_carrent','c_fuel','c_transport','c_food','c_picnic','c_activities','c_shopping','c_gifts','c_insurance','c_visa','c_misc'].forEach(k=>bd[k]=parseFloat(sim[k])||0);
+  bd.c_other=parseFloat(sim.otherTotal)||0;
+  return bd;
+}
+function simTotal(sim){const bd=simBreakdown(sim);return CATS.reduce((s,c)=>s+(bd[c.id]||0),0);}
+
+function simCardHTML(sim){
+  const curr=sim.currency||'€',total=simTotal(sim),budget=parseFloat(sim.budget)||0,remain=budget-total;
+  const bc=!budget?'p-n':remain>=0?'p-ok':'p-ov';
+  const bt=!budget?fmt(total,curr):remain>=0?'+'+fmt(Math.round(remain),curr):fmt(Math.round(remain),curr);
+  const ds=sim.dateFrom?new Date(sim.dateFrom).toLocaleDateString('fr-FR',{month:'short',year:'numeric'}):'';
+  const ac=curId===sim.id?'active':'';
+  return `<div class="sim-item ${ac}" onclick="loadSim('${sim.id}')">
+    <div class="sico">${sim.destination?'🗺':'✈'}</div>
+    <div class="sbody"><div class="sname">${sim.simName||'Sans titre'}</div><div class="smeta">${[sim.destination,ds].filter(Boolean).join(' · ')}</div></div>
+    <span class="sbadge ${bc}">${bt}</span>
+    <div class="sim-actions">
+      <button class="btn bgh bsm" onclick="event.stopPropagation();importAs('${sim.id}')" title="Dupliquer">⧉</button>
+      <button class="sdel" onclick="deleteSim('${sim.id}',event)">✕</button>
+    </div>
+  </div>`;
+}
+function importAs(id){
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  document.getElementById('import-sel').innerHTML=`<option value="${id}" selected>${sim.simName}</option>`;
+  document.getElementById('import-name').value=sim.simName+' (copie)';
+  document.getElementById('importModal').classList.add('show');
+}
+
+function renderAll(){renderHist();refreshSel('an-sel');refreshSel('itin-sel');initCompareSelects();document.getElementById('hist-count').textContent=sims.length;}
+function renderHist(){
+  const c=document.getElementById('hist-list');
+  c.innerHTML=sims.length?sims.map(simCardHTML).join(''):'<div class="empty"><div class="ei">🌍</div><div class="et">Aucune simulation encore.</div></div>';
+}
+function refreshSel(selId){
+  const sel=document.getElementById(selId);if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Simulation —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
+  if(cur&&sims.find(s=>s.id===cur))sel.value=cur;
+}
+
+// ═══════════════════════════════════════════════════════
+// ANALYSIS
+// ═══════════════════════════════════════════════════════
+function loadAnalysisSim(){
+  const id=document.getElementById('an-sel').value;if(!id)return;
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  const curr=sim.currency||'€';
+  const bd=simBreakdown(sim);const total=CATS.reduce((s,c)=>s+(bd[c.id]||0),0);
+  const budget=parseFloat(sim.budget)||0,days=parseInt(sim.totalDays)||0;
+  const ppd=days?total/days:0;
+  document.getElementById('an-total').textContent=fmt(total,curr);
+  document.getElementById('an-ppd').textContent=ppd?fmt(Math.round(ppd),curr):'—';
+  document.getElementById('an-remain').textContent=budget?fmt(Math.round(budget-total),curr):'—';
+  const active=CATS.filter(c=>bd[c.id]>0);
+  if(anPie)anPie.destroy();
+  anPie=new Chart(document.getElementById('an-pie').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:active.map(c=>c.label),datasets:[{data:active.map(c=>bd[c.id]),backgroundColor:active.map(c=>c.color),borderWidth:2,borderColor:'#13161d'}]},
+    options:{cutout:'58%',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#e8e4dc',font:{family:'Outfit',size:11},boxWidth:11,padding:8}}}}
+  });
+  if(anBar)anBar.destroy();
+  anBar=new Chart(document.getElementById('an-bar').getContext('2d'),{
+    type:'bar',
+    data:{labels:active.map(c=>c.label.split('/')[0].split(' ')[0]),datasets:[{data:active.map(c=>bd[c.id]),backgroundColor:active.map(c=>c.color),borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.raw,curr)}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(232,228,220,.35)',font:{family:'JetBrains Mono',size:9}}},y:{grid:{display:false},ticks:{color:'rgba(232,228,220,.6)',font:{family:'Outfit',size:11}}}}}
+  });
+  const prog=document.getElementById('an-prog');
+  prog.innerHTML=active.sort((a,b)=>bd[b.id]-bd[a.id]).map(cat=>{
+    const val=bd[cat.id],pct=total?Math.round(val/total*100):0;
+    return `<div class="pw"><div class="ph"><span class="pname"><span style="width:7px;height:7px;border-radius:50%;background:${cat.color};display:inline-block;flex-shrink:0"></span>${cat.label}</span><span class="pvals">${fmt(val,curr)} · ${pct}%</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${cat.color}"></div></div></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// COMPARE — multi-colonnes
+// ═══════════════════════════════════════════════════════
+function initCompareSelects(){
+  const row=document.getElementById('cmp-selects-row');
+  row.innerHTML=cmpSlots.map((val,i)=>`
+    <select class="fs" style="max-width:220px;flex:1" onchange="cmpSlots[${i}]=this.value;renderCompare()">
+      <option value="">— Simulation ${i+1} —</option>
+      ${sims.map(s=>`<option value="${s.id}" ${val===s.id?'selected':''}>${s.simName||'Sans titre'}</option>`).join('')}
+    </select>
+    ${cmpSlots.length>2?`<button class="btn bdng bsm" onclick="removeCompareSlot(${i})">✕</button>`:''}
+  `).join('');
+}
+function addCompareSlot(){cmpSlots.push('');initCompareSelects();renderCompare();}
+function removeCompareSlot(i){if(cmpSlots.length<=2)return;cmpSlots.splice(i,1);initCompareSelects();renderCompare();}
+
+function renderCompare(){
+  const el=document.getElementById('compare-body');
+  const selected=cmpSlots.map(id=>sims.find(s=>s.id===id)).filter(Boolean);
+  if(selected.length<2){el.innerHTML='<div class="empty"><div class="ei">⇄</div><div class="et">Sélectionne au moins deux simulations.</div></div>';return;}
+
+  // Build row data
+  const rowDefs=[
+    {label:'Budget',       fn:(sim,bd)=>fmt(parseFloat(sim.budget)||0,sim.currency||'€'),lower:false},
+    {label:'Total',        fn:(sim,bd)=>fmt(CATS.reduce((s,c)=>s+(bd[c.id]||0),0),sim.currency||'€'),lower:true},
+    {label:'Restant',      fn:(sim,bd)=>{const t=CATS.reduce((s,c)=>s+(bd[c.id]||0),0),b=parseFloat(sim.budget)||0;return fmt(b-t,sim.currency||'€');},lower:false},
+    {label:'Jours',        fn:(sim)=>sim.totalDays||'—',lower:true},
+    {label:'Nuits',        fn:(sim)=>sim.totalNights||'—',lower:true},
+    {label:'/jour',        fn:(sim,bd)=>{const t=CATS.reduce((s,c)=>s+(bd[c.id]||0),0),d=parseInt(sim.totalDays)||0;return d?fmt(Math.round(t/d),sim.currency||'€'):'—';},lower:true},
+    {label:'---',          fn:()=>'',lower:null},
+    ...CATS.map(cat=>({label:cat.label,color:cat.color,fn:(sim,bd)=>bd[cat.id]?fmt(bd[cat.id],sim.currency||'€'):'—',lower:true})),
+  ];
+
+  const vals=selected.map(sim=>{const bd=simBreakdown(sim);return rowDefs.map(r=>({raw:r.fn===null?0:typeof r.fn==='function'?r.fn(sim,bd):0,str:r.fn?r.fn(sim,bd):'—',bd,sim}));});
+
+  const colors=['var(--gold)','var(--sky)','var(--sage)','var(--lavender)','var(--amber)'];
+
+  let html=`<div class="card"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:${200+selected.length*160}px">
+    <thead><tr>
+      <th style="text-align:left;padding:8px 10px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-bottom:1px solid var(--border);min-width:130px">Critère</th>
+      ${selected.map((sim,i)=>`<th style="text-align:right;padding:8px 10px;font-size:12px;font-family:'Cormorant Garamond',serif;font-weight:600;color:${colors[i%colors.length]};border-bottom:1px solid var(--border);min-width:150px">${sim.simName||'Sim '+(i+1)}</th>`).join('')}
+    </tr></thead><tbody>`;
+
+  rowDefs.forEach((row,ri)=>{
+    if(row.label==='---'){html+=`<tr><td colspan="${1+selected.length}" style="padding:4px 0;border-bottom:1px solid var(--border)"></td></tr>`;return;}
+    // find winner
+    const numericVals=selected.map(sim=>{
+      const bd=simBreakdown(sim);
+      const t=CATS.reduce((s,c)=>s+(bd[c.id]||0),0);
+      if(row.label==='Budget')return parseFloat(sim.budget)||0;
+      if(row.label==='Total')return t;
+      if(row.label==='Restant')return (parseFloat(sim.budget)||0)-t;
+      if(row.label==='Jours')return parseInt(sim.totalDays)||0;
+      if(row.label==='Nuits')return parseInt(sim.totalNights)||0;
+      if(row.label==='/jour')return parseInt(sim.totalDays)?t/parseInt(sim.totalDays):0;
+      const bd2=simBreakdown(sim);const cat=CATS.find(c=>c.label===row.label);return cat?bd2[cat.id]||0:0;
+    });
+    const validNums=numericVals.filter(v=>v>0);
+    const winnerVal=validNums.length?Math.min(...numericVals.filter(v=>v>0)):null;
+    html+=`<tr>
+      <td style="padding:7px 10px;font-size:11.5px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:6px">${row.color?`<span style="width:6px;height:6px;border-radius:50%;background:${row.color};display:inline-block;flex-shrink:0"></span>`:''}${row.label}</td>
+      ${selected.map((sim,si)=>{
+        const bd=simBreakdown(sim);const str=row.fn?row.fn(sim,bd):'—';
+        const num=numericVals[si];
+        const isWinner=validNums.length>1&&num===winnerVal&&num>0&&row.lower!==null&&row.lower;
+        const isLoser=validNums.length>1&&row.lower&&num===Math.max(...numericVals.filter(v=>v>0))&&num!==winnerVal&&num>0;
+        return `<td style="text-align:right;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04);color:${isWinner?'var(--sage)':isLoser?'var(--rose)':'var(--text)'};font-weight:${isWinner?500:400}">${str}${isWinner?' ✓':''}</td>`;
+      }).join('')}
+    </tr>`;
+  });
+  html+='</tbody></table></div></div>';
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════
+// ITINERARY
+// ═══════════════════════════════════════════════════════
+function renderItinerary(){
+  const id=document.getElementById('itin-sel').value;
+  const el=document.getElementById('itin-body');
+  if(!id){el.innerHTML='<div class="empty"><div class="ei">🗺</div><div class="et">Sélectionne une simulation.</div></div>';return;}
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  let cities=sim.cities;
+  if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}
+  cities=cities||[];
+  if(!cities.length){el.innerHTML='<div class="empty"><div class="ei">📍</div><div class="et">Aucune étape définie pour cette simulation.</div></div>';return;}
+  const curr=sim.currency||'€';
+  const totalNights=cities.reduce((s,c)=>s+(parseInt(c.nights)||0),0);
+  const totalCost=cities.reduce((s,c)=>s+(parseInt(c.nights)||0)*(parseFloat(c.ppn)||0),0);
+  let curDay=1;
+  const steps=cities.map((c,i)=>{
+    const nights=parseInt(c.nights)||1;const cost=(nights)*(parseFloat(c.ppn)||0);
+    const step={city:c.city,nights,ppn:c.ppn,cost,dayStart:curDay,dayEnd:curDay+nights-1};
+    curDay+=nights;return step;
+  });
+  const colors=['#d4776a','#7aad82','#6fa8c8','#9b8fd4','#c9a55a','#5fb3a0','#c8a0b8','#e8c87a'];
+  el.innerHTML=`
+    <div class="g2s" style="margin-bottom:20px">
+      <div class="card">
+        <div class="ctitle" style="font-size:13px;margin-bottom:14px">📍 ${sim.simName}</div>
+        ${steps.map((s,i)=>`
+          <div class="itin-step">
+            <div class="itin-line">
+              <div class="itin-dot" style="background:${colors[i%colors.length]};width:${i===0||i===steps.length-1?12:10}px;height:${i===0||i===steps.length-1?12:10}px;margin-top:3px"></div>
+              ${i<steps.length-1?'<div class="itin-connector"></div>':''}
+            </div>
+            <div class="itin-body">
+              <div class="itin-city">${s.city||'Étape '+(i+1)}</div>
+              <div class="itin-meta">J${s.dayStart}${s.dayStart!==s.dayEnd?'→J'+s.dayEnd:''} · ${s.nights} nuit${s.nights>1?'s':''}</div>
+              ${s.ppn?`<div class="itin-cost">${fmt(s.ppn,curr)}/nuit → ${fmt(s.cost,curr)}</div>`:''}
+            </div>
+          </div>`).join('')}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="ctitle" style="font-size:13px;margin-bottom:12px">Récapitulatif</div>
+          <div class="g2s" style="gap:10px;margin-bottom:14px">
+            <div class="mcard"><div class="mval">${totalNights}</div><div class="mlbl">Nuits totales</div></div>
+            <div class="mcard"><div class="mval">${steps.length}</div><div class="mlbl">Étapes</div></div>
+          </div>
+          ${steps.map((s,i)=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px">
+              <span style="display:flex;align-items:center;gap:7px"><span style="width:8px;height:8px;border-radius:50%;background:${colors[i%colors.length]};display:inline-block"></span>${s.city||'Étape '+(i+1)}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">${s.cost?fmt(s.cost,curr):'—'}</span>
+            </div>`).join('')}
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;font-size:12.5px;font-weight:600">
+            <span>Total logement</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold)">${fmt(totalCost,curr)}</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ctitle" style="font-size:13px;margin-bottom:12px">Répartition nuits</div>
+          <div style="position:relative;height:160px"><canvas id="itin-pie"></canvas></div>
+        </div>
+      </div>
+    </div>`;
+
+  // mini pie
+  setTimeout(()=>{
+    const ctx=document.getElementById('itin-pie')?.getContext('2d');
+    if(!ctx)return;
+    new Chart(ctx,{
+      type:'doughnut',
+      data:{labels:steps.map(s=>s.city||'?'),datasets:[{data:steps.map(s=>s.nights),backgroundColor:steps.map((_,i)=>colors[i%colors.length]),borderWidth:2,borderColor:'#13161d'}]},
+      options:{cutout:'60%',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#e8e4dc',font:{family:'Outfit',size:10},boxWidth:10,padding:7}}}}
+    });
+  },80);
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function toast(text,icon='✓'){
+  const el=document.getElementById('toast');
+  document.getElementById('ti').textContent=icon;
+  document.getElementById('tt').textContent=text;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+// KEYBOARD
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveSimulation();}
+  if(e.key==='Escape'){document.querySelectorAll('.mbg.show').forEach(m=>m.classList.remove('show'));}
+});
+
+// INIT
+renderStops();renderSources();
+loadFromSheets();
+updateCalc();
 </script>
 </body>
 </html>
