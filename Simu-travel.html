@@ -600,7 +600,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 <div class="fg" id="imp-name-fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
     <div class="fg"><label class="fl">Simulation source</label><select class="fs" id="import-sel"><option value="">— Choisir —</option></select></div>
     <div class="fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
-    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" onclick="confirmImport()">Charger & dupliquer</button></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" id="imp-confirm-btn" onclick="confirmImport()">Charger & dupliquer</button></div>
   </div>
 </div>
 
@@ -651,6 +651,7 @@ function setImportMode(mode) {
     ? "Charge sous un nouveau nom — l'original est conservé."
     : "Charge pour modifier directement — la sauvegarde écrasera l'original.";
   document.getElementById('imp-name-fg').style.display = mode === 'dup' ? '' : 'none';
+  document.getElementById('imp-confirm-btn').textContent = mode === 'dup' ? '⧉ Charger & dupliquer' : '✎ Charger & éditer';
 }
 let pie1=null,bar1=null,anPie=null,anBar=null;
 
