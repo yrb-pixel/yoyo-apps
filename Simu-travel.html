@@ -58,16 +58,80 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,165,90,.2),transparent);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .ctitle{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.c-val{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);}
+.cbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);}
 
 /* FORM BASE */
 .fg{margin-bottom:11px;}
 .fl{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:4px;}
 .fi,.fs{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
 .fi:focus,.fs:focus{border-color:rgba(201,165,90,.45);box-shadow:0 0 0 3px rgba(201,165,90,.07);}
+.fs option{background:var(--bg3);}
+.fi.mono{font-family:'JetBrains Mono',monospace;font-size:17px;}
 .fi.auto-val{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:15px;}
 .fi[readonly]{opacity:.7;cursor:default;}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   CUSTOM DATE PICKER
+   ═══════════════════════════════════════ */
+.dp-wrap{position:relative;}
+.dp-trigger{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s,box-shadow .2s;user-select:none;min-height:38px;}
+.dp-trigger:hover{border-color:rgba(201,165,90,.3);}
+.dp-trigger.active{border-color:rgba(201,165,90,.45);box-shadow:0 0 0 3px rgba(201,165,90,.07);}
+.dp-trigger .dp-icon{color:var(--muted);font-size:14px;flex-shrink:0;}
+.dp-trigger .dp-text{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dp-trigger .dp-text.empty{color:var(--muted);}
+.dp-trigger .dp-clear{color:var(--muted);font-size:12px;padding:2px 5px;border-radius:4px;transition:all .15s;flex-shrink:0;}
+.dp-trigger .dp-clear:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+
+.dp-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:300;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px;box-shadow:0 12px 48px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s ease;min-width:280px;}
+.dp-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
+.dp-dropdown.right{left:auto;right:0;}
+
+.dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.dp-month-label{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:default;}
+.dp-nav{display:flex;gap:4px;}
+.dp-nav button{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.dp-nav button:hover{border-color:rgba(201,165,90,.35);color:var(--gold);background:var(--gold-bg);}
+
+.dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.dp-weekdays span{text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:4px 0;}
+
+.dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.dp-day{text-align:center;padding:6px 2px;border-radius:6px;font-size:12.5px;cursor:pointer;transition:all .12s;color:var(--text);position:relative;}
+.dp-day:hover{background:rgba(201,165,90,.1);color:var(--gold);}
+.dp-day.other-month{color:var(--muted2);cursor:default;}
+.dp-day.other-month:hover{background:transparent;color:var(--muted2);}
+.dp-day.today{font-weight:600;color:var(--sky);}
+.dp-day.today::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--sky);}
+.dp-day.selected{background:var(--gold);color:#0d0f14;font-weight:600;}
+.dp-day.selected:hover{background:var(--gold2);}
+.dp-day.selected.today::after{background:#0d0f14;}
+.dp-day.in-range{background:rgba(201,165,90,.08);}
+.dp-day.range-start{border-radius:6px 2px 2px 6px;}
+.dp-day.range-end{border-radius:2px 6px 6px 2px;}
+.dp-day.disabled{color:var(--muted2);cursor:not-allowed;opacity:.4;}
+.dp-day.disabled:hover{background:transparent;}
+
+.dp-footer{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.dp-today-btn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sky);background:transparent;border:1px solid rgba(111,168,200,.2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .12s;}
+.dp-today-btn:hover{background:rgba(111,168,200,.08);border-color:rgba(111,168,200,.35);}
+
+/* ═══════════════════════════════════════
+   FLIGHT ARRIVAL OPTIONS
+   ═══════════════════════════════════════ */
+.flight-opts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+.flight-opt-group{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;}
+.flight-opt-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.flight-opt-title .fo-icon{font-size:13px;}
+.flight-opt-btns{display:flex;gap:5px;}
+.fo-btn{flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;line-height:1.35;}
+.fo-btn:hover{border-color:rgba(201,165,90,.3);color:var(--text);}
+.fo-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.35);font-weight:500;}
+.fo-btn .fo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;font-weight:400;}
+.fo-btn.active .fo-sub{color:rgba(201,165,90,.6);}
 
 /* NIGHTS RESULT BANNER */
 .nights-banner{margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,rgba(122,173,130,.08),rgba(122,173,130,.03));border:1px solid rgba(122,173,130,.2);border-radius:10px;display:none;}
@@ -76,257 +140,1449 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .nb-detail{flex:1;}
 .nb-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--sage);margin-bottom:2px;}
 .nb-breakdown{font-size:11px;color:var(--muted);line-height:1.5;}
+.nb-breakdown strong{color:var(--text);font-weight:500;}
 
-/* FLIGHT ARRIVAL OPTIONS */
-.flight-opts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
-.flight-opt-group{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;}
-.flight-opt-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
-.flight-opt-btns{display:flex;gap:5px;}
-.fo-btn{flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-align:center;line-height:1.35;}
-.fo-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.35);font-weight:500;}
-.fo-btn .fo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;}
+.nights-warning{margin-top:6px;padding:7px 11px;background:rgba(212,119,106,.06);border:1px solid rgba(212,119,106,.15);border-radius:8px;font-size:11px;color:var(--rose);display:none;}
+.nights-warning.show{display:flex;align-items:center;gap:6px;}
 
-/* LISTS & BUTTONS */
+/* CHECKBOX ROW */
+.chk-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);cursor:pointer;padding:5px 0;}
+.chk-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
+.chk-row span{line-height:1.4;}
+
+/* BUDGET AUTO TOGGLE */
+.budget-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.budget-toggle-row label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);}
+.budget-mode-btns{display:flex;gap:4px;margin-left:auto;}
+.mode-btn{padding:3px 9px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;}
+.mode-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.3);}
+
+/* EXPENSE CATEGORY ROWS */
+.cat-block{margin-bottom:12px;}
+.cat-main-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;}
+.cat-label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text);}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cat-main-input{width:110px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px;padding:7px 10px;}
+.cat-split-btn{background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;padding:5px 8px;font-size:11px;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.cat-split-btn:hover{border-color:rgba(201,165,90,.35);color:var(--gold);}
+.cat-split-btn.open{border-color:rgba(201,165,90,.35);color:var(--gold);background:var(--gold-bg);}
+.cat-sub-rows{margin-top:8px;padding:10px 12px;background:var(--bg3);border-radius:9px;border:1px solid var(--border);}
+.sub-row{display:grid;grid-template-columns:1fr 100px auto;gap:7px;align-items:center;margin-bottom:6px;}
+.sub-row:last-child{margin-bottom:0;}
+.sub-row .fi{font-size:12.5px;padding:6px 9px;}
+.sub-row .fi.mono-sm{font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;}
+.sub-del{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:4px 6px;border-radius:5px;font-size:12px;transition:all .15s;}
+.sub-del:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.cat-sub-total{display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.cat-sub-total span:last-child{color:var(--gold);}
+
+/* ACCOMMODATION STOPS */
+.stop-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;position:relative;}
+.stop-hd{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.stop-num{width:20px;height:20px;border-radius:50%;background:var(--gold-bg);border:1px solid rgba(201,165,90,.28);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);flex-shrink:0;}
+.stop-del{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:12px;transition:all .15s;margin-left:auto;}
+.stop-del:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.stop-subtotal{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);text-align:right;margin-top:5px;}
+
+/* BUDGET SOURCES */
+.src-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.src-row .fi{flex:1;font-size:13px;}
+.src-row .fi.src-amt{width:95px;flex:none;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.src-del-btn{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:4px 6px;border-radius:5px;font-size:13px;flex-shrink:0;transition:all .15s;}
+.src-del-btn:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+.src-summary{display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);margin-top:4px;border-top:1px solid var(--border);}
+.src-summary span:last-child{color:var(--gold);}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:13px 0;}
+
+/* TOTAL BLOCK */
+.tblock{background:linear-gradient(135deg,rgba(201,165,90,.09),rgba(201,165,90,.03));border:1px solid rgba(201,165,90,.2);border-radius:12px;padding:15px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.tlbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:2px;}
+.tamt{font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:500;}
+.tamt.ok{color:var(--sage);}.tamt.ov{color:var(--rose);}
+.tfxl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;}
+.p-ok{background:rgba(122,173,130,.1);color:var(--sage);border:1px solid rgba(122,173,130,.2);}
+.p-ov{background:rgba(212,119,106,.1);color:var(--rose);border:1px solid rgba(212,119,106,.2);}
+.p-n{background:rgba(232,228,220,.05);color:var(--muted);border:1px solid var(--border);}
+.p-g{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(201,165,90,.2);}
+
+/* METRICS */
+.mcard{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;text-align:center;}
+.mval{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;margin-bottom:2px;}
+.mlbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
+
+/* SCORE RING */
+.sring-wrap{display:flex;align-items:center;gap:15px;padding:15px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);margin-bottom:15px;}
+.sring{width:70px;height:70px;flex-shrink:0;position:relative;}
+.sring svg{transform:rotate(-90deg);}
+.sr-track{fill:none;stroke:var(--border2);stroke-width:6;}
+.sr-fill{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .6s ease,stroke .3s;}
+.sr-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;}
+.sinfo-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;margin-bottom:2px;}
+.sinfo-desc{font-size:11.5px;color:var(--muted);line-height:1.55;}
+
+/* PROGRESS BARS */
+.pw{margin-bottom:9px;}
+.ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.pname{font-size:11.5px;display:flex;align-items:center;gap:5px;}
+.pvals{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+.pbar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.pfill{height:100%;border-radius:3px;transition:width .5s ease;}
+
+/* WHAT-IF */
+.wi-res{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:9px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;}
+.wiv{font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:2px;}
+.wil{font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
+.slider-row{padding:10px 0;}
+.shd{display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px;}
+.shd .sv{font-family:'JetBrains Mono',monospace;color:var(--gold);}
+input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
+
+/* SIMULATION LIST */
+.sim-item{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:6px;}
+.sim-item:hover{border-color:var(--border2);transform:translateX(3px);}
+.sim-item.active{border-color:rgba(201,165,90,.36);background:rgba(201,165,90,.04);}
+.sico{width:34px;height:34px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;border:1px solid var(--border);}
+.sbody{flex:1;min-width:0;}
+.sname{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.smeta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:2px;}
+.sbadge{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 7px;border-radius:5px;flex-shrink:0;}
+.sdel{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:12px;transition:all .15s;flex-shrink:0;}
+.sdel:hover{color:var(--rose);background:rgba(212,119,106,.1);}
+
+/* ITINERARY */
+.itin-step{display:flex;gap:13px;margin-bottom:0;}
+.itin-line{display:flex;flex-direction:column;align-items:center;}
+.itin-dot{border-radius:50%;flex-shrink:0;margin-top:4px;}
+.itin-connector{width:2px;flex:1;background:var(--border2);margin:3px 0;}
+.itin-body{padding-bottom:18px;flex:1;}
+.itin-city{font-size:14px;font-weight:600;font-family:'Cormorant Garamond',serif;}
+.itin-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
+.itin-cost{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-top:2px;}
+
+/* FX */
+.fxbar{display:flex;align-items:center;gap:8px;padding:8px 11px;background:rgba(201,165,90,.05);border:1px solid rgba(201,165,90,.12);border-radius:8px;margin-bottom:11px;flex-wrap:wrap;}
+.fxlbl{font-size:11.5px;color:var(--muted);flex:1;min-width:60px;}
+.fxi{width:74px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.fxr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);}
+
+/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;transition:all .15s;white-space:nowrap;}
 .bg{background:var(--gold);color:#0d0f14;}.bg:hover{background:var(--gold2);transform:translateY(-1px);}
 .bo{background:transparent;color:var(--text);border:1px solid var(--border2);}.bo:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);}
+.bgh{background:transparent;color:var(--muted);border:1px solid var(--border);}.bgh:hover{color:var(--text);}
 .bsm{padding:5px 10px;font-size:11.5px;border-radius:7px;}
-.br{background:rgba(212,119,106,.15);color:var(--rose);}.br:hover{background:rgba(212,119,106,.25);}
+.bdng{background:rgba(212,119,106,.1);color:var(--rose);border:1px solid rgba(212,119,106,.2);}.bdng:hover{background:rgba(212,119,106,.18);}
+.add-btn{width:100%;padding:8px;border:1px dashed var(--border2);border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;transition:all .15s;margin-top:4px;}
+.add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
 
-/* DATE PICKER (SIMPLIFIÉ POUR LA STRUCTURE) */
-.dp-trigger{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;}
-
-/* CITIES LIST */
-#cities-list{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
-.city-item{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px;display:grid;grid-template-columns:1fr 80px 100px auto;gap:10px;align-items:end;animation:fadeUp .2s ease both;}
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mbg.show{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:430px;margin:12px;transform:scale(.95);transition:transform .2s;max-height:90vh;overflow-y:auto;}
+.mbg.show .modal{transform:scale(1);}
+.mtitle{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;margin-bottom:4px;}
+.msub{font-size:12.5px;color:var(--muted);margin-bottom:20px;}
+.macts{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;}
 
 /* TOAST */
-#toast{position:fixed;bottom:25px;right:25px;background:var(--bg2);border:1px solid var(--gold);padding:12px 20px;border-radius:12px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.175,.885,.32,1.275);z-index:1000;}
-#toast.show{transform:translateY(0);opacity:1;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:12px 17px;font-size:12.5px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);z-index:999;transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:290px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* EMPTY */
+.empty{text-align:center;padding:30px 16px;color:var(--muted);}
+.ei{font-size:30px;margin-bottom:8px;}.et{font-size:12.5px;line-height:1.65;}
+.sa{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:13px;flex-wrap:wrap;}
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-in">
     <div class="logo">Budget <em>Voyage</em></div>
     <div class="sync-row"><div class="sdot" id="sdot"></div><span id="slbl">Connecté</span></div>
     <div class="hbtns">
-      <button class="btn bo bsm" onclick="newSim()">+ Nouveau</button>
+      <button class="btn bo bsm" onclick="showImportModal()">⬇ Importer</button>
+      <button class="btn bo bsm" onclick="newSimulation()">+ Nouveau</button>
       <button class="btn bg bsm" onclick="saveSimulation()">↑ Sauvegarder</button>
     </div>
   </div>
 </div>
 
+<!-- TABS -->
 <div class="tabs">
   <div class="tabs-in">
-    <div class="tab active" id="tab-form" onclick="showPage('form')">✦ Simulation</div>
-    <div class="tab" id="tab-list" onclick="showPage('list')">📂 Mes Simulations</div>
+    <div class="tab active" onclick="showTab('form')">✦ Simulation</div>
+    <div class="tab" onclick="showTab('analysis')">📊 Analyse</div>
+    <div class="tab" onclick="showTab('compare')">⇄ Comparer</div>
+    <div class="tab" onclick="showTab('itinerary')">🗺 Itinéraire</div>
+    <div class="tab" onclick="showTab('simulations')">🗂 Historique</div>
   </div>
 </div>
 
+<!-- Hidden native inputs for data storage -->
+<input type="hidden" id="dateFrom" value="">
+<input type="hidden" id="dateTo" value="">
+
+<!-- ═════════════ PAGE SIMULATION ═════════════ -->
 <div class="page active" id="page-form">
-  <div class="con">
-    <div class="g2">
-      
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div class="card">
-          <div class="ctitle">✈ Voyage</div>
-          <div class="fg">
-            <label class="fl">Nom de la simulation</label>
-            <input class="fi" id="simName" type="text" placeholder="Ex: Japon Automne" oninput="updateCalc()">
-          </div>
-          
-          <div class="fr">
-            <div class="fg">
-              <label class="fl">Départ</label>
-              <input type="date" class="fi" id="dateFrom" onchange="updateCalc()">
-            </div>
-            <div class="fg">
-              <label class="fl">Retour</label>
-              <input type="date" class="fi" id="dateTo" onchange="updateCalc()">
-            </div>
-          </div>
+<div class="con">
+<div class="g2">
 
-          <div class="flight-opts" id="flight-opts" style="display:none">
-            <div class="flight-opt-group">
-              <div class="flight-opt-title">🛬 Vol aller — arrivée sur place</div>
-              <div class="flight-opt-btns">
-                <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('same')">Jour même</button>
-                <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('next')">Lendemain <span class="fo-sub">(vol de nuit)</span></button>
-              </div>
-            </div>
-          </div>
+<!-- LEFT COLUMN -->
+<div style="display:flex;flex-direction:column;gap:16px;">
 
-          <div class="nights-banner" id="nights-banner">
-            <div class="nb-number" id="nb-number">0</div>
-            <div class="nb-detail">
-              <div class="nb-label">Nuits d'hôtel à prévoir</div>
-              <div class="nb-breakdown" id="nb-breakdown"></div>
-            </div>
+  <!-- VOYAGE INFO -->
+  <div class="card">
+    <div class="ctitle">✈ Voyage</div>
+    <div class="fg"><label class="fl">Nom de la simulation</label>
+      <input class="fi" id="simName" type="text" placeholder="Norvège — Option A" oninput="updateCalc()">
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Destination</label><input class="fi" id="destination" type="text" placeholder="Bergen, Lofoten…" oninput="updateCalc()"></div>
+      <div class="fg"><label class="fl">Voyageurs</label><input class="fi" id="travelers" type="number" value="2" min="1" oninput="updateCalc()"></div>
+    </div>
+
+    <!-- CUSTOM DATE PICKERS -->
+    <div class="fr">
+      <div class="fg">
+        <label class="fl">Départ</label>
+        <div class="dp-wrap" id="dp-from-wrap">
+          <div class="dp-trigger" id="dp-from-trigger" onclick="toggleDP('from')">
+            <span class="dp-icon">📅</span>
+            <span class="dp-text empty" id="dp-from-text">Choisir une date</span>
+            <span class="dp-clear" id="dp-from-clear" style="display:none" onclick="event.stopPropagation();clearDP('from')">✕</span>
           </div>
+          <div class="dp-dropdown" id="dp-from-dropdown"></div>
         </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Retour</label>
+        <div class="dp-wrap" id="dp-to-wrap">
+          <div class="dp-trigger" id="dp-to-trigger" onclick="toggleDP('to')">
+            <span class="dp-icon">📅</span>
+            <span class="dp-text empty" id="dp-to-text">Choisir une date</span>
+            <span class="dp-clear" id="dp-to-clear" style="display:none" onclick="event.stopPropagation();clearDP('to')">✕</span>
+          </div>
+          <div class="dp-dropdown right" id="dp-to-dropdown"></div>
+        </div>
+      </div>
+    </div>
 
-        <div class="card">
-          <div class="ctitle">💰 Budget & Change</div>
-          <div class="fg">
-            <label class="fl">Budget Total (€)</label>
-            <input class="fi" id="budget" type="number" value="3000" oninput="updateCalc()">
-          </div>
-          <div class="fr">
-            <div class="fg"><label class="fl">Devise</label><input class="fi" id="currency" value="JPY" oninput="updateCalc()"></div>
-            <div class="fg"><label class="fl">Taux (1€ = )</label><input class="fi" id="fxRate" type="number" value="160" oninput="updateCalc()"></div>
-          </div>
+    <!-- FLIGHT ARRIVAL OPTIONS -->
+    <div class="flight-opts" id="flight-opts" style="display:none">
+      <div class="flight-opt-group">
+        <div class="flight-opt-title"><span class="fo-icon">🛬</span> Vol aller — arrivée sur place</div>
+        <div class="flight-opt-btns">
+          <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('dep','same')">
+            Jour même
+            <span class="fo-sub" id="fo-dep-same-sub"></span>
+          </button>
+          <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('dep','next')">
+            Lendemain
+            <span class="fo-sub" id="fo-dep-next-sub">(vol de nuit)</span>
+          </button>
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div class="card">
-          <div class="ctitle">🗺 Itinéraire
-            <span class="c-val" id="total-nights-alloc">0 nuits allouées</span>
-          </div>
-          <div id="cities-list"></div>
-          <button class="btn bo bsm" style="margin-top:12px; width:100%" onclick="addCity()">+ Ajouter une étape</button>
-        </div>
 
-        <div class="card">
-          <div class="ctitle">📊 Récapitulatif</div>
-          <div style="height: 200px; position: relative;">
-            <canvas id="budgetChart"></canvas>
-          </div>
-        </div>
+    <!-- NIGHTS RESULT -->
+    <div class="nights-banner" id="nights-banner">
+      <div class="nb-number" id="nb-number">—</div>
+      <div class="nb-detail">
+        <div class="nb-label">Nuits d'hôtel à prévoir</div>
+        <div class="nb-breakdown" id="nb-breakdown"></div>
       </div>
+    </div>
+    <div class="nights-warning" id="nights-warning">
+      <span>⚠</span><span id="nights-warning-text"></span>
+    </div>
 
+    <div class="fr" style="margin-top:10px">
+      <div class="fg"><label class="fl">Devise</label>
+        <select class="fs" id="currency" onchange="updateCalc()">
+          <option value="€">€ EUR</option><option value="NOK">NOK</option><option value="CHF">CHF</option>
+          <option value="$">$ USD</option><option value="£">£ GBP</option><option value="MAD">MAD</option>
+        </select>
+      </div>
+      <div class="fg">
+        <div class="budget-toggle-row">
+          <label class="fl" style="margin:0">Budget total</label>
+          <div class="budget-mode-btns">
+            <button class="mode-btn active" id="mode-auto" onclick="setBudgetMode('auto')" title="Calculé depuis les sources">Auto</button>
+            <button class="mode-btn" id="mode-manual" onclick="setBudgetMode('manual')" title="Saisie manuelle">Manuel</button>
+          </div>
+        </div>
+        <input class="fi auto-val" id="budget" type="number" placeholder="0" readonly oninput="updateCalc()">
+      </div>
+    </div>
+
+    <div class="fxbar" id="fxbar" style="display:none">
+      <span class="fxlbl">1 € =</span>
+      <input class="fi fxi" id="fxRate" type="number" step="0.01" placeholder="11.5" oninput="updateCalc()">
+      <span id="fx-curr" class="fxr">NOK</span>
+      <span id="fx-equiv" class="fxr"></span>
+    </div>
+
+    <div class="fg"><label class="fl">Notes</label><textarea class="fi" id="notes" placeholder="Idées, contraintes, liens utiles…"></textarea></div>
+  </div>
+
+  <!-- BUDGET SOURCES -->
+  <div class="card">
+    <div class="ctitle">💰 Sources de budget <span class="cbadge" id="src-badge" style="display:none">0%</span></div>
+    <div id="src-list"></div>
+    <button class="add-btn" onclick="addSource()">+ Ajouter une source</button>
+    <div class="src-summary" id="src-summary" style="display:none">
+      <span>Total fléché</span><span id="src-total-val">—</span>
     </div>
   </div>
+
+  <!-- DÉPENSES -->
+  <div class="card">
+    <div class="ctitle">📋 Dépenses <span class="cbadge" id="days-badge" style="display:none">—</span></div>
+
+    <!-- VOLS -->
+    <div style="margin-bottom:14px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;">Vols</div>
+      <div id="cat-vols"></div>
+    </div>
+
+    <!-- LOGEMENT -->
+    <div style="margin-bottom:14px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:7px;">
+        Logement par étape
+        <span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      </div>
+      <div id="stops-list"></div>
+      <button class="add-btn" onclick="addStop()">+ Ajouter une étape</button>
+      <div class="ecomp" id="hotel-total-row" style="margin-top:7px"><span>Total logement</span><span id="hotel-total">—</span></div>
+    </div>
+
+    <!-- EXPENSE CATEGORIES -->
+    <div id="cats-container"></div>
+
+    <div class="divider"></div>
+
+    <div class="tblock">
+      <div>
+        <div class="tlbl">Total dépenses</div>
+        <div class="tamt" id="total-amount">—</div>
+        <div class="tfxl" id="fx-total-line" style="display:none"></div>
+      </div>
+      <span class="pill p-n" id="status-pill">Budget non défini</span>
+    </div>
+  </div>
+
+</div><!-- /left -->
+
+<!-- RIGHT COLUMN -->
+<div style="display:flex;flex-direction:column;gap:16px;">
+
+  <!-- SCORE -->
+  <div class="card">
+    <div class="ctitle">Score Confort</div>
+    <div class="sring-wrap">
+      <div class="sring">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <circle class="sr-track" cx="35" cy="35" r="28"/>
+          <circle class="sr-fill" id="sr-fill" cx="35" cy="35" r="28" stroke-dasharray="175.9" stroke-dashoffset="175.9" stroke="var(--sage)"/>
+        </svg>
+        <div class="sr-center" id="sr-pct">—</div>
+      </div>
+      <div><div class="sinfo-title" id="sr-title">En attente…</div><div class="sinfo-desc" id="sr-desc">Saisis les sources de budget et les dépenses.</div></div>
+    </div>
+    <div class="g4">
+      <div class="mcard"><div class="mval" id="met-days">—</div><div class="mlbl">Jours</div></div>
+      <div class="mcard"><div class="mval" id="met-nights">—</div><div class="mlbl">Nuits</div></div>
+      <div class="mcard"><div class="mval" id="met-remain">—</div><div class="mlbl">Restant</div></div>
+      <div class="mcard"><div class="mval" id="met-ppd">—</div><div class="mlbl">/jour</div></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="g2s">
+    <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Répartition</div><div style="position:relative;height:165px"><canvas id="pieChart"></canvas></div></div>
+    <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Budget vs Dépenses</div><div style="position:relative;height:165px"><canvas id="barChart"></canvas></div></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="card">
+    <div class="ctitle" style="margin-bottom:12px">Détail par catégorie</div>
+    <div id="progress-bars"><div class="empty" style="padding:10px 0"><div class="et">Remplis les dépenses</div></div></div>
+  </div>
+
+  <!-- WHAT-IF -->
+  <div class="card">
+    <div class="ctitle">Projection "Et si…"</div>
+    <div class="slider-row"><div class="shd"><span>Nuits supplémentaires</span><span class="sv" id="wi-nv">+0</span></div><input type="range" id="wi-nights" min="0" max="14" value="0" oninput="updateWhatIf()"></div>
+    <div class="slider-row"><div class="shd"><span>Dépenses extra repas</span><span class="sv" id="wi-fv">+0</span></div><input type="range" id="wi-food" min="0" max="2000" value="0" step="50" oninput="updateWhatIf()"></div>
+    <div class="slider-row"><div class="shd"><span>Activités supplémentaires</span><span class="sv" id="wi-av">+0</span></div><input type="range" id="wi-act" min="0" max="2000" value="0" step="50" oninput="updateWhatIf()"></div>
+    <div class="wi-res">
+      <div><div class="wiv" id="wi-total">—</div><div class="wil">Nouveau total</div></div>
+      <div><div class="wiv" id="wi-delta">—</div><div class="wil">Delta</div></div>
+      <div><div class="wiv" id="wi-remain">—</div><div class="wil">Restant</div></div>
+    </div>
+  </div>
+
+</div><!-- /right -->
+</div><!-- /g2 -->
+</div>
 </div>
 
-<div class="page" id="page-list">
-  <div class="con">
-    <div id="sim-list-container" class="g3"></div>
+<!-- ═════════════ PAGE ANALYSE ═════════════ -->
+<div class="page" id="page-analysis">
+<div class="con">
+  <div class="sa"><select class="fs" id="an-sel" onchange="loadAnalysisSim()" style="max-width:260px"><option value="">— Simulation —</option></select></div>
+  <div class="g3" style="margin-bottom:15px">
+    <div class="mcard"><div class="mval" id="an-total">—</div><div class="mlbl">Total</div></div>
+    <div class="mcard"><div class="mval" id="an-ppd">—</div><div class="mlbl">/jour</div></div>
+    <div class="mcard"><div class="mval" id="an-remain">—</div><div class="mlbl">Restant</div></div>
+  </div>
+  <div class="g2s" style="margin-bottom:15px">
+    <div class="card"><div class="ctitle" style="font-size:14px">Répartition</div><div style="position:relative;height:195px"><canvas id="an-pie"></canvas></div></div>
+    <div class="card"><div class="ctitle" style="font-size:14px">Par catégorie</div><div style="position:relative;height:195px"><canvas id="an-bar"></canvas></div></div>
+  </div>
+  <div class="card"><div class="ctitle">Détail complet</div><div id="an-prog"></div></div>
+</div>
+</div>
+
+<!-- ═════════════ PAGE COMPARER ═════════════ -->
+<div class="page" id="page-compare">
+<div class="con">
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center" id="cmp-selects-row"></div>
+  <button class="btn bo bsm" style="margin-bottom:15px" onclick="addCompareSlot()">+ Ajouter</button>
+  <div id="compare-body"><div class="empty"><div class="ei">⇄</div><div class="et">Sélectionne au moins deux simulations.</div></div></div>
+</div>
+</div>
+
+<!-- ═════════════ PAGE ITINÉRAIRE ═════════════ -->
+<div class="page" id="page-itinerary">
+<div class="con">
+  <div class="sa"><select class="fs" id="itin-sel" onchange="renderItinerary()" style="max-width:260px"><option value="">— Simulation —</option></select></div>
+  <div id="itin-body"><div class="empty"><div class="ei">🗺</div><div class="et">Sélectionne une simulation avec des étapes.</div></div></div>
+</div>
+</div>
+
+<!-- ═════════════ PAGE HISTORIQUE ═════════════ -->
+<div class="page" id="page-simulations">
+<div class="con">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">Historique <span class="pill p-g" id="hist-count" style="font-size:10.5px;vertical-align:middle">0</span></div>
+    <button class="btn bo bsm" onclick="showTab('form');newSimulation()">+ Nouvelle</button>
+  </div>
+  <div id="hist-list"><div class="empty"><div class="ei">🌍</div><div class="et">Aucune simulation encore.</div></div></div>
+</div>
+</div>
+
+<!-- MODAL SAVE -->
+<div class="mbg" id="saveModal">
+  <div class="modal">
+    <div class="mtitle">Sauvegarder</div>
+    <div class="msub">Donne un nom à cette simulation.</div>
+    <div class="fg"><label class="fl">Nom</label><input class="fi" id="modal-name" type="text" placeholder="Ex: Norvège — Option B"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('saveModal')">Annuler</button><button class="btn bg" onclick="confirmSave()">Sauvegarder ↑</button></div>
   </div>
 </div>
 
-<div id="toast"><span id="ti">✓</span><span id="tt">Enregistré</span></div>
+<!-- MODAL IMPORT -->
+<div class="mbg" id="importModal">
+  <div class="modal">
+    <div class="mtitle">Dupliquer / Save As</div>
+    <div class="msub">Charge une simulation existante sous un nouveau nom pour la modifier.</div>
+    <div class="fg"><label class="fl">Simulation source</label><select class="fs" id="import-sel"><option value="">— Choisir —</option></select></div>
+    <div class="fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" onclick="confirmImport()">Charger & dupliquer</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="ti">✓</span><span id="tt">OK</span></div>
 
 <script>
-let flightDepOpt = 'same';
-let cities = [];
-let chart = null;
+// ══════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWMRBMVxgA9ilY1ylHGBknzl3zt5jvQIOAY_zYwhwetxEKnQDLq1IzoZNjXlQVmyqK/exec';
 
-// LOGIQUE DE CALCUL AJUSTÉE
-function updateCalc() {
-  const d1 = new Date(document.getElementById('dateFrom').value);
-  const d2 = new Date(document.getElementById('dateTo').value);
-  
-  if(!isNaN(d1) && !isNaN(d2)) {
-    let diffDays = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
-    let nights = diffDays;
-    
-    // Seul le vol aller influe sur le calcul
-    if(flightDepOpt === 'next') nights -= 1;
-    nights = Math.max(0, nights);
+const CAT_DEFS = [
+  { id:'vols',       label:'Vols A/R',       color:'#d4776a', icon:'✈', subs:[] },
+  { id:'transport',  label:'Transport local', color:'#e8c87a', icon:'🚗', subs:['Location voiture','Carburant','Ferries / Bus / Train'] },
+  { id:'repas',      label:'Repas',           color:'#6fa8c8', icon:'🍽', subs:['Restaurants','Picnic / Supermarché','Cafés & Snacks'] },
+  { id:'activites',  label:'Activités',       color:'#9b8fd4', icon:'🎒', subs:['Visites & Musées','Sports & Aventure','Excursions'] },
+  { id:'shopping',   label:'Shopping',        color:'#c8a0b8', icon:'🛍', subs:['Shopping perso','Cadeaux & Souvenirs'] },
+  { id:'autre',      label:'Autre',           color:'#a8b5a3', icon:'📎', subs:['Assurance voyage','Visa & Admin','Imprévus'] },
+];
 
-    document.getElementById('flight-opts').style.display = 'flex';
-    document.getElementById('nights-banner').classList.add('show');
-    document.getElementById('nb-number').textContent = nights;
-    document.getElementById('nb-breakdown').textContent = `Basé sur ${diffDays} jours d'écart ${flightDepOpt === 'next' ? '(-1 nuit vol de nuit)' : ''}`;
-    
-    document.getElementById('total-nights-alloc').textContent = `${sumNights()} / ${nights} nuits`;
+const CHART_CATS = [
+  {id:'c_vols',      label:'Vols A/R',        color:'#d4776a'},
+  {id:'c_hotel',     label:'Logement',         color:'#7aad82'},
+  {id:'c_transport', label:'Transport local',  color:'#e8c87a'},
+  {id:'c_repas',     label:'Repas',            color:'#6fa8c8'},
+  {id:'c_activites', label:'Activités',        color:'#9b8fd4'},
+  {id:'c_shopping',  label:'Shopping',         color:'#c8a0b8'},
+  {id:'c_autre',     label:'Autre',            color:'#a8b5a3'},
+];
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let sims=[], curId=null;
+let stops=[];
+let sources=[];
+let catState={};
+let budgetMode='auto';
+let cmpSlots=['',''];
+let pie1=null,bar1=null,anPie=null,anBar=null;
+
+// Flight arrival state
+let flightDepArrival='same'; // 'same' or 'next'
+let flightRetArrival='same'; // 'same' or 'next'
+
+// ══════════════════════════════════════════════════════════
+// CUSTOM DATE PICKER
+// ══════════════════════════════════════════════════════════
+const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS_FR = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+
+let dpState = {
+  from: { value: null, viewYear: null, viewMonth: null },
+  to:   { value: null, viewYear: null, viewMonth: null },
+};
+let openDP = null; // 'from' | 'to' | null
+
+function toggleDP(which) {
+  if (openDP === which) { closeAllDP(); return; }
+  closeAllDP();
+  openDP = which;
+  const st = dpState[which];
+  if (!st.viewYear) {
+    const ref = st.value ? new Date(st.value) : new Date();
+    st.viewYear = ref.getFullYear();
+    st.viewMonth = ref.getMonth();
   }
-  
-  renderChart();
+  document.getElementById('dp-'+which+'-trigger').classList.add('active');
+  renderDP(which);
+  document.getElementById('dp-'+which+'-dropdown').classList.add('open');
 }
 
-function setFlightOpt(val) {
-  flightDepOpt = val;
-  document.getElementById('fo-dep-same').classList.toggle('active', val === 'same');
-  document.getElementById('fo-dep-next').classList.toggle('active', val === 'next');
-  updateCalc();
-}
-
-function addCity(name = '', nights = 0, price = 0) {
-  const id = Date.now() + Math.random();
-  cities.push({id, name, nights, price});
-  renderCities();
-}
-
-function renderCities() {
-  const container = document.getElementById('cities-list');
-  container.innerHTML = '';
-  cities.forEach((c, idx) => {
-    const div = document.createElement('div');
-    div.className = 'city-item';
-    div.innerHTML = `
-      <div class="fg"><label class="fl">Ville</label><input class="fi" value="${c.name}" oninput="updateCity(${idx}, 'name', this.value)"></div>
-      <div class="fg"><label class="fl">Nuits</label><input class="fi" type="number" value="${c.nights}" oninput="updateCity(${idx}, 'nights', this.value)"></div>
-      <div class="fg"><label class="fl">Prix/Nuit</label><input class="fi" type="number" value="${c.price}" oninput="updateCity(${idx}, 'price', this.value)"></div>
-      <button class="btn br bsm" onclick="removeCity(${idx})">✕</button>
-    `;
-    container.appendChild(div);
+function closeAllDP() {
+  ['from','to'].forEach(w => {
+    document.getElementById('dp-'+w+'-dropdown').classList.remove('open');
+    document.getElementById('dp-'+w+'-trigger').classList.remove('active');
   });
+  openDP = null;
 }
 
-function updateCity(idx, key, val) {
-  cities[idx][key] = key === 'name' ? val : parseFloat(val) || 0;
+function renderDP(which) {
+  const st = dpState[which];
+  const y = st.viewYear, m = st.viewMonth;
+  const firstDay = new Date(y, m, 1);
+  const lastDay = new Date(y, m + 1, 0);
+  const startWeekday = (firstDay.getDay() + 6) % 7; // Monday=0
+  const daysInMonth = lastDay.getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  // Previous month padding
+  const prevMonth = new Date(y, m, 0);
+  const prevDays = prevMonth.getDate();
+
+  let cells = '';
+  // Padding from previous month
+  for (let i = startWeekday - 1; i >= 0; i--) {
+    cells += `<div class="dp-day other-month">${prevDays - i}</div>`;
+  }
+
+  // Current month
+  const fromVal = dpState.from.value;
+  const toVal = dpState.to.value;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateObj = new Date(y, m, d);
+    let cls = 'dp-day';
+
+    // Today
+    if (dateObj.getTime() === today.getTime()) cls += ' today';
+
+    // Selected
+    if (dateStr === fromVal || dateStr === toVal) cls += ' selected';
+    if (dateStr === fromVal && toVal) cls += ' range-start';
+    if (dateStr === toVal && fromVal) cls += ' range-end';
+
+    // In range
+    if (fromVal && toVal && dateStr > fromVal && dateStr < toVal) cls += ' in-range';
+
+    // Disable: if picking 'to', disable before 'from'
+    let disabled = false;
+    if (which === 'to' && fromVal && dateStr <= fromVal) { cls += ' disabled'; disabled = true; }
+
+    cells += `<div class="${cls}" ${disabled?'':'onclick="selectDPDay(\''+which+'\',\''+dateStr+'\')"'}>${d}</div>`;
+  }
+
+  // Next month padding
+  const totalCells = startWeekday + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= remaining; i++) {
+    cells += `<div class="dp-day other-month">${i}</div>`;
+  }
+
+  const el = document.getElementById('dp-'+which+'-dropdown');
+  el.innerHTML = `
+    <div class="dp-header">
+      <div class="dp-nav">
+        <button onclick="event.stopPropagation();dpNav('${which}',-1)">‹</button>
+      </div>
+      <div class="dp-month-label">${MONTHS_FR[m]} ${y}</div>
+      <div class="dp-nav">
+        <button onclick="event.stopPropagation();dpNav('${which}',1)">›</button>
+      </div>
+    </div>
+    <div class="dp-weekdays">${DAYS_FR.map(d => `<span>${d}</span>`).join('')}</div>
+    <div class="dp-days">${cells}</div>
+    <div class="dp-footer">
+      <button class="dp-today-btn" onclick="event.stopPropagation();dpGoToday('${which}')">Aujourd'hui</button>
+    </div>
+  `;
+}
+
+function dpNav(which, dir) {
+  const st = dpState[which];
+  st.viewMonth += dir;
+  if (st.viewMonth > 11) { st.viewMonth = 0; st.viewYear++; }
+  if (st.viewMonth < 0) { st.viewMonth = 11; st.viewYear--; }
+  renderDP(which);
+}
+
+function dpGoToday(which) {
+  const now = new Date();
+  dpState[which].viewYear = now.getFullYear();
+  dpState[which].viewMonth = now.getMonth();
+  renderDP(which);
+}
+
+function selectDPDay(which, dateStr) {
+  dpState[which].value = dateStr;
+  document.getElementById('date' + (which === 'from' ? 'From' : 'To')).value = dateStr;
+  updateDPDisplay(which);
+  closeAllDP();
+
+  // If selecting 'from' and no 'to' yet, auto-open 'to'
+  if (which === 'from' && !dpState.to.value) {
+    const d = new Date(dateStr);
+    dpState.to.viewYear = d.getFullYear();
+    dpState.to.viewMonth = d.getMonth();
+    setTimeout(() => toggleDP('to'), 180);
+  }
+
+  // If selecting 'to' before 'from', fix it
+  if (which === 'to' && dpState.from.value && dateStr <= dpState.from.value) {
+    return; // disabled should prevent this
+  }
+
+  onDateChange();
+}
+
+function clearDP(which) {
+  dpState[which].value = null;
+  document.getElementById('date' + (which === 'from' ? 'From' : 'To')).value = '';
+  updateDPDisplay(which);
+  onDateChange();
+}
+
+function updateDPDisplay(which) {
+  const val = dpState[which].value;
+  const textEl = document.getElementById('dp-'+which+'-text');
+  const clearEl = document.getElementById('dp-'+which+'-clear');
+  if (val) {
+    const d = new Date(val);
+    const opts = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
+    textEl.textContent = d.toLocaleDateString('fr-FR', opts);
+    textEl.classList.remove('empty');
+    clearEl.style.display = '';
+  } else {
+    textEl.textContent = 'Choisir une date';
+    textEl.classList.add('empty');
+    clearEl.style.display = 'none';
+  }
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', e => {
+  if (openDP && !e.target.closest('.dp-wrap')) closeAllDP();
+});
+
+// ══════════════════════════════════════════════════════════
+// FLIGHT ARRIVAL OPTIONS
+// ══════════════════════════════════════════════════════════
+function setFlightOpt(leg, val) {
+  if (leg === 'dep') {
+    flightDepArrival = val;
+    document.getElementById('fo-dep-same').classList.toggle('active', val === 'same');
+    document.getElementById('fo-dep-next').classList.toggle('active', val === 'next');
+  } else {
+    flightRetArrival = val;
+    document.getElementById('fo-ret-same').classList.toggle('active', val === 'same');
+    document.getElementById('fo-ret-next').classList.toggle('active', val === 'next');
+  }
+  onDateChange();
+}
+
+// ══════════════════════════════════════════════════════════
+// DATE & NIGHTS LOGIC (rewritten)
+// ══════════════════════════════════════════════════════════
+function onDateChange() {
+  const f = document.getElementById('dateFrom').value;
+  const t = document.getElementById('dateTo').value;
+  const flightOpts = document.getElementById('flight-opts');
+  const banner = document.getElementById('nights-banner');
+  const warning = document.getElementById('nights-warning');
+
+  // Show flight options as soon as departure date is set
+  if (f) {
+    flightOpts.style.display = 'flex';
+    // Update subtexts with actual dates
+    const depDate = new Date(f);
+    const depNext = new Date(f); depNext.setDate(depNext.getDate() + 1);
+    document.getElementById('fo-dep-same-sub').textContent = formatShort(depDate);
+    document.getElementById('fo-dep-next-sub').textContent = formatShort(depNext) + ' (vol de nuit)';
+
+    if (t) {
+      const retDate = new Date(t);
+      const retNext = new Date(t); retNext.setDate(retNext.getDate() + 1);
+      document.getElementById('fo-ret-same-sub').textContent = formatShort(retDate);
+      document.getElementById('fo-ret-next-sub').textContent = formatShort(retNext) + ' (vol de nuit)';
+    }
+  } else {
+    flightOpts.style.display = 'none';
+  }
+
+  if (f && t) {
+    const days = Math.round((new Date(t) - new Date(f)) / 86400000);
+    if (days > 0) {
+      // Calculate nights of hotel needed
+      // First night: if vol aller arrives "lendemain", you don't need a hotel the departure night (you're on the plane)
+      //   but you arrive next day = first hotel night is day after departure
+      // Last night: if vol retour departs on return date and arrives same day, last hotel night is night before return
+      //   if vol retour arrives lendemain (night flight), you need hotel the night before AND you're traveling that night
+
+      // Simple model:
+      // Base = number of calendar nights between departure and return = days
+      // depArrival 'same': you arrive departure day → need hotel from night 1 (departure night)
+      // depArrival 'next': you arrive day after departure → you're on the plane departure night, no hotel needed → -1
+      // retArrival 'same': you depart return day during daytime → no hotel needed return night (you leave during the day)
+      // retArrival 'next': vol de nuit retour → you need hotel until return night then fly out → actually same, you still leave return day
+
+      // Actually let's think about it differently:
+      // Total calendar nights from departure evening to return morning = days - 1
+      // (e.g., depart May 10, return May 20 = 10 days of trip, 9 nights between them)
+      // Adjustments:
+      // If aller arrives LENDEMAIN: you spend the first night on the plane → -1 hotel night
+      //   (you depart evening of day 1, arrive morning of day 2, first hotel = night of day 2)
+      // If retour is vol de nuit (arrives lendemain): you need 1 extra hotel night
+      //   because you stay the last day and fly out at night → you need hotel the last night? No...
+      //   Actually if retour is vol de nuit departing return date evening, you DON'T need hotel that last night
+      //   But you DO have an extra day on location. The "lendemain" here means you arrive HOME the next day.
+      //   So for hotel purposes, same as "same day" return - last hotel night is night before return date.
+
+      // Revised simple model:
+      // Base nights of hotel = days - 1  (between departure and return)
+      // If vol aller arrives next day (overnight): first night is on the plane, so -1
+      // Vol retour doesn't change hotel count (you leave during the day or evening of return date either way)
+      // BUT if the user's return flight is overnight, they have an extra day on location but still leave return date evening
+
+const baseNights = days - 1; // e.g. May 10 → May 20 = 9 nights
+let hotelNights = baseNights;
+// Vol aller arrives next day → first night on the plane, not at hotel
+if (flightDepArrival === 'next') hotelNights -= 1;
+hotelNights = Math.max(hotelNights, 0);
+
+
+      // Show banner
+      banner.classList.add('show');
+      document.getElementById('nb-number').textContent = hotelNights;
+
+      // Build breakdown text
+      let breakdown = `<strong>${days} jours</strong> (${formatShort(new Date(f))} → ${formatShort(new Date(t))})`;
+      breakdown += ` · ${baseNights} nuit${baseNights > 1 ? 's' : ''} de base`;
+      if (flightDepArrival === 'next') breakdown += ` · <span style="color:var(--sky)">−1 nuit vol aller</span>`;
+      document.getElementById('nb-breakdown').innerHTML = breakdown;
+
+      // Warning if stops nights don't match
+      const stopsNights = getTotalStopNights();
+      if (stopsNights > 0 && stopsNights !== hotelNights) {
+        warning.classList.add('show');
+        document.getElementById('nights-warning-text').textContent =
+          `Les étapes totalisent ${stopsNights} nuit${stopsNights>1?'s':''} mais ${hotelNights} sont à prévoir. Ajuste les étapes.`;
+      } else {
+        warning.classList.remove('show');
+      }
+
+      updateCalc();
+      return;
+    }
+  }
+
+  banner.classList.remove('show');
+  warning.classList.remove('show');
   updateCalc();
 }
 
-function removeCity(idx) {
-  cities.splice(idx, 1);
-  renderCities();
+function formatShort(d) {
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+}
+
+function getTripNights() {
+  const f = document.getElementById('dateFrom').value;
+  const t = document.getElementById('dateTo').value;
+  if (f && t) {
+    const days = Math.round((new Date(t) - new Date(f)) / 86400000);
+    if (days > 0) {
+      let n = days - 1;
+      if (flightDepArrival === 'next') n -= 1;
+      return Math.max(n, 0);
+    }
+  }
+  return stops.reduce((s, st) => s + (parseInt(st.nights) || 0), 0);
+}
+
+function getTripDays() {
+  const f = document.getElementById('dateFrom').value;
+  const t = document.getElementById('dateTo').value;
+  if (f && t) { const d = Math.round((new Date(t) - new Date(f)) / 86400000); return d > 0 ? d : 0; }
+  return 0;
+}
+
+// ══════════════════════════════════════════════════════════
+// SYNC / SHEETS (unchanged)
+// ══════════════════════════════════════════════════════════
+function setSyncState(s){
+  const d=document.getElementById('sdot'),l=document.getElementById('slbl');
+  if(s==='sync'){d.className='sdot syncing';l.textContent='Sync…';}
+  else if(s==='ok'){d.className='sdot';l.textContent='Connecté';}
+  else{d.className='sdot err';l.textContent='Hors ligne';}
+}
+async function sheetsGet(){
+  try{
+    setSyncState('sync');
+    const r=await fetch(SCRIPT_URL+'?t='+Date.now(),{redirect:'follow'});
+    const txt=await r.text();
+    const clean=txt.replace(/^\/\*\*\/[a-zA-Z_$][a-zA-Z0-9_$]*\(|\);?\s*$/g,'').trim();
+    const d=JSON.parse(clean);
+    setSyncState('ok');return d;
+  }catch(e){console.warn('sheetsGet error:',e);setSyncState('err');return null;}
+}
+async function sheetsPost(action,payload){
+  try{
+    setSyncState('sync');
+    const body=JSON.stringify({action,simulation:payload});
+    await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body,redirect:'follow'});
+    setSyncState('ok');return true;
+  }catch(e){
+    try{fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,simulation:payload}),redirect:'follow'});}catch(_){}
+    setSyncState('ok');return true;
+  }
+}
+async function loadFromSheets(){
+  const d=await sheetsGet();
+  if(d&&Array.isArray(d)){
+    sims=d.map(r=>{
+      try{if(typeof r.accommodationJSON==='string')r.cities=JSON.parse(r.accommodationJSON);}catch(e){r.cities=[];}
+      try{if(typeof r.catStateJSON==='string')r.catStateSaved=JSON.parse(r.catStateJSON);}catch(e){}
+      try{if(typeof r.sources==='string')r.sourcesSaved=JSON.parse(r.sources);}catch(e){}
+      return r;
+    });
+    toast('Simulations chargées ☁','☁');
+  }else{
+    try{sims=JSON.parse(localStorage.getItem('voy-sims')||'[]');}catch(e){sims=[];}
+  }
+  renderAll();
+}
+function saveLocal(){try{localStorage.setItem('voy-sims',JSON.stringify(sims));}catch(e){}}
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+function showTab(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  const tabs=['form','analysis','compare','itinerary','simulations'];
+  document.querySelectorAll('.tab')[tabs.indexOf(n)]?.classList.add('active');
+  if(n==='analysis'){refreshSel('an-sel');loadAnalysisSim();}
+  if(n==='compare'){initCompareSelects();renderCompare();}
+  if(n==='itinerary'){refreshSel('itin-sel');renderItinerary();}
+  if(n==='simulations')renderHist();
+}
+
+// ══════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════
+function gv(id){return parseFloat(document.getElementById(id)?.value)||0;}
+function gcurr(){return document.getElementById('currency')?.value||'€';}
+function fmt(v,curr){
+  curr=curr||gcurr();const abs=Math.abs(v),sign=v<0?'-':'';
+  if(['€','$','£'].includes(curr))return sign+curr+abs.toLocaleString('fr-FR',{maximumFractionDigits:0});
+  return sign+abs.toLocaleString('fr-FR',{maximumFractionDigits:0})+' '+curr;
+}
+
+// ══════════════════════════════════════════════════════════
+// ACCOMMODATION STOPS
+// ══════════════════════════════════════════════════════════
+function addStop(data={}){
+  const id='s'+Date.now()+Math.random().toString(36).slice(2,4);
+  stops.push({id,city:data.city||'',nights:data.nights||'',total:data.total||''});
+  renderStops();
+}
+function removeStop(id){stops=stops.filter(s=>s.id!==id);renderStops();updateCalc();}
+function renderStops(){
+  const el=document.getElementById('stops-list');
+  el.innerHTML=stops.map((s,i)=>`
+    <div class="stop-card" id="stop-${s.id}">
+      <div class="stop-hd">
+        <div class="stop-num">${i+1}</div>
+        <span style="font-size:12.5px;font-weight:500;flex:1">${s.city||'Étape '+(i+1)}</span>
+        <button class="stop-del" onclick="removeStop('${s.id}')">✕</button>
+      </div>
+      <div class="fr3">
+        <div><label class="fl">Ville</label>
+          <input class="fi" value="${s.city||''}" placeholder="Bergen"
+            oninput="updateStopField('${s.id}','city',this.value)"></div>
+        <div><label class="fl">Nuits</label>
+          <input class="fi" type="number" min="1" value="${s.nights||''}" placeholder="4"
+            oninput="updateStopField('${s.id}','nights',this.value)"></div>
+        <div><label class="fl">Total logement</label>
+          <input class="fi" type="number" value="${s.total||''}" placeholder="0"
+            oninput="updateStopField('${s.id}','total',this.value);updateCalc()"></div>
+      </div>
+      <div class="stop-subtotal" id="stop-sub-${s.id}">${s.total?fmt(parseFloat(s.total)):''}</div>
+    </div>`).join('');
+}
+function updateStopField(id,field,val){
+  const s=stops.find(x=>x.id===id);if(!s)return;
+  s[field]=field==='city'?val:(parseFloat(val)||'');
+  const subEl=document.getElementById('stop-sub-'+id);
+  if(subEl)subEl.textContent=s.total?fmt(parseFloat(s.total)):'';
+  // Re-check nights warning
+  onDateChange();
+}
+function getHotelTotal(){return stops.reduce((s,st)=>s+(parseFloat(st.total)||0),0);}
+function getTotalStopNights(){return stops.reduce((s,st)=>s+(parseInt(st.nights)||0),0);}
+
+// ══════════════════════════════════════════════════════════
+// BUDGET SOURCES
+// ══════════════════════════════════════════════════════════
+function addSource(data={}){
+  const id='src'+Date.now()+Math.random().toString(36).slice(2,4);
+  sources.push({id,label:data.label||'',amount:data.amount||''});
+  renderSources();
+}
+function removeSource(id){sources=sources.filter(s=>s.id!==id);renderSources();updateCalc();}
+function renderSources(){
+  const el=document.getElementById('src-list');
+  el.innerHTML=sources.map(s=>`
+    <div class="src-row">
+      <input class="fi" value="${s.label||''}" placeholder="Ex: Épargne Revolut"
+        oninput="updateSourceField('${s.id}','label',this.value)">
+      <input class="fi src-amt" type="number" value="${s.amount||''}" placeholder="0"
+        oninput="updateSourceField('${s.id}','amount',this.value);updateCalc()">
+      <button class="src-del-btn" onclick="removeSource('${s.id}')">✕</button>
+    </div>`).join('');
+  updateCalc();
+}
+function updateSourceField(id,field,val){
+  const s=sources.find(x=>x.id===id);if(s)s[field]=field==='label'?val:(parseFloat(val)||'');
+}
+function getSourcesTotal(){return sources.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);}
+
+function setBudgetMode(mode){
+  budgetMode=mode;
+  document.getElementById('mode-auto').className='mode-btn'+(mode==='auto'?' active':'');
+  document.getElementById('mode-manual').className='mode-btn'+(mode==='manual'?' active':'');
+  const budgetEl=document.getElementById('budget');
+  if(mode==='auto'){budgetEl.readOnly=true;budgetEl.classList.add('auto-val');}
+  else{budgetEl.readOnly=false;budgetEl.classList.remove('auto-val');budgetEl.focus();}
   updateCalc();
 }
 
-function sumNights() { return cities.reduce((sum, c) => sum + c.nights, 0); }
-
-function renderChart() {
-  const ctx = document.getElementById('budgetChart').getContext('2d');
-  const totalHotel = cities.reduce((sum, c) => sum + (c.nights * c.price), 0);
-  const budget = parseFloat(document.getElementById('budget').value) || 0;
-  const reste = Math.max(0, budget - totalHotel);
-
-  if(chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Hôtels', 'Reste'],
-      datasets: [{
-        data: [totalHotel, reste],
-        backgroundColor: ['#c9a55a', '#1a1e28'],
-        borderColor: 'rgba(255,255,255,0.1)'
-      }]
-    },
-    options: { cutout: '70%', plugins: { legend: { display: false } } }
-  });
+// ══════════════════════════════════════════════════════════
+// EXPENSE CATEGORIES
+// ══════════════════════════════════════════════════════════
+function initCatState(){
+  catState={};
+  CAT_DEFS.forEach(def=>{catState[def.id]={total:0,subs:[],open:false};});
+}
+function renderCats(){
+  const el=document.getElementById('cats-container');
+  el.innerHTML=CAT_DEFS.map(def=>{
+    const st=catState[def.id];
+    const subTotal=st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+    return `
+      <div class="cat-block" id="catblock-${def.id}">
+        <div class="cat-main-row">
+          <div class="cat-label"><span class="cat-dot" style="background:${def.color}"></span>${def.icon} ${def.label}</div>
+          <input class="fi cat-main-input" type="number"
+            value="${st.open&&st.subs.length?subTotal:(st.total||'')}"
+            placeholder="0"
+            ${st.open&&st.subs.length?'readonly style="color:var(--gold);opacity:.8"':''}
+            oninput="setCatTotal('${def.id}',this.value)">
+          ${def.subs.length?`<button class="cat-split-btn${st.open?' open':''}" onclick="toggleCatSplit('${def.id}')">
+            ${st.open?'↑ Réduire':'↓ Détailler'}</button>`:''}
+        </div>
+        ${st.open?`
+          <div class="cat-sub-rows" id="cat-subs-${def.id}">
+            ${st.subs.map(sub=>`
+              <div class="sub-row">
+                <input class="fi" value="${sub.label||''}" placeholder="Poste…"
+                  oninput="updateSubField('${def.id}','${sub.id}','label',this.value)">
+                <input class="fi mono-sm" type="number" value="${sub.amount||''}" placeholder="0"
+                  oninput="updateSubField('${def.id}','${sub.id}','amount',this.value);updateCalc()">
+                <button class="sub-del" onclick="removeSub('${def.id}','${sub.id}')">✕</button>
+              </div>`).join('')}
+            <button class="add-btn" style="margin-top:4px" onclick="addSub('${def.id}')">+ Ajouter un poste</button>
+            ${st.subs.length?`<div class="cat-sub-total"><span>Sous-total ${def.label}</span><span>${fmt(subTotal)}</span></div>`:''}
+          </div>`:''}
+      </div>`;
+  }).join('');
+}
+function setCatTotal(catId,val){catState[catId].total=parseFloat(val)||0;updateCalc();}
+function toggleCatSplit(catId){
+  const st=catState[catId];st.open=!st.open;
+  if(st.open&&st.subs.length===0){
+    const def=CAT_DEFS.find(d=>d.id===catId);
+    if(def&&def.subs.length){def.subs.forEach(label=>st.subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label,amount:''}));}
+    else{st.subs.push({id:'sub'+Date.now(),label:'',amount:''});}
+  }
+  renderCats();updateCalc();
+}
+function addSub(catId){catState[catId].subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label:'',amount:''});renderCats();updateCalc();}
+function removeSub(catId,subId){catState[catId].subs=catState[catId].subs.filter(s=>s.id!==subId);renderCats();updateCalc();}
+function updateSubField(catId,subId,field,val){
+  const sub=catState[catId].subs.find(s=>s.id===subId);
+  if(sub)sub[field]=field==='label'?val:(parseFloat(val)||'');
+}
+function getCatTotal(catId){
+  const st=catState[catId];
+  if(st.open&&st.subs.length)return st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  return parseFloat(st.total)||0;
 }
 
-function showPage(p) {
-  document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
-  document.getElementById('tab-' + p).classList.add('active');
+// ══════════════════════════════════════════════════════════
+// MAIN CALC
+// ══════════════════════════════════════════════════════════
+function updateCalc(){
+  const curr=gcurr();const srcTotal=getSourcesTotal();const hotelTotal=getHotelTotal();
+  let budget;
+  if(budgetMode==='auto'){budget=srcTotal;document.getElementById('budget').value=budget||'';}
+  else{budget=gv('budget');}
+
+  const srcBadge=document.getElementById('src-badge');
+  const srcSummary=document.getElementById('src-summary');
+  const srcTotalEl=document.getElementById('src-total-val');
+  if(sources.length){
+    srcSummary.style.display='flex';srcTotalEl.textContent=fmt(srcTotal);
+    if(budget&&budgetMode==='manual'){srcBadge.style.display='';srcBadge.textContent=Math.round(srcTotal/budget*100)+'% fléché';}
+    else{srcBadge.style.display='none';}
+  }else{srcSummary.style.display='none';srcBadge.style.display='none';}
+
+  const bd={c_vols:getCatTotal('vols'),c_hotel:hotelTotal,c_transport:getCatTotal('transport'),c_repas:getCatTotal('repas'),c_activites:getCatTotal('activites'),c_shopping:getCatTotal('shopping'),c_autre:getCatTotal('autre')};
+  const total=Object.values(bd).reduce((s,v)=>s+v,0);
+  const remain=budget-total;
+  const days=getTripDays();const nights=getTripNights();
+  const stopsNights=getTotalStopNights();const displayNights=Math.max(nights,stopsNights);
+  const ppd=days?total/days:0;
+
+  const needFx=['NOK','CHF','$','£','MAD'].includes(curr);
+  document.getElementById('fxbar').style.display=needFx?'flex':'none';
+  document.getElementById('fx-curr').textContent=curr;
+  const fxRate=gv('fxRate');
+  if(needFx&&fxRate&&budget)document.getElementById('fx-equiv').textContent='= '+fmt(budget/fxRate,'€')+' budget';
+  const fxLine=document.getElementById('fx-total-line');
+  if(needFx&&fxRate&&total){fxLine.style.display='block';fxLine.textContent='≈ '+fmt(total/fxRate,'€')+' EUR';}
+  else fxLine.style.display='none';
+
+  document.getElementById('hotel-total').textContent=hotelTotal?fmt(hotelTotal):'—';
+
+  const daysBadge=document.getElementById('days-badge');
+  if(days){daysBadge.style.display='';daysBadge.textContent=days+'j · '+displayNights+'n';}
+  else daysBadge.style.display='none';
+
+  const ta=document.getElementById('total-amount');ta.textContent=fmt(total);
+  const pill=document.getElementById('status-pill');
+  if(!budget){ta.className='tamt';pill.className='pill p-n';pill.textContent='Budget non défini';}
+  else if(remain>=0){ta.className='tamt ok';pill.className='pill p-ok';pill.textContent='+'+fmt(remain)+' restant';}
+  else{ta.className='tamt ov';pill.className='pill p-ov';pill.textContent=fmt(remain)+' dépassé';}
+
+  document.getElementById('met-days').textContent=days||'—';
+  document.getElementById('met-nights').textContent=displayNights||'—';
+  document.getElementById('met-remain').textContent=budget?fmt(Math.round(remain)):'—';
+  document.getElementById('met-ppd').textContent=ppd?fmt(Math.round(ppd)):'—';
+
+  updateScore(total,budget);updateCharts(bd,total,budget,curr);updateProgress(bd,total,curr);updateWhatIf();
+  renderCats();
 }
 
-function toast(txt) {
-  const t = document.getElementById('toast');
-  document.getElementById('tt').textContent = txt;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+// ══════════════════════════════════════════════════════════
+// SCORE
+// ══════════════════════════════════════════════════════════
+function updateScore(total,budget){
+  const fill=document.getElementById('sr-fill'),pct=document.getElementById('sr-pct');
+  const title=document.getElementById('sr-title'),desc=document.getElementById('sr-desc');
+  const C=175.9;
+  if(!budget||!total){fill.style.strokeDashoffset=C;pct.textContent='—';title.textContent='En attente…';desc.textContent='Ajoute des sources de budget et des dépenses.';return;}
+  const ratio=total/budget,score=Math.round(Math.min(ratio*100,100));
+  fill.style.strokeDashoffset=C-(score/100)*C;pct.textContent=score+'%';
+  if(ratio<=.7){fill.style.stroke='#7aad82';title.textContent='Très à l\'aise';desc.textContent='Large marge. Tu peux te faire plaisir !';}
+  else if(ratio<=.9){fill.style.stroke='#c9a55a';title.textContent='Bien maîtrisé';desc.textContent='Bon équilibre. Garde un œil sur les imprévus.';}
+  else if(ratio<=1){fill.style.stroke='#d4a26a';title.textContent='Serré mais OK';desc.textContent='Dans le budget, peu de marge de manœuvre.';}
+  else{fill.style.stroke='#d4776a';title.textContent='Budget dépassé';desc.textContent='Dépassement de '+fmt(total-budget)+'. Ajuste les postes.';}
 }
 
-function saveSimulation() {
-  toast("Simulation enregistrée !");
-  // Ici ta logique de fetch vers Google Apps Script
+// ══════════════════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════════════════
+function updateCharts(bd,total,budget,curr){
+  const active=CHART_CATS.filter(c=>bd[c.id]>0);
+  if(pie1)pie1.destroy();
+  pie1=new Chart(document.getElementById('pieChart').getContext('2d'),{type:'doughnut',data:{labels:active.map(c=>c.label),datasets:[{data:active.length?active.map(c=>bd[c.id]):[1],backgroundColor:active.length?active.map(c=>c.color):['#1a1e28'],borderWidth:2,borderColor:'#13161d'}]},options:{cutout:'65%',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>active.length?ctx.label+': '+fmt(ctx.raw,curr):''}}}}});
+  if(bar1)bar1.destroy();
+  bar1=new Chart(document.getElementById('barChart').getContext('2d'),{type:'bar',data:{labels:['Budget','Dépenses'],datasets:[{data:[budget||0,total],backgroundColor:[total<=budget?'#7aad82':'#8faab5',total>budget?'#d4776a':'#c9a55a'],borderRadius:7,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.raw,curr)}}},scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(232,228,220,.35)',font:{family:'JetBrains Mono',size:9}}},x:{grid:{display:false},ticks:{color:'rgba(232,228,220,.55)',font:{family:'Outfit',size:12}}}}}});
+}
+function updateProgress(bd,total,curr){
+  const el=document.getElementById('progress-bars');
+  const active=CHART_CATS.filter(c=>bd[c.id]>0).sort((a,b)=>bd[b.id]-bd[a.id]);
+  if(!active.length){el.innerHTML='<div class="empty" style="padding:10px 0"><div class="et">Remplis les dépenses</div></div>';return;}
+  el.innerHTML=active.map(cat=>{const val=bd[cat.id],pct=total?Math.round(val/total*100):0;return `<div class="pw"><div class="ph"><span class="pname"><span style="width:7px;height:7px;border-radius:50%;background:${cat.color};display:inline-block;flex-shrink:0"></span>${cat.label}</span><span class="pvals">${fmt(val,curr)} · ${pct}%</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${cat.color}"></div></div></div>`;}).join('');
 }
 
-function newSim() {
-  if(confirm("Créer une nouvelle simulation ?")) window.location.reload();
+// ══════════════════════════════════════════════════════════
+// WHAT-IF
+// ══════════════════════════════════════════════════════════
+function updateWhatIf(){
+  const curr=gcurr();
+  const bd={c_vols:getCatTotal('vols'),c_hotel:getHotelTotal(),c_transport:getCatTotal('transport'),c_repas:getCatTotal('repas'),c_activites:getCatTotal('activites'),c_shopping:getCatTotal('shopping'),c_autre:getCatTotal('autre')};
+  const total=Object.values(bd).reduce((s,v)=>s+v,0);
+  const budget=budgetMode==='auto'?getSourcesTotal():gv('budget');
+  const en=parseInt(document.getElementById('wi-nights').value)||0;
+  const ef=parseInt(document.getElementById('wi-food').value)||0;
+  const ea=parseInt(document.getElementById('wi-act').value)||0;
+  const avgHotelPerNight=stops.length?stops.reduce((s,st)=>s+(parseFloat(st.total)||0),0)/Math.max(getTotalStopNights(),1):0;
+  document.getElementById('wi-nv').textContent='+'+en;
+  document.getElementById('wi-fv').textContent='+'+fmt(ef,curr);
+  document.getElementById('wi-av').textContent='+'+fmt(ea,curr);
+  const delta=avgHotelPerNight*en+ef+ea;
+  const nt=total+delta,nr=budget-nt;
+  document.getElementById('wi-total').textContent=fmt(nt,curr);
+  document.getElementById('wi-delta').textContent=(delta>=0?'+':'')+fmt(delta,curr);
+  document.getElementById('wi-remain').textContent=budget?fmt(nr,curr):'—';
+  document.getElementById('wi-total').style.color=nt>budget&&budget?'var(--rose)':'var(--text)';
+  document.getElementById('wi-remain').style.color=nr<0&&budget?'var(--rose)':'var(--sage)';
 }
 
-// Init
-addCity('Étape 1', 0, 0);
+// ══════════════════════════════════════════════════════════
+// FORM DATA SERIALIZATION
+// ══════════════════════════════════════════════════════════
+function getFormData(){
+  const bd={c_vols:getCatTotal('vols'),c_hotel:getHotelTotal(),c_transport:getCatTotal('transport'),c_repas:getCatTotal('repas'),c_activites:getCatTotal('activites'),c_shopping:getCatTotal('shopping'),c_autre:getCatTotal('autre')};
+  const total=Object.values(bd).reduce((s,v)=>s+v,0);
+  const budget=budgetMode==='auto'?getSourcesTotal():gv('budget');
+  const days=getTripDays(),nights=getTripNights();
+  // Encode overnight as combined string for backward compat
+const overnightFlight = flightDepArrival==='next' ? '1' : '0';
+  return {
+    simName:document.getElementById('simName').value,
+    destination:document.getElementById('destination').value,
+    currency:document.getElementById('currency').value,
+    dateFrom:document.getElementById('dateFrom').value,
+    dateTo:document.getElementById('dateTo').value,
+    travelPeriod:[document.getElementById('dateFrom').value,document.getElementById('dateTo').value].filter(Boolean).join(' → '),
+    travelers:document.getElementById('travelers').value,
+    budget,budgetMode,
+    fxRate:document.getElementById('fxRate').value,
+    overnightFlight,
+    flightDepArrival,
+    flightRetArrival,
+    notes:document.getElementById('notes').value,
+    sources:JSON.stringify(sources.map(s=>({label:s.label,amount:s.amount}))),
+    accommodationJSON:JSON.stringify(stops.map(s=>({city:s.city,nights:s.nights,total:s.total}))),
+    cities:stops.map(s=>({city:s.city,nights:s.nights,total:s.total})),
+    catStateJSON:JSON.stringify(Object.fromEntries(Object.entries(catState).map(([k,v])=>([k,{total:v.total,subs:v.subs,open:v.open}])))),
+    flightsTotal:bd.c_vols,...bd,
+    totalCost:total,remain:budget-total,totalDays:days,totalNights:nights,
+  };
+}
+function setFormData(d){
+  const fields=['simName','destination','currency','travelers','fxRate','notes'];
+  fields.forEach(k=>{const el=document.getElementById(k);if(el)el.value=d[k]||'';});
+
+  // Set dates via custom picker
+  if(d.dateFrom){
+    dpState.from.value=d.dateFrom;
+    document.getElementById('dateFrom').value=d.dateFrom;
+    const dd=new Date(d.dateFrom);
+    dpState.from.viewYear=dd.getFullYear();dpState.from.viewMonth=dd.getMonth();
+    updateDPDisplay('from');
+  }
+  if(d.dateTo){
+    dpState.to.value=d.dateTo;
+    document.getElementById('dateTo').value=d.dateTo;
+    const dd=new Date(d.dateTo);
+    dpState.to.viewYear=dd.getFullYear();dpState.to.viewMonth=dd.getMonth();
+    updateDPDisplay('to');
+  }
+
+  // Flight arrival options
+  flightDepArrival=d.flightDepArrival||'same';
+  flightRetArrival=d.flightRetArrival||'same';
+  // Backward compat: old overnightFlight='1' → retArrival='next'
+  if(!d.flightDepArrival&&!d.flightRetArrival&&(d.overnightFlight==='1'||d.overnightFlight===true)){
+    flightRetArrival='next';
+  }
+  document.getElementById('fo-dep-same').classList.toggle('active',flightDepArrival==='same');
+  document.getElementById('fo-dep-next').classList.toggle('active',flightDepArrival==='next');
+
+
+  budgetMode=d.budgetMode||'auto';setBudgetMode(budgetMode);
+  if(budgetMode==='manual')document.getElementById('budget').value=d.budget||'';
+
+  stops=[];
+  let cities=d.cities;
+  if(!cities&&d.accommodationJSON){try{cities=JSON.parse(d.accommodationJSON);}catch(e){cities=[];}}
+  (cities||[]).forEach(c=>stops.push({id:'s'+Date.now()+Math.random().toString(36).slice(2,4),city:c.city||'',nights:c.nights||'',total:c.total||c.ppn||''}));
+  renderStops();
+
+  sources=[];
+  let srcs=d.sourcesSaved||d.sources;
+  if(typeof srcs==='string'){try{srcs=JSON.parse(srcs);}catch(e){srcs=[];}}
+  (srcs||[]).forEach(s=>sources.push({id:'src'+Date.now()+Math.random().toString(36).slice(2,4),label:s.label||'',amount:s.amount||''}));
+  renderSources();
+
+  initCatState();
+  let saved=d.catStateSaved||d.catStateJSON;
+  if(typeof saved==='string'){try{saved=JSON.parse(saved);}catch(e){saved=null;}}
+  if(saved){Object.keys(saved).forEach(k=>{if(catState[k])catState[k]={...catState[k],...saved[k]};});}
+  else{
+    if(d.c_transport)catState['transport'].total=d.c_transport;
+    if(d.c_repas)catState['repas'].total=d.c_repas;
+    if(d.c_activites)catState['activites'].total=d.c_activites;
+    if(d.c_shopping)catState['shopping'].total=d.c_shopping;
+    if(d.c_autre)catState['autre'].total=d.c_autre;
+    if(d.c_vols)catState['vols'].total=d.c_vols;
+  }
+  renderCats();onDateChange();updateCalc();
+}
+
+// ══════════════════════════════════════════════════════════
+// SAVE / LOAD / DELETE
+// ══════════════════════════════════════════════════════════
+function newSimulation(){
+  curId=null;
+  ['simName','destination','fxRate','notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('travelers').value=2;document.getElementById('currency').value='€';
+  // Reset dates
+  dpState.from.value=null;dpState.to.value=null;
+  document.getElementById('dateFrom').value='';document.getElementById('dateTo').value='';
+  updateDPDisplay('from');updateDPDisplay('to');
+  // Reset flight opts
+  flightDepArrival='same';flightRetArrival='same';
+  document.getElementById('fo-dep-same').classList.add('active');
+  document.getElementById('fo-dep-next').classList.remove('active');
+  document.getElementById('flight-opts').style.display='none';
+  document.getElementById('nights-banner').classList.remove('show');
+  document.getElementById('nights-warning').classList.remove('show');
+
+  stops=[];sources=[];initCatState();
+  budgetMode='auto';setBudgetMode('auto');
+  document.getElementById('wi-nights').value=0;document.getElementById('wi-food').value=0;document.getElementById('wi-act').value=0;
+  renderStops();renderSources();renderCats();updateCalc();
+  toast('Nouveau formulaire','✦');renderAll();
+}
+function saveSimulation(){
+  const name=document.getElementById('simName').value.trim();
+  if(!name){document.getElementById('modal-name').value='';document.getElementById('saveModal').classList.add('show');setTimeout(()=>document.getElementById('modal-name').focus(),120);return;}
+  doSave(name);
+}
+function confirmSave(){
+  const name=document.getElementById('modal-name').value.trim();if(!name)return;
+  document.getElementById('simName').value=name;closeModal('saveModal');doSave(name);
+}
+async function doSave(name){
+  const data=getFormData();data.simName=name;const now=new Date().toISOString();
+  if(curId){
+    const idx=sims.findIndex(s=>s.id===curId);
+    if(idx>-1){sims[idx]={...sims[idx],...data,updatedAt:now};await sheetsPost('save',sims[idx]);}
+  }else{
+    const id='SIM_'+Date.now();const sim={id,...data,createdAt:now,updatedAt:now};
+    sims.unshift(sim);curId=id;await sheetsPost('save',sim);
+  }
+  saveLocal();renderAll();toast(`"${name}" sauvegardée`,'✓');
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function loadSim(id){
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  curId=id;setFormData(sim);showTab('form');toast(`"${sim.simName}" chargée`,'📂');renderAll();
+}
+async function deleteSim(id,e){
+  e&&e.stopPropagation();
+  const sim=sims.find(s=>s.id===id);
+  if(!sim||!confirm(`Supprimer "${sim.simName}" ?`))return;
+  sims=sims.filter(s=>s.id!==id);if(curId===id)curId=null;
+  await sheetsPost('delete',sim);saveLocal();renderAll();toast('Supprimée','🗑');
+}
+function showImportModal(){
+  const sel=document.getElementById('import-sel');
+  sel.innerHTML='<option value="">— Choisir —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
+  document.getElementById('import-name').value='';
+  document.getElementById('importModal').classList.add('show');
+}
+function confirmImport(){
+  const id=document.getElementById('import-sel').value;
+  const name=document.getElementById('import-name').value.trim();
+  if(!id||!name){toast('Choisis une source et un nom','⚠');return;}
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  closeModal('importModal');curId=null;
+  setFormData({...sim});document.getElementById('simName').value=name;
+  showTab('form');toast(`Dupliqué depuis "${sim.simName}" — modifie et sauvegarde`,'📋');
+}
+function importAs(id){
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  document.getElementById('import-sel').innerHTML=`<option value="${id}" selected>${sim.simName}</option>`;
+  document.getElementById('import-name').value=(sim.simName||'')+(sim.simName?' (copie)':'copie');
+  document.getElementById('importModal').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════════════
+// RENDER LISTS
+// ══════════════════════════════════════════════════════════
+function simTotal(sim){
+  let cities=sim.cities;if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}
+  const hotel=(cities||[]).reduce((s,c)=>s+(parseFloat(c.total||c.ppn)||0),0);
+  let cs=sim.catStateSaved||sim.catStateJSON;if(typeof cs==='string'){try{cs=JSON.parse(cs);}catch(e){cs=null;}}
+  let catTotal=0;
+  if(cs){Object.values(cs).forEach(v=>{if(v.open&&v.subs&&v.subs.length)catTotal+=v.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);else catTotal+=parseFloat(v.total)||0;});}
+  else{['c_vols','c_transport','c_repas','c_activites','c_shopping','c_autre'].forEach(k=>catTotal+=parseFloat(sim[k])||0);}
+  return hotel+catTotal;
+}
+function simBudget(sim){
+  if(sim.budgetMode==='manual')return parseFloat(sim.budget)||0;
+  let srcs=sim.sourcesSaved||sim.sources;if(typeof srcs==='string'){try{srcs=JSON.parse(srcs);}catch(e){srcs=[];}}
+  return (srcs||[]).reduce((s,x)=>s+(parseFloat(x.amount)||0),0)||parseFloat(sim.budget)||0;
+}
+function simCardHTML(sim){
+  const curr=sim.currency||'€',total=simTotal(sim),budget=simBudget(sim),remain=budget-total;
+  const bc=!budget?'p-n':remain>=0?'p-ok':'p-ov';
+  const bt=!budget?fmt(total,curr):remain>=0?'+'+fmt(Math.round(remain),curr):fmt(Math.round(remain),curr);
+  const ds=sim.dateFrom?new Date(sim.dateFrom).toLocaleDateString('fr-FR',{month:'short',year:'numeric'}):'';
+  const ac=curId===sim.id?'active':'';
+  return `<div class="sim-item ${ac}" onclick="loadSim('${sim.id}')">
+    <div class="sico">${sim.destination?'🗺':'✈'}</div>
+    <div class="sbody"><div class="sname">${sim.simName||'Sans titre'}</div><div class="smeta">${[sim.destination,ds].filter(Boolean).join(' · ')}</div></div>
+    <span class="sbadge ${bc}">${bt}</span>
+    <button class="btn bgh bsm" style="padding:3px 7px" onclick="event.stopPropagation();importAs('${sim.id}')" title="Dupliquer">⧉</button>
+    <button class="sdel" onclick="deleteSim('${sim.id}',event)">✕</button>
+  </div>`;
+}
+function renderAll(){renderHist();refreshSel('an-sel');refreshSel('itin-sel');initCompareSelects();document.getElementById('hist-count').textContent=sims.length;}
+function renderHist(){
+  const c=document.getElementById('hist-list');
+  c.innerHTML=sims.length?sims.map(simCardHTML).join(''):'<div class="empty"><div class="ei">🌍</div><div class="et">Aucune simulation encore.</div></div>';
+}
+function refreshSel(selId){
+  const sel=document.getElementById(selId);if(!sel)return;const cur=sel.value;
+  sel.innerHTML='<option value="">— Simulation —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
+  if(cur&&sims.find(s=>s.id===cur))sel.value=cur;
+}
+
+// ══════════════════════════════════════════════════════════
+// ANALYSIS
+// ══════════════════════════════════════════════════════════
+function loadAnalysisSim(){
+  const id=document.getElementById('an-sel').value;if(!id)return;
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  const curr=sim.currency||'€';
+  let cities=sim.cities;if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}
+  const hotel=(cities||[]).reduce((s,c)=>s+(parseFloat(c.total||c.ppn)||0),0);
+  let cs=sim.catStateSaved||sim.catStateJSON;if(typeof cs==='string'){try{cs=JSON.parse(cs);}catch(e){cs=null;}}
+  const bd={c_hotel:hotel};
+  if(cs){CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{const key=cat.id.replace('c_','');const st=cs[key];if(st){bd[cat.id]=st.open&&st.subs&&st.subs.length?st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0):parseFloat(st.total)||0;}else bd[cat.id]=parseFloat(sim[cat.id])||0;});}
+  else{CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{bd[cat.id]=parseFloat(sim[cat.id])||0;});}
+  const total=Object.values(bd).reduce((s,v)=>s+v,0);const budget=simBudget(sim);const days=parseInt(sim.totalDays)||0;const ppd=days?total/days:0;
+  document.getElementById('an-total').textContent=fmt(total,curr);
+  document.getElementById('an-ppd').textContent=ppd?fmt(Math.round(ppd),curr):'—';
+  document.getElementById('an-remain').textContent=budget?fmt(Math.round(budget-total),curr):'—';
+  const active=CHART_CATS.filter(c=>bd[c.id]>0);
+  if(anPie)anPie.destroy();
+  anPie=new Chart(document.getElementById('an-pie').getContext('2d'),{type:'doughnut',data:{labels:active.map(c=>c.label),datasets:[{data:active.map(c=>bd[c.id]),backgroundColor:active.map(c=>c.color),borderWidth:2,borderColor:'#13161d'}]},options:{cutout:'58%',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#e8e4dc',font:{family:'Outfit',size:11},boxWidth:11,padding:8}}}}});
+  if(anBar)anBar.destroy();
+  anBar=new Chart(document.getElementById('an-bar').getContext('2d'),{type:'bar',data:{labels:active.map(c=>c.label),datasets:[{data:active.map(c=>bd[c.id]),backgroundColor:active.map(c=>c.color),borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.raw,curr)}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'rgba(232,228,220,.35)',font:{family:'JetBrains Mono',size:9}}},y:{grid:{display:false},ticks:{color:'rgba(232,228,220,.6)',font:{family:'Outfit',size:11}}}}}});
+  const prog=document.getElementById('an-prog');
+  prog.innerHTML=active.sort((a,b)=>bd[b.id]-bd[a.id]).map(cat=>{const val=bd[cat.id],pct=total?Math.round(val/total*100):0;return `<div class="pw"><div class="ph"><span class="pname"><span style="width:7px;height:7px;border-radius:50%;background:${cat.color};display:inline-block;flex-shrink:0"></span>${cat.label}</span><span class="pvals">${fmt(val,curr)} · ${pct}%</span></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${cat.color}"></div></div></div>`;}).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// COMPARE
+// ══════════════════════════════════════════════════════════
+function initCompareSelects(){
+  const row=document.getElementById('cmp-selects-row');
+  row.innerHTML=cmpSlots.map((val,i)=>`<select class="fs" style="max-width:220px;flex:1;min-width:150px" onchange="cmpSlots[${i}]=this.value;renderCompare()"><option value="">— Simulation ${i+1} —</option>${sims.map(s=>`<option value="${s.id}" ${val===s.id?'selected':''}>${s.simName||'Sans titre'}</option>`).join('')}</select>${cmpSlots.length>2?`<button class="btn bdng bsm" onclick="removeCompareSlot(${i})">✕</button>`:''}`).join('');
+}
+function addCompareSlot(){cmpSlots.push('');initCompareSelects();renderCompare();}
+function removeCompareSlot(i){if(cmpSlots.length<=2)return;cmpSlots.splice(i,1);initCompareSelects();renderCompare();}
+
+function renderCompare(){
+  const el=document.getElementById('compare-body');
+  const selected=cmpSlots.map(id=>sims.find(s=>s.id===id)).filter(Boolean);
+  if(selected.length<2){el.innerHTML='<div class="empty"><div class="ei">⇄</div><div class="et">Sélectionne au moins deux simulations.</div></div>';return;}
+  function getSimBD(sim){let cities=sim.cities;if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}const hotel=(cities||[]).reduce((s,c)=>s+(parseFloat(c.total||c.ppn)||0),0);let cs=sim.catStateSaved||sim.catStateJSON;if(typeof cs==='string'){try{cs=JSON.parse(cs);}catch(e){cs=null;}}const bd={c_hotel:hotel};CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{const key=cat.id.replace('c_','');if(cs&&cs[key]){const st=cs[key];bd[cat.id]=st.open&&st.subs&&st.subs.length?st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0):parseFloat(st.total)||0;}else bd[cat.id]=parseFloat(sim[cat.id])||0;});return bd;}
+  const colors=['var(--gold)','var(--sky)','var(--sage)','var(--lavender)','var(--amber)'];
+  const rowDefs=[{label:'Budget',fn:(sim)=>fmt(simBudget(sim),sim.currency||'€'),num:(sim)=>simBudget(sim),lower:false},{label:'Total',fn:(sim,bd)=>fmt(Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>Object.values(bd).reduce((s,v)=>s+v,0),lower:true},{label:'Restant',fn:(sim,bd)=>fmt(simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),lower:false},{label:'Jours',fn:(sim)=>sim.totalDays||'—',num:(sim)=>parseInt(sim.totalDays)||0,lower:true},{label:'Nuits',fn:(sim)=>sim.totalNights||'—',num:(sim)=>parseInt(sim.totalNights)||0,lower:true},{label:'/jour',fn:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d?fmt(Math.round(t/d),sim.currency||'€'):'—';},num:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d?t/d:0;},lower:true},{label:'---'},...CHART_CATS.map(cat=>({label:cat.label,color:cat.color,fn:(sim,bd)=>bd[cat.id]?fmt(bd[cat.id],sim.currency||'€'):'—',num:(sim,bd)=>bd[cat.id]||0,lower:true}))];
+  const bds=selected.map(sim=>getSimBD(sim));
+  let html=`<div class="card"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:${180+selected.length*160}px"><thead><tr><th style="text-align:left;padding:8px 10px;font-size:10.5px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-bottom:1px solid var(--border);min-width:120px">Critère</th>${selected.map((sim,i)=>`<th style="text-align:right;padding:8px 10px;font-size:13px;font-family:'Cormorant Garamond',serif;font-weight:600;color:${colors[i%colors.length]};border-bottom:1px solid var(--border);min-width:140px">${sim.simName||'Sim '+(i+1)}</th>`).join('')}</tr></thead><tbody>`;
+  rowDefs.forEach(row=>{if(row.label==='---'){html+=`<tr><td colspan="${1+selected.length}" style="padding:3px 0;border-bottom:1px solid var(--border)"></td></tr>`;return;}const nums=selected.map((sim,si)=>row.num?row.num(sim,bds[si]):0);const validNums=nums.filter(v=>v>0);const minVal=validNums.length?Math.min(...validNums):null;html+=`<tr><td style="padding:7px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.04)">${row.color?`<span style="width:6px;height:6px;border-radius:50%;background:${row.color};display:inline-block;margin-right:5px;vertical-align:middle"></span>`:''}${row.label}</td>${selected.map((sim,si)=>{const str=row.fn?row.fn(sim,bds[si]):'—';const num=nums[si];const isWin=validNums.length>1&&row.lower&&num===minVal&&num>0;const isLos=validNums.length>1&&row.lower&&num===Math.max(...validNums)&&num!==minVal&&num>0;return `<td style="text-align:right;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04);color:${isWin?'var(--sage)':isLos?'var(--rose)':'var(--text)'};font-weight:${isWin?500:400}">${str}${isWin?' ✓':''}</td>`;}).join('')}</tr>`;});
+  html+='</tbody></table></div></div>';el.innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════════
+// ITINERARY
+// ══════════════════════════════════════════════════════════
+function renderItinerary(){
+  const id=document.getElementById('itin-sel').value;const el=document.getElementById('itin-body');
+  if(!id){el.innerHTML='<div class="empty"><div class="ei">🗺</div><div class="et">Sélectionne une simulation.</div></div>';return;}
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  let cities=sim.cities;if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}cities=cities||[];
+  if(!cities.length){el.innerHTML='<div class="empty"><div class="ei">📍</div><div class="et">Aucune étape de logement définie.</div></div>';return;}
+  const curr=sim.currency||'€';const totalNights=cities.reduce((s,c)=>s+(parseInt(c.nights)||0),0);const totalCost=cities.reduce((s,c)=>s+(parseFloat(c.total||c.ppn)||0),0);
+  let dayNum=1;const steps=cities.map((c,i)=>{const nights=parseInt(c.nights)||1,cost=parseFloat(c.total||c.ppn)||0;const s={city:c.city||'Étape '+(i+1),nights,cost,dayStart:dayNum,dayEnd:dayNum+nights-1};dayNum+=nights;return s;});
+  const cols=['#d4776a','#7aad82','#6fa8c8','#9b8fd4','#c9a55a','#5fb3a0','#c8a0b8','#e8c87a'];
+  el.innerHTML=`<div class="g2s"><div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:13px">📍 ${sim.simName||'Itinéraire'}</div>${steps.map((s,i)=>`<div class="itin-step"><div class="itin-line"><div class="itin-dot" style="background:${cols[i%cols.length]};width:${i===0||i===steps.length-1?12:10}px;height:${i===0||i===steps.length-1?12:10}px"></div>${i<steps.length-1?'<div class="itin-connector"></div>':''}</div><div class="itin-body"><div class="itin-city">${s.city}</div><div class="itin-meta">J${s.dayStart}${s.dayStart!==s.dayEnd?'→J'+s.dayEnd:''} · ${s.nights} nuit${s.nights>1?'s':''}</div>${s.cost?`<div class="itin-cost">${fmt(s.cost,curr)} logement</div>`:''}</div></div>`).join('')}</div><div style="display:flex;flex-direction:column;gap:13px"><div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Récapitulatif logement</div><div class="g2s" style="gap:9px;margin-bottom:12px"><div class="mcard"><div class="mval">${totalNights}</div><div class="mlbl">Nuits totales</div></div><div class="mcard"><div class="mval">${steps.length}</div><div class="mlbl">Étapes</div></div></div>${steps.map((s,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px"><span style="display:flex;align-items:center;gap:7px"><span style="width:8px;height:8px;border-radius:50%;background:${cols[i%cols.length]};display:inline-block"></span>${s.city}</span><span style="display:flex;gap:10px;align-items:center"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">${s.nights}n</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold)">${s.cost?fmt(s.cost,curr):'—'}</span></span></div>`).join('')}<div style="display:flex;justify-content:space-between;padding:10px 0 0;font-size:12.5px;font-weight:600"><span>Total</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold)">${fmt(totalCost,curr)}</span></div></div><div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Répartition nuits</div><div style="position:relative;height:155px"><canvas id="itin-pie"></canvas></div></div></div></div>`;
+  setTimeout(()=>{const ctx=document.getElementById('itin-pie')?.getContext('2d');if(!ctx)return;new Chart(ctx,{type:'doughnut',data:{labels:steps.map(s=>s.city),datasets:[{data:steps.map(s=>s.nights),backgroundColor:steps.map((_,i)=>cols[i%cols.length]),borderWidth:2,borderColor:'#13161d'}]},options:{cutout:'60%',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#e8e4dc',font:{family:'Outfit',size:10},boxWidth:10,padding:6}}}}});},80);
+}
+
+// ══════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════
+function toast(text,icon='✓'){
+  const el=document.getElementById('toast');
+  document.getElementById('ti').textContent=icon;document.getElementById('tt').textContent=text;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveSimulation();}
+  if(e.key==='Escape'){document.querySelectorAll('.mbg.show').forEach(m=>m.classList.remove('show'));closeAllDP();}
+});
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+initCatState();
+renderStops();renderSources();renderCats();
+loadFromSheets();
+updateCalc();
 </script>
-
 </body>
 </html>
