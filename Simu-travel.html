@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Voyage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --sand: #f5f0e8;
+    --sand2: #ede5d8;
+    --terracotta: #c0714a;
+    --terracotta-light: #e8a282;
+    --sage: #6b8f71;
+    --gold: #c9a84c;
+    --cream: #faf7f2;
+    --border: rgba(26,26,46,0.12);
+    --shadow: 0 4px 24px rgba(26,26,46,0.08);
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–sand);
+color: var(–ink);
+min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+background: var(–ink);
+color: var(–sand);
+padding: 0;
+position: sticky;
+top: 0;
+z-index: 100;
+border-bottom: 2px solid var(–terracotta);
+}
+.header-inner {
+max-width: 1200px;
+margin: 0 auto;
+padding: 16px 32px;
+display: flex;
+align-items: center;
+gap: 24px;
+flex-wrap: wrap;
+}
+.header-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 22px;
+letter-spacing: -0.3px;
+flex: 1;
+}
+.header-title span {
+color: var(–terracotta-light);
+font-style: italic;
+}
+.header-actions {
+display: flex;
+gap: 10px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+/* LAYOUT */
+.main {
+max-width: 1200px;
+margin: 0 auto;
+padding: 32px 24px;
+display: grid;
+grid-template-columns: 340px 1fr;
+gap: 28px;
+align-items: start;
+}
+
+@media (max-width: 900px) {
+.main { grid-template-columns: 1fr; padding: 16px; }
+.header-inner { padding: 12px 16px; }
+}
+
+/* SIDEBAR */
+.sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+/* CARDS */
+.card {
+background: var(–cream);
+border-radius: 16px;
+padding: 24px;
+border: 1px solid var(–border);
+box-shadow: var(–shadow);
+}
+.card-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 17px;
+font-weight: 700;
+margin-bottom: 18px;
+display: flex;
+align-items: center;
+gap: 8px;
+color: var(–ink);
+}
+.card-title .icon {
+width: 28px;
+height: 28px;
+background: var(–terracotta);
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+flex-shrink: 0;
+}
+
+/* FORM */
+.form-group { margin-bottom: 14px; }
+.form-label {
+display: block;
+font-size: 11px;
+font-weight: 500;
+text-transform: uppercase;
+letter-spacing: 0.8px;
+color: rgba(26,26,46,0.5);
+margin-bottom: 5px;
+font-family: ‘DM Mono’, monospace;
+}
+.form-input, .form-select {
+width: 100%;
+padding: 10px 14px;
+border: 1.5px solid var(–border);
+border-radius: 10px;
+background: white;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+color: var(–ink);
+outline: none;
+transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus {
+border-color: var(–terracotta);
+}
+.form-input.big {
+font-family: ‘DM Mono’, monospace;
+font-size: 20px;
+font-weight: 500;
+padding: 12px 14px;
+color: var(–ink);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.suffix {
+position: relative;
+}
+.suffix input { padding-right: 38px; }
+.suffix::after {
+content: attr(data-suffix);
+position: absolute;
+right: 12px;
+top: 50%;
+transform: translateY(-50%);
+font-family: ‘DM Mono’, monospace;
+font-size: 12px;
+color: rgba(26,26,46,0.4);
+}
+
+/* CATEGORY ROW */
+.cat-row {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 10px;
+align-items: center;
+margin-bottom: 10px;
+}
+.cat-label-row {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 13px;
+font-weight: 500;
+}
+.cat-dot {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+.cat-input {
+width: 110px;
+text-align: right;
+font-family: ‘DM Mono’, monospace;
+font-size: 13px;
+}
+
+/* DIVIDER */
+.divider {
+height: 1px;
+background: var(–border);
+margin: 16px 0;
+}
+
+/* TOTAL BAR */
+.total-bar {
+background: var(–ink);
+color: var(–sand);
+border-radius: 12px;
+padding: 16px 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.total-bar .label { font-size: 12px; opacity: 0.6; font-family: ‘DM Mono’, monospace; text-transform: uppercase; }
+.total-bar .amount { font-family: ‘DM Mono’, monospace; font-size: 22px; font-weight: 500; }
+.total-bar .amount.over { color: #ff7c7c; }
+.total-bar .amount.ok { color: #7ed4a3; }
+
+/* STATUS */
+.status-pill {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 6px 14px;
+border-radius: 100px;
+font-size: 12px;
+font-weight: 500;
+font-family: ‘DM Mono’, monospace;
+}
+.status-pill.ok { background: rgba(107,143,113,0.15); color: var(–sage); }
+.status-pill.over { background: rgba(192,113,74,0.15); color: var(–terracotta); }
+.status-pill.neutral { background: rgba(26,26,46,0.08); color: rgba(26,26,46,0.6); }
+
+/* BUTTONS */
+.btn {
+padding: 10px 20px;
+border-radius: 10px;
+border: none;
+cursor: pointer;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 13px;
+font-weight: 500;
+transition: all 0.15s;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+}
+.btn-primary {
+background: var(–terracotta);
+color: white;
+}
+.btn-primary:hover { background: #a85e3a; transform: translateY(-1px); }
+.btn-secondary {
+background: var(–sand2);
+color: var(–ink);
+border: 1.5px solid var(–border);
+}
+.btn-secondary:hover { background: var(–sand); }
+.btn-ghost {
+background: transparent;
+color: rgba(26,26,46,0.5);
+border: 1.5px solid var(–border);
+}
+.btn-ghost:hover { color: var(–ink); border-color: var(–ink); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+.btn-danger { background: #fff0ee; color: #c0714a; border: 1.5px solid #ffd0c0; }
+.btn-danger:hover { background: #ffe0d8; }
+
+/* RIGHT PANEL */
+.right-panel { display: flex; flex-direction: column; gap: 20px; }
+
+/* CHARTS */
+.charts-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 16px;
+}
+@media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+.chart-card {
+background: var(–cream);
+border-radius: 16px;
+padding: 20px;
+border: 1px solid var(–border);
+box-shadow: var(–shadow);
+}
+.chart-title {
+font-size: 12px;
+font-family: ‘DM Mono’, monospace;
+text-transform: uppercase;
+letter-spacing: 0.8px;
+color: rgba(26,26,46,0.45);
+margin-bottom: 14px;
+}
+.chart-wrap { position: relative; height: 180px; }
+
+/* SIMULATIONS LIST */
+.sim-item {
+background: white;
+border-radius: 12px;
+padding: 14px 16px;
+border: 1.5px solid var(–border);
+display: flex;
+align-items: center;
+gap: 12px;
+cursor: pointer;
+transition: all 0.15s;
+margin-bottom: 8px;
+}
+.sim-item:hover { border-color: var(–terracotta); transform: translateX(3px); }
+.sim-item.active { border-color: var(–terracotta); background: #fff8f5; }
+.sim-item-icon {
+width: 36px;
+height: 36px;
+border-radius: 10px;
+background: var(–sand2);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+flex-shrink: 0;
+}
+.sim-item-body { flex: 1; min-width: 0; }
+.sim-item-name {
+font-weight: 500;
+font-size: 14px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.sim-item-meta {
+font-family: ‘DM Mono’, monospace;
+font-size: 11px;
+color: rgba(26,26,46,0.4);
+margin-top: 2px;
+}
+.sim-item-badge {
+font-family: ‘DM Mono’, monospace;
+font-size: 12px;
+font-weight: 500;
+padding: 3px 8px;
+border-radius: 6px;
+flex-shrink: 0;
+}
+.sim-item-badge.ok { background: rgba(107,143,113,0.12); color: var(–sage); }
+.sim-item-badge.over { background: rgba(192,113,74,0.12); color: var(–terracotta); }
+.sim-item-badge.neutral { background: var(–sand2); color: rgba(26,26,46,0.5); }
+
+/* EMPTY STATE */
+.empty {
+text-align: center;
+padding: 40px 20px;
+color: rgba(26,26,46,0.35);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-text { font-size: 14px; line-height: 1.6; }
+
+/* NOTIFICATION */
+.notif {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: var(–ink);
+color: var(–sand);
+padding: 12px 20px;
+border-radius: 12px;
+font-size: 13px;
+display: flex;
+align-items: center;
+gap: 8px;
+box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+z-index: 999;
+transform: translateY(100px);
+opacity: 0;
+transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.notif.show { transform: translateY(0); opacity: 1; }
+
+/* MODAL */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(26,26,46,0.5);
+backdrop-filter: blur(4px);
+z-index: 200;
+display: flex;
+align-items: center;
+justify-content: center;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.2s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal {
+background: var(–cream);
+border-radius: 20px;
+padding: 32px;
+width: 100%;
+max-width: 420px;
+margin: 16px;
+transform: scale(0.95);
+transition: transform 0.2s;
+}
+.modal-overlay.show .modal { transform: scale(1); }
+.modal-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 22px;
+margin-bottom: 8px;
+}
+.modal-sub { font-size: 13px; color: rgba(26,26,46,0.5); margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+
+/* METRICS */
+.metrics-row {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+margin-bottom: 4px;
+}
+.metric {
+background: var(–sand2);
+border-radius: 12px;
+padding: 14px;
+text-align: center;
+}
+.metric-val {
+font-family: ‘DM Mono’, monospace;
+font-size: 18px;
+font-weight: 500;
+color: var(–ink);
+}
+.metric-lbl {
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.6px;
+color: rgba(26,26,46,0.45);
+margin-top: 3px;
+font-family: ‘DM Mono’, monospace;
+}
+
+/* PROGRESS BAR */
+.progress-wrap { margin-bottom: 14px; }
+.progress-header {
+display: flex;
+justify-content: space-between;
+font-size: 12px;
+font-family: ‘DM Mono’, monospace;
+margin-bottom: 6px;
+color: rgba(26,26,46,0.5);
+}
+.progress-bar {
+height: 8px;
+background: var(–sand2);
+border-radius: 4px;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+border-radius: 4px;
+transition: width 0.4s;
+}
+
+.section-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 16px;
+}
+
+textarea.form-input {
+resize: vertical;
+min-height: 60px;
+line-height: 1.5;
+}
+
+.sim-delete-btn {
+padding: 4px 8px;
+border: none;
+background: transparent;
+color: rgba(26,26,46,0.25);
+cursor: pointer;
+border-radius: 6px;
+font-size: 14px;
+flex-shrink: 0;
+transition: all 0.15s;
+}
+.sim-delete-btn:hover { background: #fff0ee; color: var(–terracotta); }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-title">Budget <span>Voyage</span></div>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" onclick="newSimulation()">✦ Nouvelle simulation</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSimulation()">↑ Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- SIDEBAR LEFT -->
+  <div class="sidebar">
+
+```
+<!-- Infos voyage -->
+<div class="card">
+  <div class="card-title"><span class="icon">✈</span> Informations</div>
+
+  <div class="form-group">
+    <label class="form-label">Nom de la simulation</label>
+    <input class="form-input" id="simName" type="text" placeholder="Ex: Norvège — Mai 2025" oninput="updateCalc()">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Destination</label>
+      <input class="form-input" id="destination" type="text" placeholder="Bergen, Norvège" oninput="updateCalc()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Monnaie</label>
+      <select class="form-select" id="currency" onchange="updateCalc()">
+        <option value="€">€ EUR</option>
+        <option value="NOK">NOK</option>
+        <option value="CHF">CHF</option>
+        <option value="$">$ USD</option>
+        <option value="£">£ GBP</option>
+        <option value="MAD">MAD</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Date départ</label>
+      <input class="form-input" id="dateFrom" type="date" oninput="calcDays()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Date retour</label>
+      <input class="form-input" id="dateTo" type="date" oninput="calcDays()">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Nombre de voyageurs</label>
+    <input class="form-input" id="travelers" type="number" value="2" min="1" oninput="updateCalc()">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Budget total disponible</label>
+    <input class="form-input big" id="budget" type="number" placeholder="5000" oninput="updateCalc()">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Notes</label>
+    <textarea class="form-input" id="notes" placeholder="Idées, contraintes, remarques..."></textarea>
+  </div>
+</div>
+
+<!-- Dépenses -->
+<div class="card">
+  <div class="card-title"><span class="icon">📋</span> Dépenses</div>
+
+  <div id="days-meta" style="display:none; margin-bottom:14px;">
+    <span class="status-pill neutral" id="days-badge">— jours</span>
+  </div>
+
+  <!-- VOLS -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#c0714a"></span> Vols A/R</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_vols" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <!-- LOGEMENT -->
+  <div class="form-group">
+    <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:rgba(26,26,46,0.5);">Logement</div>
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#6b8f71"></span> Prix/nuit</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_hotel_night" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+    <div class="cat-row">
+      <div class="cat-label-row" style="padding-left:18px; color:rgba(26,26,46,0.45); font-size:12px;">→ Nb nuits</div>
+      <div class="suffix" data-suffix="n"><input class="form-input cat-input" id="c_hotel_nights" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+    <div class="cat-row" style="margin-top:4px;">
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(26,26,46,0.4);">Total logement</div>
+      <div style="font-family:'DM Mono',monospace; font-size:13px; font-weight:500;" id="hotel-total">— €</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TRANSPORT LOCAL -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#c9a84c"></span> Transport local</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_transport" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <!-- REPAS -->
+  <div class="form-group">
+    <div style="font-size:12px; font-weight:500; margin-bottom:8px; color:rgba(26,26,46,0.5);">Repas & Restaurants</div>
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#e8a282"></span> Budget/jour/pers.</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_food_day" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+    <div class="cat-row" style="margin-top:4px;">
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:rgba(26,26,46,0.4);">Total repas</div>
+      <div style="font-family:'DM Mono',monospace; font-size:13px; font-weight:500;" id="food-total">— €</div>
+    </div>
+  </div>
+
+  <!-- ACTIVITÉS -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#7eb5d4"></span> Activités & Visites</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_activities" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <!-- SHOPPING -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#b89fcf"></span> Shopping & Souvenirs</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_shopping" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <!-- ASSURANCE -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#a8b5a3"></span> Assurance & Visa</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_insurance" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <!-- DIVERS -->
+  <div class="form-group">
+    <div class="cat-row">
+      <div class="cat-label-row"><span class="cat-dot" style="background:#d4a57e"></span> Divers / Imprévus</div>
+      <div class="suffix" data-suffix="€"><input class="form-input cat-input" id="c_misc" type="number" placeholder="0" oninput="updateCalc()"></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- TOTAUX -->
+  <div class="metrics-row" style="margin-bottom:12px;">
+    <div class="metric">
+      <div class="metric-val" id="met-days">—</div>
+      <div class="metric-lbl">Jours</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="met-ppd">—</div>
+      <div class="metric-lbl">/j/pers</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="met-remain">—</div>
+      <div class="metric-lbl">Reste</div>
+    </div>
+  </div>
+
+  <div class="total-bar">
+    <div>
+      <div class="label">Total dépenses</div>
+      <div class="amount" id="total-amount">— €</div>
+    </div>
+    <div id="status-pill-wrap">
+      <span class="status-pill neutral" id="status-pill">— €</span>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+
+  <div class="right-panel">
+
+```
+<!-- CHARTS -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-title">Répartition des dépenses</div>
+    <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Budget vs Dépenses</div>
+    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="card">
+  <div class="card-title"><span class="icon">📊</span> Détail par catégorie</div>
+  <div id="progress-bars"></div>
+</div>
+
+<!-- SIMULATIONS -->
+<div class="card">
+  <div class="section-header">
+    <div class="card-title" style="margin-bottom:0"><span class="icon">🗂</span> Simulations sauvegardées</div>
+    <span id="sim-count" class="status-pill neutral">0</span>
+  </div>
+  <div id="sim-list">
+    <div class="empty">
+      <div class="empty-icon">🌍</div>
+      <div class="empty-text">Aucune simulation encore.<br>Remplis le formulaire et clique <strong>Sauvegarder</strong>.</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- MODAL SAVE -->
+
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-title">Sauvegarder la simulation</div>
+    <div class="modal-sub">Cette simulation sera accessible depuis n'importe quel appareil.</div>
+    <div class="form-group">
+      <label class="form-label">Nom de la simulation</label>
+      <input class="form-input" id="modalSimName" type="text" placeholder="Ex: Norvège Bergen — option A">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="confirmSave()">↑ Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+
+<div class="notif" id="notif">
+  <span id="notif-icon">✓</span>
+  <span id="notif-text">Simulation sauvegardée !</span>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+let simulations = [];
+let currentSimId = null;
+let pieChart = null, barChart = null;
+
+const CATS = [
+  { id: 'c_vols',       label: 'Vols A/R',         color: '#c0714a' },
+  { id: 'c_hotel',      label: 'Logement',          color: '#6b8f71' },
+  { id: 'c_transport',  label: 'Transport local',   color: '#c9a84c' },
+  { id: 'c_food',       label: 'Repas',             color: '#e8a282' },
+  { id: 'c_activities', label: 'Activités',         color: '#7eb5d4' },
+  { id: 'c_shopping',   label: 'Shopping',          color: '#b89fcf' },
+  { id: 'c_insurance',  label: 'Assurance/Visa',    color: '#a8b5a3' },
+  { id: 'c_misc',       label: 'Divers',            color: '#d4a57e' },
+];
+
+// ─── STORAGE ─────────────────────────────────────────────
+async function loadFromStorage() {
+  try {
+    const result = await window.storage.get('voyage-simulations', true);
+    if (result && result.value) {
+      simulations = JSON.parse(result.value);
+    }
+  } catch(e) {
+    simulations = [];
+  }
+  renderSimList();
+}
+
+async function saveToStorage() {
+  try {
+    await window.storage.set('voyage-simulations', JSON.stringify(simulations), true);
+  } catch(e) {
+    console.warn('Storage unavailable, using localStorage fallback');
+    try { localStorage.setItem('voyage-simulations', JSON.stringify(simulations)); } catch(e2) {}
+  }
+}
+
+// ─── CALC ─────────────────────────────────────────────────
+function getVal(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function getCurr() { return document.getElementById('currency')?.value || '€'; }
+function getDays() {
+  const from = document.getElementById('dateFrom')?.value;
+  const to   = document.getElementById('dateTo')?.value;
+  if (!from || !to) return getVal('c_hotel_nights') || 0;
+  const d = Math.round((new Date(to) - new Date(from)) / 86400000);
+  return d > 0 ? d : 0;
+}
+
+function calcDays() {
+  const days = getDays();
+  document.getElementById('c_hotel_nights').value = days > 0 ? days : '';
+  updateCalc();
+}
+
+function updateCalc() {
+  const curr   = getCurr();
+  const days   = getDays() || getVal('c_hotel_nights');
+  const travelers = getVal('travelers') || 1;
+  const budget = getVal('budget');
+
+  // computed
+  const hotelNight = getVal('c_hotel_night');
+  const hotelNights = getVal('c_hotel_nights');
+  const hotelTotal = hotelNight * hotelNights;
+  const foodDay    = getVal('c_food_day');
+  const foodTotal  = foodDay * days * travelers;
+
+  document.getElementById('hotel-total').textContent = hotelTotal ? fmt(hotelTotal, curr) : `— ${curr}`;
+  document.getElementById('food-total').textContent  = foodTotal  ? fmt(foodTotal, curr)  : `— ${curr}`;
+
+  const breakdown = {
+    c_vols:       getVal('c_vols'),
+    c_hotel:      hotelTotal,
+    c_transport:  getVal('c_transport'),
+    c_food:       foodTotal,
+    c_activities: getVal('c_activities'),
+    c_shopping:   getVal('c_shopping'),
+    c_insurance:  getVal('c_insurance'),
+    c_misc:       getVal('c_misc'),
+  };
+
+  const total = Object.values(breakdown).reduce((a,b) => a+b, 0);
+  const remain = budget - total;
+  const ppd = (days && travelers) ? total / days / travelers : 0;
+
+  // Total display
+  const totalEl = document.getElementById('total-amount');
+  totalEl.textContent = fmt(total, curr);
+
+  // Status pill
+  const pill = document.getElementById('status-pill');
+  if (!budget) {
+    pill.className = 'status-pill neutral';
+    pill.textContent = 'Budget non défini';
+  } else if (remain >= 0) {
+    pill.className = 'status-pill ok';
+    pill.textContent = `+${fmt(remain, curr)} restant`;
+    totalEl.className = 'amount ok';
+  } else {
+    pill.className = 'status-pill over';
+    pill.textContent = `${fmt(remain, curr)} dépassé`;
+    totalEl.className = 'amount over';
+  }
+
+  // Metrics
+  document.getElementById('met-days').textContent = days || '—';
+  document.getElementById('met-ppd').textContent  = ppd ? fmt(Math.round(ppd), curr) : '—';
+  document.getElementById('met-remain').textContent = budget ? fmt(Math.round(remain), curr) : '—';
+  if (days) {
+    document.getElementById('days-meta').style.display = 'block';
+    document.getElementById('days-badge').textContent = `${days} nuit${days>1?'s':''}`;
+  }
+
+  // Charts & progress
+  updateCharts(breakdown, total, budget, curr);
+  updateProgress(breakdown, total, curr);
+}
+
+function fmt(val, curr) {
+  const abs = Math.abs(val);
+  const sign = val < 0 ? '-' : '';
+  if (['€','$','£'].includes(curr)) return sign + curr + abs.toLocaleString('fr-FR');
+  return sign + abs.toLocaleString('fr-FR') + ' ' + curr;
+}
+
+// ─── CHARTS ───────────────────────────────────────────────
+function updateCharts(breakdown, total, budget, curr) {
+  const labels = CATS.map(c => c.label);
+  const values = CATS.map(c => breakdown[c.id] || 0);
+  const colors = CATS.map(c => c.color);
+
+  // PIE
+  if (pieChart) pieChart.destroy();
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  const active = values.some(v => v > 0);
+  pieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: active ? values : [1],
+        backgroundColor: active ? colors : ['#ede5d8'],
+        borderWidth: 2,
+        borderColor: '#faf7f2',
+      }]
+    },
+    options: {
+      cutout: '62%',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => active ? `${ctx.label}: ${fmt(ctx.raw, curr)}` : 'Aucune donnée'
+          }
+        }
+      }
+    }
+  });
+
+  // BAR
+  if (barChart) barChart.destroy();
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Budget', 'Dépenses'],
+      datasets: [{
+        data: [budget || 0, total],
+        backgroundColor: [budget > total ? '#6b8f71' : '#a8b5a3', total > budget ? '#c0714a' : '#c9a84c'],
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => fmt(ctx.raw, curr) } } },
+      scales: {
+        y: { grid: { color: 'rgba(26,26,46,0.06)' }, ticks: { font: { family: 'DM Mono', size: 10 }, callback: v => fmt(v, curr) } },
+        x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 12 } } }
+      }
+    }
+  });
+}
+
+function updateProgress(breakdown, total, curr) {
+  const container = document.getElementById('progress-bars');
+  container.innerHTML = '';
+  CATS.forEach(cat => {
+    const val = breakdown[cat.id] || 0;
+    if (!val) return;
+    const pct = total ? Math.round(val / total * 100) : 0;
+    container.innerHTML += `
+      <div class="progress-wrap">
+        <div class="progress-header">
+          <span style="display:flex;align-items:center;gap:6px">
+            <span style="width:8px;height:8px;border-radius:50%;background:${cat.color};display:inline-block"></span>
+            ${cat.label}
+          </span>
+          <span>${fmt(val, curr)} · ${pct}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${pct}%;background:${cat.color}"></div>
+        </div>
+      </div>
+    `;
+  });
+  if (!container.innerHTML) {
+    container.innerHTML = '<div style="color:rgba(26,26,46,0.3);font-size:13px;text-align:center;padding:20px 0">Remplis les dépenses pour voir le détail</div>';
+  }
+}
+
+// ─── SIMULATION MANAGEMENT ────────────────────────────────
+function getFormData() {
+  return {
+    simName:    document.getElementById('simName').value,
+    destination: document.getElementById('destination').value,
+    currency:   document.getElementById('currency').value,
+    dateFrom:   document.getElementById('dateFrom').value,
+    dateTo:     document.getElementById('dateTo').value,
+    travelers:  document.getElementById('travelers').value,
+    budget:     document.getElementById('budget').value,
+    notes:      document.getElementById('notes').value,
+    c_vols:         document.getElementById('c_vols').value,
+    c_hotel_night:  document.getElementById('c_hotel_night').value,
+    c_hotel_nights: document.getElementById('c_hotel_nights').value,
+    c_transport:    document.getElementById('c_transport').value,
+    c_food_day:     document.getElementById('c_food_day').value,
+    c_activities:   document.getElementById('c_activities').value,
+    c_shopping:     document.getElementById('c_shopping').value,
+    c_insurance:    document.getElementById('c_insurance').value,
+    c_misc:         document.getElementById('c_misc').value,
+  };
+}
+
+function setFormData(data) {
+  Object.keys(data).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = data[k] || '';
+  });
+  updateCalc();
+}
+
+function newSimulation() {
+  currentSimId = null;
+  const fields = ['simName','destination','budget','notes','c_vols','c_hotel_night','c_hotel_nights','c_transport','c_food_day','c_activities','c_shopping','c_insurance','c_misc','dateFrom','dateTo'];
+  fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('travelers').value = 2;
+  document.getElementById('currency').value = '€';
+  updateCalc();
+  notify('Nouveau formulaire — prêt à saisir', '✦');
+  renderSimList();
+}
+
+function saveSimulation() {
+  const name = document.getElementById('simName').value.trim();
+  if (!name) {
+    document.getElementById('modalSimName').value = '';
+    document.getElementById('saveModal').classList.add('show');
+    setTimeout(() => document.getElementById('modalSimName').focus(), 100);
+    return;
+  }
+  confirmSaveWithName(name);
+}
+
+function confirmSave() {
+  const name = document.getElementById('modalSimName').value.trim();
+  if (!name) return;
+  document.getElementById('simName').value = name;
+  closeModal();
+  confirmSaveWithName(name);
+}
+
+function confirmSaveWithName(name) {
+  const data = getFormData();
+  data.simName = name;
+  const now = new Date().toISOString();
+
+  if (currentSimId) {
+    const idx = simulations.findIndex(s => s.id === currentSimId);
+    if (idx > -1) {
+      simulations[idx] = { ...simulations[idx], ...data, updatedAt: now };
+    }
+  } else {
+    const id = 'sim-' + Date.now();
+    simulations.unshift({ id, ...data, createdAt: now, updatedAt: now });
+    currentSimId = id;
+  }
+
+  saveToStorage();
+  renderSimList();
+  notify(`"${name}" sauvegardée !`, '✓');
+}
+
+function closeModal() {
+  document.getElementById('saveModal').classList.remove('show');
+}
+
+function loadSimulation(id) {
+  const sim = simulations.find(s => s.id === id);
+  if (!sim) return;
+  currentSimId = id;
+  setFormData(sim);
+  renderSimList();
+  notify(`"${sim.simName}" chargée`, '📂');
+}
+
+function deleteSimulation(id, e) {
+  e.stopPropagation();
+  const sim = simulations.find(s => s.id === id);
+  if (!sim) return;
+  if (!confirm(`Supprimer "${sim.simName}" ?`)) return;
+  simulations = simulations.filter(s => s.id !== id);
+  if (currentSimId === id) { currentSimId = null; }
+  saveToStorage();
+  renderSimList();
+  notify('Simulation supprimée', '🗑');
+}
+
+function renderSimList() {
+  const container = document.getElementById('sim-list');
+  document.getElementById('sim-count').textContent = simulations.length;
+
+  if (!simulations.length) {
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🌍</div>
+        <div class="empty-text">Aucune simulation encore.<br>Remplis le formulaire et clique <strong>Sauvegarder</strong>.</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = simulations.map(sim => {
+    const curr = sim.currency || '€';
+    const budget = parseFloat(sim.budget) || 0;
+    const hotelTotal = (parseFloat(sim.c_hotel_night)||0) * (parseFloat(sim.c_hotel_nights)||0);
+    const days = sim.dateFrom && sim.dateTo ? Math.max(0, Math.round((new Date(sim.dateTo) - new Date(sim.dateFrom)) / 86400000)) : parseFloat(sim.c_hotel_nights)||0;
+    const travelers = parseFloat(sim.travelers)||1;
+    const foodTotal = (parseFloat(sim.c_food_day)||0) * days * travelers;
+    const total = (parseFloat(sim.c_vols)||0) + hotelTotal + (parseFloat(sim.c_transport)||0) + foodTotal + (parseFloat(sim.c_activities)||0) + (parseFloat(sim.c_shopping)||0) + (parseFloat(sim.c_insurance)||0) + (parseFloat(sim.c_misc)||0);
+    const remain = budget - total;
+    const badgeClass = !budget ? 'neutral' : remain >= 0 ? 'ok' : 'over';
+    const badgeText = !budget ? fmt(total, curr) : (remain >= 0 ? `+${fmt(Math.round(remain), curr)}` : fmt(Math.round(remain), curr));
+    const date = sim.dateFrom ? new Date(sim.dateFrom).toLocaleDateString('fr-FR', {month:'short', year:'numeric'}) : '';
+    const active = currentSimId === sim.id ? 'active' : '';
+
+    return `
+      <div class="sim-item ${active}" onclick="loadSimulation('${sim.id}')">
+        <div class="sim-item-icon">${sim.destination ? '🗺' : '✈'}</div>
+        <div class="sim-item-body">
+          <div class="sim-item-name">${sim.simName || 'Sans titre'}</div>
+          <div class="sim-item-meta">${[sim.destination, date, days ? days+'j' : ''].filter(Boolean).join(' · ')}</div>
+        </div>
+        <span class="sim-item-badge ${badgeClass}">${badgeText}</span>
+        <button class="sim-delete-btn" onclick="deleteSimulation('${sim.id}', event)" title="Supprimer">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── NOTIFY ───────────────────────────────────────────────
+function notify(text, icon = '✓') {
+  const el = document.getElementById('notif');
+  document.getElementById('notif-text').textContent = text;
+  document.getElementById('notif-icon').textContent = icon;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveSimulation();
+  }
+  if (e.key === 'Escape') closeModal();
+});
+
+// ─── INIT ─────────────────────────────────────────────────
+loadFromStorage();
+updateCalc();
+</script>
+
+</body>
+</html>
