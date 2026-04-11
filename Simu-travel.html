@@ -269,6 +269,16 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 .empty{text-align:center;padding:30px 16px;color:var(--muted);}
 .ei{font-size:30px;margin-bottom:8px;}.et{font-size:12.5px;line-height:1.65;}
 .sa{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:13px;flex-wrap:wrap;}
+
+/* OPEN / DUP SIM CARDS */
+.open-sim-card{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:7px;}
+.open-sim-card:hover{border-color:var(--border2);background:rgba(255,255,255,.03);}
+.open-sim-card.active{border-color:rgba(201,165,90,.36);background:rgba(201,165,90,.04);}
+.osc-left{flex:1;min-width:0;}
+.osc-name{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.osc-meta{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);margin-top:2px;}
+.osc-right{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.osc-current{font-family:'JetBrains Mono',monospace;font-size:8px;padding:1px 6px;border-radius:4px;background:var(--gold-bg);color:var(--gold);border:1px solid rgba(201,165,90,.2);margin-left:6px;vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -277,8 +287,9 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   <div class="hdr-in">
     <div class="logo">Budget <em>Voyage</em></div>
     <div class="sync-row"><div class="sdot" id="sdot"></div><span id="slbl">Connecté</span></div>
-    <div class="hbtns">
-      <button class="btn bo bsm" onclick="showImportModal()">⬇ Importer</button>
+<div class="hbtns">
+      <button class="btn bo bsm" onclick="showOpenModal()">📂 Ouvrir</button>
+      <button class="btn bo bsm" onclick="showDuplicateModal()">⧉ Dupliquer</button>
       <button class="btn bo bsm" onclick="newSimulation()">+ Nouveau</button>
       <button class="btn bg bsm" onclick="saveSimulation()">↑ Sauvegarder</button>
     </div>
@@ -552,24 +563,30 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   </div>
 </div>
 
-<!--
-  MODAL IMPORT — FIX #1 + #8:
-  - Un seul champ id="import-name", placé APRÈS le sélecteur source (logique source → nom copie)
-  - imp-name-fg masqué en mode "edit", visible en mode "dup"
--->
-<div class="mbg" id="importModal">
-  <div class="modal">
-    <div class="mtitle">Dupliquer / Save As</div>
-    <div style="display:flex;gap:6px;margin-bottom:14px;">
-      <button class="mode-btn active" id="imp-mode-dup" onclick="setImportMode('dup')">⧉ Dupliquer</button>
-      <button class="mode-btn" id="imp-mode-edit" onclick="setImportMode('edit')">✎ Éditer</button>
+<!-- MODAL OUVRIR -->
+<div class="mbg" id="openModal">
+  <div class="modal" style="max-width:560px">
+    <div class="mtitle">Ouvrir une simulation</div>
+    <div class="msub" id="open-modal-sub">Sélectionne une simulation à charger.</div>
+    <div style="max-height:420px;overflow-y:auto;margin:0 -4px;padding:0 4px" id="open-sim-list"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('openModal')">Fermer</button></div>
+  </div>
+</div>
+
+<!-- MODAL DUPLIQUER -->
+<div class="mbg" id="duplicateModal">
+  <div class="modal" style="max-width:560px">
+    <div class="mtitle">Dupliquer une simulation</div>
+    <div class="msub">Choisis la source, puis donne un nom à la copie.</div>
+    <div style="max-height:280px;overflow-y:auto;margin:0 -4px;padding:0 4px;margin-bottom:14px" id="dup-sim-list"></div>
+    <div class="fg" id="dup-name-fg" style="display:none">
+      <label class="fl">Nom de la copie</label>
+      <input class="fi" id="dup-name-input" type="text" placeholder="Ex: Norvège — Option C">
     </div>
-    <div class="msub" id="imp-mode-desc">Charge sous un nouveau nom — l'original est conservé.</div>
-    <!-- Source d'abord -->
-    <div class="fg"><label class="fl">Simulation source</label><select class="fs" id="import-sel"><option value="">— Choisir —</option></select></div>
-    <!-- Nom de la copie ensuite, masqué en mode edit -->
-    <div class="fg" id="imp-name-fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
-    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" id="imp-confirm-btn" onclick="confirmImport()">⧉ Charger & dupliquer</button></div>
+    <div class="macts">
+      <button class="btn bgh" onclick="closeModal('duplicateModal')">Annuler</button>
+      <button class="btn bg" id="dup-confirm-btn" onclick="confirmDuplicate()" style="display:none">⧉ Dupliquer</button>
+    </div>
   </div>
 </div>
 
@@ -1367,6 +1384,7 @@ function newSimulation(){
   renderStops();renderSources();renderCats();scheduleCalc();
   toast('Nouveau formulaire','✦');renderAll();
 }
+
 function saveSimulation(){
   const name=document.getElementById('simName').value.trim();
   if(!name){document.getElementById('modal-name').value='';document.getElementById('saveModal').classList.add('show');setTimeout(()=>document.getElementById('modal-name').focus(),120);return;}
@@ -1387,52 +1405,127 @@ async function doSave(name){
   }
   saveLocal();renderAll();toast(`"${name}" sauvegardée`,'✓');
 }
+
 function closeModal(id){document.getElementById(id).classList.remove('show');}
+
 function loadSim(id){
   const sim=sims.find(s=>s.id===id);if(!sim)return;
-  curId=id;setFormData(sim);showTab('form');toast(`"${sim.simName}" chargée`,'📂');renderAll();
+  curId=id;
+  document.getElementById('wi-nights').value=0;
+  document.getElementById('wi-food').value=0;
+  document.getElementById('wi-act').value=0;
+  setFormData(sim);showTab('form');
+  closeModal('openModal');
+  toast(`"${sim.simName}" chargée`,'📂');
+  renderAll();
 }
+
 async function deleteSim(id,e){
   e&&e.stopPropagation();
   const sim=sims.find(s=>s.id===id);
   if(!sim||!confirm(`Supprimer "${sim.simName}" ?`))return;
   sims=sims.filter(s=>s.id!==id);if(curId===id)curId=null;
-  await sheetsPost('delete',sim);saveLocal();renderAll();toast('Supprimée','🗑');
+  await sheetsPost('delete',sim);saveLocal();renderAll();
+  if(document.getElementById('openModal').classList.contains('show'))renderOpenList();
+  if(document.getElementById('duplicateModal').classList.contains('show'))renderDupList();
+  toast('Supprimée','🗑');
 }
-function showImportModal(){
-  const sel=document.getElementById('import-sel');
-  sel.innerHTML='<option value="">— Choisir —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
-  document.getElementById('import-name').value='';
-  document.getElementById('importModal').classList.add('show');
-  importMode='dup';setImportMode('dup');
+
+// ── MODAL OUVRIR ──────────────────────────────────────────
+function showOpenModal(){
+  renderOpenList();
+  document.getElementById('openModal').classList.add('show');
 }
-function confirmImport(){
-  const id=document.getElementById('import-sel').value;
-  if(!id){toast('Choisis une simulation source','⚠');return;}
-  const sim=sims.find(s=>s.id===id);if(!sim)return;
-  if(importMode==='edit'){
-    closeModal('importModal');
-    curId=id;
-    setFormData({...sim});
-    showTab('form');
-    toast(`"${sim.simName}" chargée — édition directe`,'✎');
+
+function renderOpenList(){
+  const el=document.getElementById('open-sim-list');
+  const sub=document.getElementById('open-modal-sub');
+  if(!sims.length){
+    sub.textContent='Aucune simulation sauvegardée.';
+    el.innerHTML='';
     return;
   }
-  const name=document.getElementById('import-name').value.trim();
+  sub.textContent='Sélectionne une simulation à charger.';
+  el.innerHTML=sims.map(sim=>{
+    const curr=sim.currency||'€';
+    const total=simTotal(sim);
+    const budget=simBudget(sim);
+    const remain=budget-total;
+    const bc=!budget?'p-n':remain>=0?'p-ok':'p-ov';
+    const bt=!budget?fmt(total,curr):remain>=0?'+'+fmt(Math.round(remain),curr):fmt(Math.round(remain),curr);
+    const ds=sim.dateFrom?new Date(sim.dateFrom).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}):'';
+    const isActive=curId===sim.id;
+    return `<div class="open-sim-card${isActive?' active':''}" onclick="loadSim('${sim.id}')">
+      <div class="osc-left">
+        <div class="osc-name">${sim.simName||'Sans titre'}${isActive?' <span class="osc-current">en cours</span>':''}</div>
+        <div class="osc-meta">${[sim.destination,ds].filter(Boolean).join(' · ')||'—'}</div>
+      </div>
+      <div class="osc-right">
+        <span class="pill ${bc}" style="font-size:10px">${bt}</span>
+        <button class="sdel" style="margin-left:4px" onclick="deleteSim('${sim.id}',event)" title="Supprimer">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODAL DUPLIQUER ───────────────────────────────────────
+let _dupSourceId=null;
+
+function showDuplicateModal(){
+  _dupSourceId=null;
+  document.getElementById('dup-name-fg').style.display='none';
+  document.getElementById('dup-confirm-btn').style.display='none';
+  document.getElementById('dup-name-input').value='';
+  renderDupList();
+  document.getElementById('duplicateModal').classList.add('show');
+}
+
+function renderDupList(){
+  const el=document.getElementById('dup-sim-list');
+  if(!sims.length){el.innerHTML='<div class="empty" style="padding:16px 0"><div class="et">Aucune simulation à dupliquer.</div></div>';return;}
+  el.innerHTML=sims.map(sim=>{
+    const curr=sim.currency||'€';
+    const total=simTotal(sim);
+    const budget=simBudget(sim);
+    const remain=budget-total;
+    const bc=!budget?'p-n':remain>=0?'p-ok':'p-ov';
+    const bt=!budget?fmt(total,curr):remain>=0?'+'+fmt(Math.round(remain),curr):fmt(Math.round(remain),curr);
+    const ds=sim.dateFrom?new Date(sim.dateFrom).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}):'';
+    const isSel=_dupSourceId===sim.id;
+    return `<div class="open-sim-card${isSel?' active':''}" onclick="selectDupSource('${sim.id}','${(sim.simName||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+      <div class="osc-left">
+        <div class="osc-name">${sim.simName||'Sans titre'}</div>
+        <div class="osc-meta">${[sim.destination,ds].filter(Boolean).join(' · ')||'—'}</div>
+      </div>
+      <div class="osc-right">
+        <span class="pill ${bc}" style="font-size:10px">${bt}</span>
+        ${isSel?'<span style="color:var(--gold);font-size:13px;margin-left:6px">✓</span>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectDupSource(id,name){
+  _dupSourceId=id;
+  renderDupList();
+  const nameInput=document.getElementById('dup-name-input');
+  nameInput.value=name+' (copie)';
+  document.getElementById('dup-name-fg').style.display='';
+  document.getElementById('dup-confirm-btn').style.display='';
+  setTimeout(()=>{nameInput.focus();nameInput.select();},80);
+}
+
+function confirmDuplicate(){
+  if(!_dupSourceId){toast('Choisis une simulation source','⚠');return;}
+  const sim=sims.find(s=>s.id===_dupSourceId);if(!sim)return;
+  const name=document.getElementById('dup-name-input').value.trim();
   if(!name){toast('Donne un nom à la copie','⚠');return;}
-  closeModal('importModal');
+  closeModal('duplicateModal');
   curId=null;
   setFormData({...sim});
   document.getElementById('simName').value=name;
   showTab('form');
   toast(`Dupliqué depuis "${sim.simName}" — modifie et sauvegarde`,'📋');
-}
-function importAs(id){
-  const sim=sims.find(s=>s.id===id);if(!sim)return;
-  document.getElementById('import-sel').innerHTML=`<option value="${id}" selected>${sim.simName}</option>`;
-  document.getElementById('import-name').value=(sim.simName||'')+(sim.simName?' (copie)':'copie');
-  importMode='dup';setImportMode('dup');
-  document.getElementById('importModal').classList.add('show');
 }
 
 // ══════════════════════════════════════════════════════════
