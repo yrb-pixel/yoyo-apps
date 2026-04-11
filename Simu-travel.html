@@ -2,380 +2,258 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget Voyage — Expert</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<title>Budget Voyage ✦ Expert</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
-    --bg: #0b0d12;
-    --card: #151921;
-    --card-h: #1c222d;
-    --border: rgba(255,255,255,0.06);
-    --accent: #d4875a;
-    --accent-dim: rgba(212, 135, 90, 0.15);
-    --text: #e2e4e9;
-    --text-dim: #8a8f9d;
-    --green: #6db58a;
-    --red: #d46b6b;
-    --radius: 14px;
+  --bg: #0d0f14; --bg2: #13161d; --bg3: #1a1e28;
+  --accent: #d4875a; --text: #e8e4dc; --muted: rgba(232,228,220,0.5);
+  --border: rgba(255,255,255,0.08); --radius: 16px;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { 
-    background: var(--bg); 
-    color: var(--text); 
-    font-family: 'Outfit', sans-serif; 
-    background-image: radial-gradient(circle at 50% -20%, #1e2535 0%, var(--bg) 80%);
-    min-height: 100vh;
+  background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; 
+  background-image: radial-gradient(circle at 50% 0%, #1e2535 0%, var(--bg) 80%);
+  padding: 20px;
 }
+.container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1fr 420px; gap: 25px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+h2 { font-family: 'Cormorant Garamond', serif; font-size: 24px; margin-bottom: 20px; color: var(--accent); }
 
-/* NAVIGATION */
-.nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(11, 13, 18, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 28px;
-}
-.nav-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; gap: 30px; }
-.logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; flex: 1; }
-.logo em { color: var(--accent); font-style: italic; }
-
-.tabs { display: flex; background: #000; padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
-.tab { 
-    padding: 6px 16px; border: none; background: none; color: var(--text-dim); 
-    cursor: pointer; border-radius: 7px; font-size: 14px; transition: 0.2s;
-}
-.tab.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
-
-/* LAYOUT */
-.app { max-width: 1400px; margin: 30px auto; padding: 0 24px; }
-.panel { display: none; gap: 24px; }
-.panel.active { display: grid; grid-template-columns: 1fr 400px; }
-@media (max-width: 1000px) { .panel.active { grid-template-columns: 1fr; } }
-
-.card { 
-    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); 
-    padding: 24px; margin-bottom: 20px;
-}
-.card-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-.card-title span { color: var(--accent); }
-
-/* FORMS */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.form-group { margin-bottom: 16px; }
-label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono'; }
-input, select, textarea { 
-    width: 100%; background: #0b0d12; border: 1px solid var(--border); 
-    border-radius: 8px; padding: 10px 12px; color: white; font-family: inherit; font-size: 14px;
+/* Formulaire */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.f-group { margin-bottom: 15px; }
+label { display: block; font-size: 11px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; font-family: 'JetBrains Mono'; }
+input, select { 
+  width: 100%; background: var(--bg3); border: 1px solid var(--border); 
+  border-radius: 8px; padding: 12px; color: white; font-family: inherit;
 }
 input:focus { border-color: var(--accent); outline: none; }
 
-/* EXPENSES LIST */
-.exp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.exp-row label { margin-bottom: 0; text-transform: none; font-family: 'Outfit'; font-size: 14px; color: var(--text); }
-.exp-row input { width: 110px; text-align: right; font-family: 'JetBrains Mono'; font-size: 13px; border-color: transparent; background: rgba(0,0,0,0.2); }
+/* Multi-villes */
+.city-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 10px; align-items: center; }
+.btn-add { background: none; border: 1px dashed var(--accent); color: var(--accent); padding: 10px; width: 100%; cursor: pointer; border-radius: 8px; }
 
-/* SIDEBAR & STATS */
-.total-box { background: linear-gradient(145deg, #1c222d 0%, #151921 100%); border: 1px solid var(--accent-dim); }
-.amount-main { font-family: 'JetBrains Mono'; font-size: 32px; color: var(--accent); margin: 5px 0; }
+/* What If */
+.wi-card { border: 1px solid var(--accent); background: rgba(212, 135, 90, 0.05); }
+.wi-total { font-size: 28px; font-family: 'JetBrains Mono'; color: var(--accent); }
 
-.sim-item { 
-    background: #0b0d12; border: 1px solid var(--border); padding: 12px 15px; 
-    border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: 0.2s;
-    display: flex; justify-content: space-between; align-items: center;
-}
-.sim-item:hover { border-color: var(--accent); }
-.sim-period-tag { font-size: 9px; background: var(--accent-dim); color: var(--accent); padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
+/* Recaps */
+.pill { background: var(--bg3); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; font-size: 12px; margin-right: 5px; }
+.total-main { font-size: 48px; font-family: 'JetBrains Mono'; color: var(--accent); margin: 10px 0; }
 
-/* COMPARATOR SPECIAL */
-.filter-bar { margin-bottom: 20px; display: flex; align-items: center; gap: 15px; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); }
-.comp-table-wrap { overflow-x: auto; }
-.comp-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.comp-table th { text-align: left; padding: 15px; font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
-.comp-table td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
-
-.btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; font-family: inherit; font-size: 13px; transition: 0.2s; }
-.btn-p { background: var(--accent); color: white; }
-.btn-s { background: transparent; border: 1px solid var(--border); color: var(--text); }
-
-.chart-container { height: 200px; position: relative; }
+#itineraryRecap { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 14px; color: var(--muted); }
 </style>
 </head>
 <body>
 
-<nav class="nav">
-    <div class="nav-inner">
-        <div class="logo">Budget <em>Voyage</em></div>
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('simulator')">Simulateur</button>
-            <button class="tab" onclick="switchTab('comparator')">Comparateur</button>
-        </div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-s" onclick="resetForm()">Nouveau</button>
-            <button class="btn btn-p" id="saveBtn" onclick="saveToSheets()">Sauvegarder</button>
-        </div>
-    </div>
-</nav>
-
-<div class="app">
-    <div id="panel-simulator" class="panel active">
-        <div class="main-content">
-            <div class="card">
-                <div class="card-title"><span>✈</span> Configuration & Période</div>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Nom du scénario</label>
-                        <input type="text" id="simName" placeholder="Ex: Option A - Roadtrip">
-                    </div>
-                    <div class="form-group">
-                        <label>Période (Classement)</label>
-                        <input type="text" id="travelPeriod" placeholder="Ex: Mai 2025">
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Destination</label><input type="text" id="destination"></div>
-                    <div class="form-group">
-                        <label>Monnaie</label>
-                        <select id="currency" onchange="runCalc()">
-                            <option value="€">EUR (€)</option>
-                            <option value="NOK">NOK</option>
-                            <option value="$">USD ($)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Date de début</label><input type="date" id="dateFrom" onchange="runCalc()"></div>
-                    <div class="form-group"><label>Date de fin</label><input type="date" id="dateTo" onchange="runCalc()"></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Voyageurs</label><input type="number" id="travelers" value="2" oninput="runCalc()"></div>
-                    <div class="form-group"><label>Budget Max</label><input type="number" id="budget" placeholder="5000" oninput="runCalc()"></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span>📋</span> Détail des Dépenses</div>
-                <div class="exp-row"><label>Vols A/R (total)</label><input type="number" id="c_vols" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Hébergement / nuit</label><input type="number" id="c_hotel_night" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Voiture / jour</label><input type="number" id="c_car_day" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Repas / jour / pers</label><input type="number" id="c_food_day" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Activités (total)</label><input type="number" id="c_activities" oninput="runCalc()"></div>
-                <div class="exp-row"><label>Imprévus / Divers</label><input type="number" id="c_misc" oninput="runCalc()"></div>
-            </div>
-        </div>
-
-        <div class="sidebar">
-            <div class="card total-box">
-                <label>Total Estimé</label>
-                <div class="amount-main" id="res-total">0 €</div>
-                <div id="res-remain" style="font-size: 13px; color: var(--text-dim);">Reste : --</div>
-            </div>
-
-            <div class="card">
-                <div class="chart-container"><canvas id="pieChart"></canvas></div>
-            </div>
-
-            <div class="card">
-                <div class="card-title" style="margin-bottom:15px"><span>🗂</span> Historique</div>
-                <div id="sim-list"></div>
-            </div>
-        </div>
+<div class="container">
+  <div class="main">
+    <div class="card">
+      <h2>🌍 Configuration du Voyage</h2>
+      <div class="grid">
+        <div class="f-group"><label>Nom Simulation</label><input type="text" id="simName"></div>
+        <div class="f-group"><label>Période (ex: Mai 2025)</label><input type="text" id="travelPeriod"></div>
+      </div>
+      <div class="grid">
+        <div class="f-group"><label>Date Début</label><input type="date" id="dateFrom" onchange="calcNights()"></div>
+        <div class="f-group"><label>Date Fin</label><input type="date" id="dateTo" onchange="calcNights()"></div>
+      </div>
+      <div class="grid">
+        <div class="f-group"><label>Destination</label><input type="text" id="destination"></div>
+        <div class="f-group"><label>Budget Max (Total)</label><input type="number" id="budget"></div>
+      </div>
     </div>
 
-    <div id="panel-comparator" class="panel">
-        <div style="grid-column: 1 / -1;">
-            <div class="filter-bar">
-                <label style="margin-bottom:0">Comparer la période :</label>
-                <select id="periodFilter" style="width: auto; min-width: 200px;" onchange="renderComparator()">
-                    <option value="">Sélectionnez une période</option>
-                </select>
-            </div>
-            <div class="card">
-                <div class="comp-table-wrap" id="comp-wrap">
-                    <p style="color:var(--text-dim); text-align:center; padding:40px;">Choisissez une période ci-dessus pour comparer les scénarios.</p>
-                </div>
-            </div>
+    <div class="card">
+      <h2>✈️ Vols</h2>
+      <div class="grid" style="grid-template-columns: 1fr auto;">
+        <div class="f-group"><label>Prix Total des Vols</label><input type="number" id="flightsTotal" oninput="updateAll()"></div>
+        <div class="f-group" style="display:flex; align-items:flex-end;">
+          <button class="btn-add" onclick="fetchFlightApi()" style="padding:12px; border-style:solid;">🔍 Scanner Vols</button>
         </div>
+      </div>
     </div>
+
+    <div class="card">
+      <h2>🏨 Hébergement (Multi-villes)</h2>
+      <div id="cityList"></div>
+      <button class="btn-add" onclick="addCity()">+ Ajouter une étape/ville</button>
+    </div>
+
+    <div class="card">
+      <h2>🏷️ Autre & Imprévus</h2>
+      <div class="grid">
+        <div class="f-group"><label>Montant (ex: Escale)</label><input type="number" id="otherTotal" oninput="updateAll()"></div>
+        <div class="f-group"><label>Commentaire</label><input type="text" id="otherComment" placeholder="Nuit d'hôtel escale, visa..."></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="card">
+      <label>Coût Total Estimé</label>
+      <div class="total-main" id="displayTotal">0 €</div>
+      <div id="statusBudget"></div>
+      
+      <div id="itineraryRecap">
+        <em>Remplissez les dates et les villes...</em>
+      </div>
+    </div>
+
+    <div class="card">
+      <canvas id="chartBudget" height="200"></canvas>
+    </div>
+
+    <div class="card wi-card">
+      <h2>🤔 Et si... (What-If)</h2>
+      <div class="f-group">
+        <label>Ajouter des nuits (+ prix moy/nuit)</label>
+        <input type="range" id="wi_nights" min="0" max="14" value="0" oninput="updateWhatIf()">
+        <span id="wi_nights_label" class="pill">0 nuit sup.</span>
+      </div>
+      <div class="f-group">
+        <label>Extra Budget Repas / Jour</label>
+        <input type="range" id="wi_food" min="0" max="200" value="0" oninput="updateWhatIf()">
+        <span id="wi_food_label" class="pill">0 € / jour</span>
+      </div>
+      <div class="wi-total" id="wi_total_display">0 €</div>
+    </div>
+
+    <button class="btn-add" id="saveBtn" onclick="saveToSheet()" style="background:var(--accent); color:black; font-weight:bold; border:none; height:50px;">💾 Sauvegarder dans Google Sheet</button>
+  </div>
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNggQfKcvVvljLkWIrdnbUgjCrPS5dKpQuIy1IjdvFv-O9Fvh0p9sfYBDjgOnheCqR/exec';
-
-let simulations = [];
+let cities = [{city: '', nights: 0, total: 0}];
 let myChart = null;
-let activeId = null;
+let currentTotal = 0;
 
-function runCalc() {
-    const cur = document.getElementById('currency').value;
-    const travelers = parseFloat(document.getElementById('travelers').value) || 1;
-    const budget = parseFloat(document.getElementById('budget').value) || 0;
-    
-    const d1 = new Date(document.getElementById('dateFrom').value);
-    const d2 = new Date(document.getElementById('dateTo').value);
-    let days = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24)) || 0;
-    if (days < 0) days = 0;
-
-    const vols = parseFloat(document.getElementById('c_vols').value) || 0;
-    const hotel = (parseFloat(document.getElementById('c_hotel_night').value) || 0) * days;
-    const car = (parseFloat(document.getElementById('c_car_day').value) || 0) * days;
-    const food = (parseFloat(document.getElementById('c_food_day').value) || 0) * days * travelers;
-    const act = parseFloat(document.getElementById('c_activities').value) || 0;
-    const misc = parseFloat(document.getElementById('c_misc').value) || 0;
-
-    const total = vols + hotel + car + food + act + misc;
-    const remain = budget - total;
-
-    document.getElementById('res-total').textContent = `${total.toLocaleString()} ${cur}`;
-    const remEl = document.getElementById('res-remain');
-    if(budget > 0) {
-        remEl.textContent = `Reste : ${remain.toLocaleString()} ${cur}`;
-        remEl.style.color = remain >= 0 ? 'var(--green)' : 'var(--red)';
-    }
-
-    updateChart([vols, hotel, car, food, act, misc]);
+function addCity() {
+  cities.push({city: '', nights: 0, total: 0});
+  renderCities();
 }
 
-function updateChart(data) {
-    const ctx = document.getElementById('pieChart').getContext('2d');
-    if (myChart) myChart.destroy();
-    myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Vols', 'Hébergement', 'Voiture', 'Repas', 'Activités', 'Divers'],
-            datasets: [{
-                data: data,
-                backgroundColor: ['#d4875a', '#6db58a', '#6b9fd4', '#9b7fc4', '#c9a84c', '#d46b6b'],
-                borderWidth: 0
-            }]
-        },
-        options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '75%' }
-    });
+function renderCities() {
+  const container = document.getElementById('cityList');
+  container.innerHTML = cities.map((c, i) => `
+    <div class="city-row">
+      <input type="text" placeholder="Ville" value="${c.city}" oninput="updateCity(${i}, 'city', this.value)">
+      <input type="number" placeholder="Nuits" value="${c.nights}" oninput="updateCity(${i}, 'nights', this.value)">
+      <input type="number" placeholder="Prix Total" value="${c.total}" oninput="updateCity(${i}, 'total', this.value)">
+      <button onclick="removeCity(${i})" style="background:none; border:none; color:red; cursor:pointer;">✕</button>
+    </div>
+  `).join('');
+  updateAll();
 }
 
-async function fetchSims() {
-    try {
-        const r = await fetch(SCRIPT_URL);
-        simulations = await r.json();
-        renderList();
-        updatePeriodFilter();
-    } catch(e) { console.error(e); }
+function updateCity(i, key, val) {
+  cities[i][key] = (key === 'city') ? val : parseFloat(val || 0);
+  updateAll();
 }
 
-async function saveToSheets() {
-    const btn = document.getElementById('saveBtn');
-    const name = document.getElementById('simName').value;
-    const period = document.getElementById('travelPeriod').value || "Non classé";
-    if(!name) return alert("Nom requis");
-    
-    btn.textContent = "Envoi...";
-    btn.disabled = true;
-
-    const data = {
-        id: activeId || 'sim_' + Date.now(),
-        simName: name,
-        travelPeriod: period,
-        destination: document.getElementById('destination').value,
-        currency: document.getElementById('currency').value,
-        dateFrom: document.getElementById('dateFrom').value,
-        dateTo: document.getElementById('dateTo').value,
-        travelers: document.getElementById('travelers').value,
-        budget: document.getElementById('budget').value,
-        c_vols: document.getElementById('c_vols').value || 0,
-        c_hotel_night: document.getElementById('c_hotel_night').value || 0,
-        c_car_day: document.getElementById('c_car_day').value || 0,
-        c_food_day: document.getElementById('c_food_day').value || 0,
-        c_activities: document.getElementById('c_activities').value || 0,
-        c_misc: document.getElementById('c_misc').value || 0,
-        updatedAt: new Date().toISOString()
-    };
-
-    await fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'save', simulation: data })
-    });
-
-    activeId = data.id;
-    btn.textContent = "Sauvegarder";
-    btn.disabled = false;
-    fetchSims();
+function removeCity(i) {
+  cities.splice(i, 1);
+  renderCities();
 }
 
-function renderList() {
-    const container = document.getElementById('sim-list');
-    container.innerHTML = simulations.map(s => `
-        <div class="sim-item ${activeId === s.id ? 'active' : ''}" onclick="loadSim('${s.id}')">
-            <div>
-                <span class="sim-period-tag">${s.travelPeriod || 'Mai 2025'}</span>
-                <div class="sim-name">${s.simName}</div>
-            </div>
-            <div style="font-family:'JetBrains Mono'; font-size:11px; color:var(--accent)">${s.budget}${s.currency}</div>
-        </div>
-    `).join('');
+function calcNights() {
+  const d1 = new Date(document.getElementById('dateFrom').value);
+  const d2 = new Date(document.getElementById('dateTo').value);
+  if (d1 && d2 && d2 > d1) {
+    const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+    // Optionnel : Alerte si le total des villes != diff nuits
+  }
 }
 
-function loadSim(id) {
-    activeId = id;
-    const s = simulations.find(x => x.id === id);
-    if(!s) return;
-    const fields = ['simName','travelPeriod','destination','currency','dateFrom','dateTo','travelers','budget','c_vols','c_hotel_night','c_car_day','c_food_day','c_activities','c_misc'];
-    fields.forEach(f => { if(document.getElementById(f)) document.getElementById(f).value = s[f] || ""; });
-    renderList();
-    runCalc();
+function updateAll() {
+  const flights = parseFloat(document.getElementById('flightsTotal').value || 0);
+  const others = parseFloat(document.getElementById('otherTotal').value || 0);
+  const hotelTotal = cities.reduce((sum, c) => sum + (c.total || 0), 0);
+  
+  currentTotal = flights + others + hotelTotal;
+  document.getElementById('displayTotal').innerText = currentTotal.toLocaleString() + ' €';
+  
+  // Itinéraire Recap
+  const itinerary = cities.filter(c => c.city).map(c => `<b>${c.nights}j</b> à ${c.city}`).join(', ');
+  document.getElementById('itineraryRecap').innerHTML = itinerary ? "📍 Trajet : " + itinerary : "<em>En attente d'étapes...</em>";
+
+  updateChart(flights, hotelTotal, others);
+  updateWhatIf();
 }
 
-function updatePeriodFilter() {
-    const filter = document.getElementById('periodFilter');
-    const periods = [...new Set(simulations.map(s => s.travelPeriod))].filter(Boolean);
-    filter.innerHTML = '<option value="">Sélectionnez une période</option>' + 
-        periods.map(p => `<option value="${p}">${p}</option>`).join('');
+function updateChart(f, h, o) {
+  const ctx = document.getElementById('chartBudget').getContext('2d');
+  if (myChart) myChart.destroy();
+  myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Vols', 'Hébergement', 'Autres'],
+      datasets: [{
+        data: [f, h, o],
+        backgroundColor: ['#d4875a', '#74b9ff', '#a29bfe'],
+        borderWidth: 0
+      }]
+    },
+    options: { cutout: '80%', plugins: { legend: { display: false } } }
+  });
 }
 
-function renderComparator() {
-    const period = document.getElementById('periodFilter').value;
-    const wrap = document.getElementById('comp-wrap');
-    if(!period) return;
+function updateWhatIf() {
+  const addNights = parseInt(document.getElementById('wi_nights').value);
+  const addFood = parseInt(document.getElementById('wi_food').value);
+  
+  document.getElementById('wi_nights_label').innerText = addNights + " nuits sup.";
+  document.getElementById('wi_food_label').innerText = addFood + " € / jour";
 
-    const filtered = simulations.filter(s => s.travelPeriod === period);
-    
-    let html = `<table class="comp-table"><thead><tr><th>Postes</th>`;
-    filtered.forEach(s => html += `<th>${s.simName}</th>`);
-    html += `</tr></thead><tbody>`;
-
-    const rows = [
-        {n: 'Budget Max', k: 'budget'},
-        {n: 'Vols', k: 'c_vols'},
-        {n: 'Hébergement / nuit', k: 'c_hotel_night'},
-        {n: 'Voiture / jour', k: 'c_car_day'}
-    ];
-
-    rows.forEach(r => {
-        html += `<tr><td>${r.n}</td>`;
-        filtered.forEach(s => html += `<td>${s[r.k] || 0} ${s.currency}</td>`);
-        html += `</tr>`;
-    });
-
-    html += `</tbody></table>`;
-    wrap.innerHTML = html;
+  const nights = cities.reduce((sum, c) => sum + (c.nights || 0), 0) || 1;
+  const avgNight = currentTotal / nights;
+  
+  const wiTotal = currentTotal + (addNights * avgNight) + (addFood * nights);
+  document.getElementById('wi_total_display').innerText = Math.round(wiTotal).toLocaleString() + ' €';
 }
 
-function switchTab(name) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    event.target.classList.add('active');
+function fetchFlightApi() {
+  const dest = document.getElementById('destination').value;
+  if(!dest) return alert("Précisez d'abord la destination");
+  
+  alert("Recherche du meilleur prix (1 escale max) pour " + dest + "...");
+  // Ici on simule l'appel API (FlightAPI.io ou Amadeus)
+  setTimeout(() => {
+    const fakePrice = Math.floor(Math.random() * 500) + 400;
+    document.getElementById('flightsTotal').value = fakePrice;
+    updateAll();
+  }, 1500);
 }
 
-function resetForm() {
-    activeId = null;
-    document.querySelectorAll('input').forEach(i => i.value = "");
-    runCalc();
+function saveToSheet() {
+  const btn = document.getElementById('saveBtn');
+  btn.innerText = "⏳ Enregistrement...";
+  
+  const payload = {
+    simName: document.getElementById('simName').value,
+    travelPeriod: document.getElementById('travelPeriod').value,
+    destination: document.getElementById('destination').value,
+    dateFrom: document.getElementById('dateFrom').value,
+    dateTo: document.getElementById('dateTo').value,
+    budget: document.getElementById('budget').value,
+    currency: "€",
+    flightsTotal: document.getElementById('flightsTotal').value,
+    cities: cities,
+    otherTotal: document.getElementById('otherTotal').value,
+    otherComment: document.getElementById('otherComment').value,
+    totalCost: currentTotal
+  };
+
+  google.script.run.withSuccessHandler(() => {
+    btn.innerText = "✅ Sauvegardé !";
+    setTimeout(() => btn.innerText = "💾 Sauvegarder dans Google Sheet", 2000);
+  }).saveData(payload);
 }
 
-fetchSims();
-runCalc();
+// Init
+renderCities();
 </script>
 </body>
 </html>
