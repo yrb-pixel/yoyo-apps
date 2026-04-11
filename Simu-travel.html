@@ -20,7 +20,6 @@
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 
-/* HEADER */
 .hdr{position:sticky;top:0;z-index:200;background:rgba(13,15,20,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;}
 .hdr-in{max-width:1440px;margin:0 auto;height:54px;display:flex;align-items:center;gap:14px;}
 .logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1;}
@@ -32,7 +31,6 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 .hbtns{display:flex;gap:7px;align-items:center;}
 
-/* TABS */
 .tabs{position:sticky;top:54px;z-index:190;background:rgba(13,15,20,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;}
 .tabs-in{max-width:1440px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;}
 .tabs-in::-webkit-scrollbar{display:none;}
@@ -40,12 +38,10 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .tab:hover{color:var(--text);}
 .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
 
-/* LAYOUT */
 .page{display:none;}.page.active{display:block;}
 .con{max-width:1440px;margin:0 auto;padding:22px 28px;}
 @media(max-width:768px){.con{padding:10px;}.hdr{padding:0 12px;}.tabs{padding:0 8px;}}
 
-/* GRIDS */
 .g2{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start;}
 .g2s{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;}
@@ -53,14 +49,12 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 @media(max-width:1100px){.g2{grid-template-columns:1fr;}}
 @media(max-width:700px){.g2s{grid-template-columns:1fr;}.g3{grid-template-columns:1fr 1fr;}.g4{grid-template-columns:1fr 1fr;}}
 
-/* CARD */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;animation:fadeUp .3s ease both;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,165,90,.2),transparent);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .ctitle{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .cbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);}
 
-/* FORM BASE */
 .fg{margin-bottom:11px;}
 .fl{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:4px;}
 .fi,.fs{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
@@ -73,9 +67,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.025;background-image:url
 .fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 
-/* ═══════════════════════════════════════
-   CUSTOM DATE PICKER
-   ═══════════════════════════════════════ */
+/* DATE PICKER */
 .dp-wrap{position:relative;}
 .dp-trigger{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13.5px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .2s,box-shadow .2s;user-select:none;min-height:38px;overflow:hidden;}
 .dp-trigger:hover{border-color:rgba(201,165,90,.3);}
@@ -85,18 +77,16 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .dp-trigger .dp-text.empty{color:var(--muted);}
 .dp-trigger .dp-clear{color:var(--muted);font-size:12px;padding:2px 5px;border-radius:4px;transition:all .15s;flex-shrink:0;}
 .dp-trigger .dp-clear:hover{color:var(--rose);background:rgba(212,119,106,.1);}
-
-.dp-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:300;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px;box-shadow:0 12px 48px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s ease;min-width:280px;max-width:calc(100vw - 24px);}.dp-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
-.dp-dropdown.right{left:auto;right:0;max-width:calc(100vw - 24px);}
+.dp-dropdown{position:absolute;top:calc(100% + 6px);left:0;z-index:300;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:14px;box-shadow:0 12px 48px rgba(0,0,0,.6);opacity:0;pointer-events:none;transform:translateY(-6px);transition:all .18s ease;min-width:280px;max-width:calc(100vw - 24px);}
+.dp-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0);}
+.dp-dropdown.right{left:auto;right:0;}
 .dp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .dp-month-label{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:default;}
 .dp-nav{display:flex;gap:4px;}
 .dp-nav button{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
 .dp-nav button:hover{border-color:rgba(201,165,90,.35);color:var(--gold);background:var(--gold-bg);}
-
 .dp-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
 .dp-weekdays span{text-align:center;font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:4px 0;}
-
 .dp-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
 .dp-day{text-align:center;padding:6px 2px;border-radius:6px;font-size:12.5px;cursor:pointer;transition:all .12s;color:var(--text);position:relative;}
 .dp-day:hover{background:rgba(201,165,90,.1);color:var(--gold);}
@@ -112,14 +102,11 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .dp-day.range-end{border-radius:2px 6px 6px 2px;}
 .dp-day.disabled{color:var(--muted2);cursor:not-allowed;opacity:.4;}
 .dp-day.disabled:hover{background:transparent;}
-
 .dp-footer{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .dp-today-btn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sky);background:transparent;border:1px solid rgba(111,168,200,.2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .12s;}
 .dp-today-btn:hover{background:rgba(111,168,200,.08);border-color:rgba(111,168,200,.35);}
 
-/* ═══════════════════════════════════════
-   FLIGHT ARRIVAL OPTIONS
-   ═══════════════════════════════════════ */
+/* FLIGHT OPTIONS — vol aller uniquement */
 .flight-opts{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
 .flight-opt-group{padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;}
 .flight-opt-title{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
@@ -131,7 +118,7 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .fo-btn .fo-sub{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-top:2px;font-weight:400;}
 .fo-btn.active .fo-sub{color:rgba(201,165,90,.6);}
 
-/* NIGHTS RESULT BANNER */
+/* NIGHTS BANNER */
 .nights-banner{margin-top:10px;padding:10px 13px;background:linear-gradient(135deg,rgba(122,173,130,.08),rgba(122,173,130,.03));border:1px solid rgba(122,173,130,.2);border-radius:10px;display:none;}
 .nights-banner.show{display:flex;align-items:center;gap:11px;}
 .nb-number{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:var(--sage);line-height:1;min-width:42px;text-align:center;}
@@ -139,23 +126,21 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .nb-label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--sage);margin-bottom:2px;}
 .nb-breakdown{font-size:11px;color:var(--muted);line-height:1.5;}
 .nb-breakdown strong{color:var(--text);font-weight:500;}
-
 .nights-warning{margin-top:6px;padding:7px 11px;background:rgba(212,119,106,.06);border:1px solid rgba(212,119,106,.15);border-radius:8px;font-size:11px;color:var(--rose);display:none;}
 .nights-warning.show{display:flex;align-items:center;gap:6px;}
 
-/* CHECKBOX ROW */
+/* CHECKBOX */
 .chk-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);cursor:pointer;padding:5px 0;}
 .chk-row input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;}
-.chk-row span{line-height:1.4;}
 
-/* BUDGET AUTO TOGGLE */
+/* BUDGET MODE */
 .budget-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .budget-toggle-row label{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);}
 .budget-mode-btns{display:flex;gap:4px;margin-left:auto;}
 .mode-btn{padding:3px 9px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;}
 .mode-btn.active{background:var(--gold-bg);color:var(--gold);border-color:rgba(201,165,90,.3);}
 
-/* EXPENSE CATEGORY ROWS */
+/* EXPENSE CATEGORIES */
 .cat-block{margin-bottom:12px;}
 .cat-main-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;}
 .cat-label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text);}
@@ -182,6 +167,10 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .stop-del:hover{color:var(--rose);background:rgba(212,119,106,.1);}
 .stop-subtotal{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);text-align:right;margin-top:5px;}
 
+/* HOTEL TOTAL ROW — fix #7: classe .ecomp remplacée par styles inline cohérents */
+.hotel-total-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0 0;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);border-top:1px solid var(--border);margin-top:4px;}
+.hotel-total-row span:last-child{color:var(--gold);}
+
 /* BUDGET SOURCES */
 .src-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
 .src-row .fi{flex:1;font-size:13px;}
@@ -191,29 +180,23 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .src-summary{display:flex;justify-content:space-between;align-items:center;padding:8px 0 0;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);margin-top:4px;border-top:1px solid var(--border);}
 .src-summary span:last-child{color:var(--gold);}
 
-/* DIVIDER */
 .divider{height:1px;background:var(--border);margin:13px 0;}
-
-/* TOTAL BLOCK */
 .tblock{background:linear-gradient(135deg,rgba(201,165,90,.09),rgba(201,165,90,.03));border:1px solid rgba(201,165,90,.2);border-radius:12px;padding:15px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
 .tlbl{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:2px;}
 .tamt{font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:500;}
 .tamt.ok{color:var(--sage);}.tamt.ov{color:var(--rose);}
 .tfxl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
 
-/* PILLS */
 .pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;}
 .p-ok{background:rgba(122,173,130,.1);color:var(--sage);border:1px solid rgba(122,173,130,.2);}
 .p-ov{background:rgba(212,119,106,.1);color:var(--rose);border:1px solid rgba(212,119,106,.2);}
 .p-n{background:rgba(232,228,220,.05);color:var(--muted);border:1px solid var(--border);}
 .p-g{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(201,165,90,.2);}
 
-/* METRICS */
 .mcard{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;text-align:center;}
 .mval{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500;margin-bottom:2px;}
 .mlbl{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);}
 
-/* SCORE RING */
 .sring-wrap{display:flex;align-items:center;gap:15px;padding:15px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);margin-bottom:15px;}
 .sring{width:70px;height:70px;flex-shrink:0;position:relative;}
 .sring svg{transform:rotate(-90deg);}
@@ -223,7 +206,6 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .sinfo-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;margin-bottom:2px;}
 .sinfo-desc{font-size:11.5px;color:var(--muted);line-height:1.55;}
 
-/* PROGRESS BARS */
 .pw{margin-bottom:9px;}
 .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
 .pname{font-size:11.5px;display:flex;align-items:center;gap:5px;}
@@ -231,7 +213,6 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .pbar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
 .pfill{height:100%;border-radius:3px;transition:width .5s ease;}
 
-/* WHAT-IF */
 .wi-res{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:9px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;}
 .wiv{font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:2px;}
 .wil{font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
@@ -240,7 +221,6 @@ textarea.fi{resize:vertical;min-height:54px;line-height:1.5;}
 .shd .sv{font-family:'JetBrains Mono',monospace;color:var(--gold);}
 input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 
-/* SIMULATION LIST */
 .sim-item{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:6px;}
 .sim-item:hover{border-color:var(--border2);transform:translateX(3px);}
 .sim-item.active{border-color:rgba(201,165,90,.36);background:rgba(201,165,90,.04);}
@@ -252,7 +232,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 .sdel{background:transparent;border:none;color:var(--muted2);cursor:pointer;padding:3px 6px;border-radius:5px;font-size:12px;transition:all .15s;flex-shrink:0;}
 .sdel:hover{color:var(--rose);background:rgba(212,119,106,.1);}
 
-/* ITINERARY */
 .itin-step{display:flex;gap:13px;margin-bottom:0;}
 .itin-line{display:flex;flex-direction:column;align-items:center;}
 .itin-dot{border-radius:50%;flex-shrink:0;margin-top:4px;}
@@ -262,13 +241,11 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 .itin-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;}
 .itin-cost{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-top:2px;}
 
-/* FX */
 .fxbar{display:flex;align-items:center;gap:8px;padding:8px 11px;background:rgba(201,165,90,.05);border:1px solid rgba(201,165,90,.12);border-radius:8px;margin-bottom:11px;flex-wrap:wrap;}
 .fxlbl{font-size:11.5px;color:var(--muted);flex:1;min-width:60px;}
 .fxi{width:74px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;}
 .fxr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;transition:all .15s;white-space:nowrap;}
 .bg{background:var(--gold);color:#0d0f14;}.bg:hover{background:var(--gold2);transform:translateY(-1px);}
 .bo{background:transparent;color:var(--text);border:1px solid var(--border2);}.bo:hover{border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.04);}
@@ -278,7 +255,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 .add-btn{width:100%;padding:8px;border:1px dashed var(--border2);border-radius:9px;background:transparent;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;transition:all .15s;margin-top:4px;}
 .add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-bg);}
 
-/* MODAL */
 .mbg{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
 .mbg.show{opacity:1;pointer-events:all;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:26px;width:100%;max-width:430px;margin:12px;transform:scale(.95);transition:transform .2s;max-height:90vh;overflow-y:auto;}
@@ -287,11 +263,9 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 .msub{font-size:12.5px;color:var(--muted);margin-bottom:20px;}
 .macts{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;}
 
-/* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:12px 17px;font-size:12.5px;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);z-index:999;transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:290px;}
 .toast.show{transform:translateY(0);opacity:1;}
 
-/* EMPTY */
 .empty{text-align:center;padding:30px 16px;color:var(--muted);}
 .ei{font-size:30px;margin-bottom:8px;}.et{font-size:12.5px;line-height:1.65;}
 .sa{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-bottom:13px;flex-wrap:wrap;}
@@ -299,7 +273,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-in">
     <div class="logo">Budget <em>Voyage</em></div>
@@ -312,7 +285,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   </div>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <div class="tabs-in">
     <div class="tab active" onclick="showTab('form')">✦ Simulation</div>
@@ -323,30 +295,27 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   </div>
 </div>
 
-<!-- Hidden native inputs for data storage -->
 <input type="hidden" id="dateFrom" value="">
 <input type="hidden" id="dateTo" value="">
 
-<!-- ═════════════ PAGE SIMULATION ═════════════ -->
+<!-- PAGE SIMULATION -->
 <div class="page active" id="page-form">
 <div class="con">
 <div class="g2">
 
-<!-- LEFT COLUMN -->
 <div style="display:flex;flex-direction:column;gap:16px;">
 
   <!-- VOYAGE INFO -->
   <div class="card">
     <div class="ctitle">✈ Voyage</div>
     <div class="fg"><label class="fl">Nom de la simulation</label>
-      <input class="fi" id="simName" type="text" placeholder="Norvège — Option A" oninput="updateCalc()">
+      <input class="fi" id="simName" type="text" placeholder="Norvège — Option A" oninput="scheduleCalc()">
     </div>
     <div class="fr">
-      <div class="fg"><label class="fl">Destination</label><input class="fi" id="destination" type="text" placeholder="Bergen, Lofoten…" oninput="updateCalc()"></div>
-      <div class="fg"><label class="fl">Voyageurs</label><input class="fi" id="travelers" type="number" value="2" min="1" oninput="updateCalc()"></div>
+      <div class="fg"><label class="fl">Destination</label><input class="fi" id="destination" type="text" placeholder="Bergen, Lofoten…" oninput="scheduleCalc()"></div>
+      <div class="fg"><label class="fl">Voyageurs</label><input class="fi" id="travelers" type="number" value="2" min="1" oninput="scheduleCalc()"></div>
     </div>
 
-    <!-- CUSTOM DATE PICKERS -->
     <div class="fr">
       <div class="fg">
         <label class="fl">Départ</label>
@@ -372,16 +341,20 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
       </div>
     </div>
 
-<!-- FLIGHT ARRIVAL OPTIONS -->
+    <!--
+      FIX #2 + #3 + #4: Seul "Vol aller" est exposé dans l'UI.
+      flightRetArrival supprimé — n'affecte pas le décompte hôtel (cf. commentaire dans onDateChange).
+      overnightFlight désormais sérialisé à partir de flightDepArrival, et relu uniquement pour le départ.
+    -->
     <div class="flight-opts" id="flight-opts" style="display:none">
       <div class="flight-opt-group">
         <div class="flight-opt-title"><span class="fo-icon">🛬</span> Vol aller — arrivée sur place</div>
         <div class="flight-opt-btns">
-          <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('dep','same')">
+          <button class="fo-btn active" id="fo-dep-same" onclick="setFlightOpt('same')">
             Jour même
             <span class="fo-sub" id="fo-dep-same-sub"></span>
           </button>
-          <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('dep','next')">
+          <button class="fo-btn" id="fo-dep-next" onclick="setFlightOpt('next')">
             Lendemain
             <span class="fo-sub" id="fo-dep-next-sub">(vol de nuit)</span>
           </button>
@@ -389,8 +362,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
       </div>
     </div>
 
-
-    <!-- NIGHTS RESULT -->
     <div class="nights-banner" id="nights-banner">
       <div class="nb-number" id="nb-number">—</div>
       <div class="nb-detail">
@@ -404,7 +375,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 
     <div class="fr" style="margin-top:10px">
       <div class="fg"><label class="fl">Devise</label>
-        <select class="fs" id="currency" onchange="updateCalc()">
+        <select class="fs" id="currency" onchange="scheduleCalc()">
           <option value="€">€ EUR</option><option value="NOK">NOK</option><option value="CHF">CHF</option>
           <option value="$">$ USD</option><option value="£">£ GBP</option><option value="MAD">MAD</option>
         </select>
@@ -417,13 +388,13 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
             <button class="mode-btn" id="mode-manual" onclick="setBudgetMode('manual')" title="Saisie manuelle">Manuel</button>
           </div>
         </div>
-        <input class="fi auto-val" id="budget" type="number" placeholder="0" readonly oninput="updateCalc()">
+        <input class="fi auto-val" id="budget" type="number" placeholder="0" readonly oninput="scheduleCalc()">
       </div>
     </div>
 
     <div class="fxbar" id="fxbar" style="display:none">
       <span class="fxlbl">1 € =</span>
-      <input class="fi fxi" id="fxRate" type="number" step="0.01" placeholder="11.5" oninput="updateCalc()">
+      <input class="fi fxi" id="fxRate" type="number" step="0.01" placeholder="11.5" oninput="scheduleCalc()">
       <span id="fx-curr" class="fxr">NOK</span>
       <span id="fx-equiv" class="fxr"></span>
     </div>
@@ -445,13 +416,11 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   <div class="card">
     <div class="ctitle">📋 Dépenses <span class="cbadge" id="days-badge" style="display:none">—</span></div>
 
-    <!-- VOLS -->
     <div style="margin-bottom:14px">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;">Vols</div>
       <div id="cat-vols"></div>
     </div>
 
-    <!-- LOGEMENT -->
     <div style="margin-bottom:14px">
       <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:7px;">
         Logement par étape
@@ -459,10 +428,10 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
       </div>
       <div id="stops-list"></div>
       <button class="add-btn" onclick="addStop()">+ Ajouter une étape</button>
-      <div class="ecomp" id="hotel-total-row" style="margin-top:7px"><span>Total logement</span><span id="hotel-total">—</span></div>
+      <!-- FIX #7: classe .ecomp remplacée par .hotel-total-row définie dans le CSS -->
+      <div class="hotel-total-row" id="hotel-total-row" style="margin-top:7px"><span>Total logement</span><span id="hotel-total">—</span></div>
     </div>
 
-    <!-- EXPENSE CATEGORIES -->
     <div id="cats-container"></div>
 
     <div class="divider"></div>
@@ -479,10 +448,8 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 
 </div><!-- /left -->
 
-<!-- RIGHT COLUMN -->
 <div style="display:flex;flex-direction:column;gap:16px;">
 
-  <!-- SCORE -->
   <div class="card">
     <div class="ctitle">Score Confort</div>
     <div class="sring-wrap">
@@ -503,19 +470,16 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
     </div>
   </div>
 
-  <!-- CHARTS -->
   <div class="g2s">
     <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Répartition</div><div style="position:relative;height:165px"><canvas id="pieChart"></canvas></div></div>
     <div class="card"><div class="ctitle" style="font-size:13px;margin-bottom:11px">Budget vs Dépenses</div><div style="position:relative;height:165px"><canvas id="barChart"></canvas></div></div>
   </div>
 
-  <!-- DETAIL -->
   <div class="card">
     <div class="ctitle" style="margin-bottom:12px">Détail par catégorie</div>
     <div id="progress-bars"><div class="empty" style="padding:10px 0"><div class="et">Remplis les dépenses</div></div></div>
   </div>
 
-  <!-- WHAT-IF -->
   <div class="card">
     <div class="ctitle">Projection "Et si…"</div>
     <div class="slider-row"><div class="shd"><span>Nuits supplémentaires</span><span class="sv" id="wi-nv">+0</span></div><input type="range" id="wi-nights" min="0" max="14" value="0" oninput="updateWhatIf()"></div>
@@ -529,11 +493,11 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   </div>
 
 </div><!-- /right -->
-</div><!-- /g2 -->
+</div>
 </div>
 </div>
 
-<!-- ═════════════ PAGE ANALYSE ═════════════ -->
+<!-- PAGE ANALYSE -->
 <div class="page" id="page-analysis">
 <div class="con">
   <div class="sa"><select class="fs" id="an-sel" onchange="loadAnalysisSim()" style="max-width:260px"><option value="">— Simulation —</option></select></div>
@@ -550,7 +514,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 </div>
 </div>
 
-<!-- ═════════════ PAGE COMPARER ═════════════ -->
+<!-- PAGE COMPARER -->
 <div class="page" id="page-compare">
 <div class="con">
   <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center" id="cmp-selects-row"></div>
@@ -559,7 +523,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 </div>
 </div>
 
-<!-- ═════════════ PAGE ITINÉRAIRE ═════════════ -->
+<!-- PAGE ITINÉRAIRE -->
 <div class="page" id="page-itinerary">
 <div class="con">
   <div class="sa"><select class="fs" id="itin-sel" onchange="renderItinerary()" style="max-width:260px"><option value="">— Simulation —</option></select></div>
@@ -567,7 +531,7 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
 </div>
 </div>
 
-<!-- ═════════════ PAGE HISTORIQUE ═════════════ -->
+<!-- PAGE HISTORIQUE -->
 <div class="page" id="page-simulations">
 <div class="con">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px">
@@ -588,23 +552,27 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;}
   </div>
 </div>
 
-<!-- MODAL IMPORT -->
+<!--
+  MODAL IMPORT — FIX #1 + #8:
+  - Un seul champ id="import-name", placé APRÈS le sélecteur source (logique source → nom copie)
+  - imp-name-fg masqué en mode "edit", visible en mode "dup"
+-->
 <div class="mbg" id="importModal">
   <div class="modal">
     <div class="mtitle">Dupliquer / Save As</div>
     <div style="display:flex;gap:6px;margin-bottom:14px;">
-  <button class="mode-btn active" id="imp-mode-dup" onclick="setImportMode('dup')">⧉ Dupliquer</button>
-  <button class="mode-btn" id="imp-mode-edit" onclick="setImportMode('edit')">✎ Éditer</button>
-</div>
-<div class="msub" id="imp-mode-desc">Charge sous un nouveau nom — l'original est conservé.</div>
-<div class="fg" id="imp-name-fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
+      <button class="mode-btn active" id="imp-mode-dup" onclick="setImportMode('dup')">⧉ Dupliquer</button>
+      <button class="mode-btn" id="imp-mode-edit" onclick="setImportMode('edit')">✎ Éditer</button>
+    </div>
+    <div class="msub" id="imp-mode-desc">Charge sous un nouveau nom — l'original est conservé.</div>
+    <!-- Source d'abord -->
     <div class="fg"><label class="fl">Simulation source</label><select class="fs" id="import-sel"><option value="">— Choisir —</option></select></div>
-    <div class="fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
-    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" id="imp-confirm-btn" onclick="confirmImport()">Charger & dupliquer</button></div>
+    <!-- Nom de la copie ensuite, masqué en mode edit -->
+    <div class="fg" id="imp-name-fg"><label class="fl">Nouveau nom</label><input class="fi" id="import-name" type="text" placeholder="Ex: Norvège — Option C"></div>
+    <div class="macts"><button class="btn bgh" onclick="closeModal('importModal')">Annuler</button><button class="btn bg" id="imp-confirm-btn" onclick="confirmImport()">⧉ Charger & dupliquer</button></div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><span id="ti">✓</span><span id="tt">OK</span></div>
 
 <script>
@@ -641,340 +609,249 @@ let sources=[];
 let catState={};
 let budgetMode='auto';
 let cmpSlots=['',''];
-  let importMode = 'dup';
+let importMode='dup';
 
-function setImportMode(mode) {
-  importMode = mode;
-  document.getElementById('imp-mode-dup').className = 'mode-btn' + (mode==='dup'?' active':'');
-  document.getElementById('imp-mode-edit').className = 'mode-btn' + (mode==='edit'?' active':'');
-  document.getElementById('imp-mode-desc').textContent = mode === 'dup'
-    ? "Charge sous un nouveau nom — l'original est conservé."
-    : "Charge pour modifier directement — la sauvegarde écrasera l'original.";
-  document.getElementById('imp-name-fg').style.display = mode === 'dup' ? '' : 'none';
-  document.getElementById('imp-confirm-btn').textContent = mode === 'dup' ? '⧉ Charger & dupliquer' : '✎ Charger & éditer';
-}
+// FIX #2/#3/#4: seul flightDepArrival subsiste — flightRetArrival supprimé
+let flightDepArrival='same'; // 'same' | 'next'
+
 let pie1=null,bar1=null,anPie=null,anBar=null;
 
-// Flight arrival state
-let flightDepArrival='same'; // 'same' or 'next'
-let flightRetArrival='same'; // 'same' or 'next'
+// FIX #9: debounce pour éviter les calculs sur DOM incomplet
+let _calcTimer=null;
+function scheduleCalc(){
+  clearTimeout(_calcTimer);
+  _calcTimer=setTimeout(()=>updateCalc(),0);
+}
+
+// ══════════════════════════════════════════════════════════
+// IMPORT MODE
+// ══════════════════════════════════════════════════════════
+function setImportMode(mode){
+  importMode=mode;
+  document.getElementById('imp-mode-dup').className='mode-btn'+(mode==='dup'?' active':'');
+  document.getElementById('imp-mode-edit').className='mode-btn'+(mode==='edit'?' active':'');
+  document.getElementById('imp-mode-desc').textContent=mode==='dup'
+    ? "Charge sous un nouveau nom — l'original est conservé."
+    : "Charge pour modifier directement — la sauvegarde écrasera l'original.";
+  document.getElementById('imp-name-fg').style.display=mode==='dup'?'':'none';
+  document.getElementById('imp-confirm-btn').textContent=mode==='dup'?'⧉ Charger & dupliquer':'✎ Charger & éditer';
+}
 
 // ══════════════════════════════════════════════════════════
 // CUSTOM DATE PICKER
 // ══════════════════════════════════════════════════════════
-const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const DAYS_FR = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+const MONTHS_FR=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const DAYS_FR=['Lu','Ma','Me','Je','Ve','Sa','Di'];
 
-let dpState = {
-  from: { value: null, viewYear: null, viewMonth: null },
-  to:   { value: null, viewYear: null, viewMonth: null },
+let dpState={
+  from:{value:null,viewYear:null,viewMonth:null},
+  to:{value:null,viewYear:null,viewMonth:null},
 };
-let openDP = null; // 'from' | 'to' | null
+let openDP=null;
 
-function toggleDP(which) {
-  if (openDP === which) { closeAllDP(); return; }
+function toggleDP(which){
+  if(openDP===which){closeAllDP();return;}
   closeAllDP();
-  openDP = which;
-  const st = dpState[which];
-  if (!st.viewYear) {
-    const ref = st.value ? new Date(st.value) : new Date();
-    st.viewYear = ref.getFullYear();
-    st.viewMonth = ref.getMonth();
-  }
+  openDP=which;
+  const st=dpState[which];
+  if(!st.viewYear){const ref=st.value?new Date(st.value):new Date();st.viewYear=ref.getFullYear();st.viewMonth=ref.getMonth();}
   document.getElementById('dp-'+which+'-trigger').classList.add('active');
   renderDP(which);
   document.getElementById('dp-'+which+'-dropdown').classList.add('open');
 }
-
-function closeAllDP() {
-  ['from','to'].forEach(w => {
+function closeAllDP(){
+  ['from','to'].forEach(w=>{
     document.getElementById('dp-'+w+'-dropdown').classList.remove('open');
     document.getElementById('dp-'+w+'-trigger').classList.remove('active');
   });
-  openDP = null;
+  openDP=null;
 }
-
-function renderDP(which) {
-  const st = dpState[which];
-  const y = st.viewYear, m = st.viewMonth;
-  const firstDay = new Date(y, m, 1);
-  const lastDay = new Date(y, m + 1, 0);
-  const startWeekday = (firstDay.getDay() + 6) % 7; // Monday=0
-  const daysInMonth = lastDay.getDate();
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  // Previous month padding
-  const prevMonth = new Date(y, m, 0);
-  const prevDays = prevMonth.getDate();
-
-  let cells = '';
-  // Padding from previous month
-  for (let i = startWeekday - 1; i >= 0; i--) {
-    cells += `<div class="dp-day other-month">${prevDays - i}</div>`;
+function renderDP(which){
+  const st=dpState[which];
+  const y=st.viewYear,m=st.viewMonth;
+  const firstDay=new Date(y,m,1);
+  const lastDay=new Date(y,m+1,0);
+  const startWeekday=(firstDay.getDay()+6)%7;
+  const daysInMonth=lastDay.getDate();
+  const today=new Date();today.setHours(0,0,0,0);
+  const prevMonth=new Date(y,m,0);
+  const prevDays=prevMonth.getDate();
+  let cells='';
+  for(let i=startWeekday-1;i>=0;i--)cells+=`<div class="dp-day other-month">${prevDays-i}</div>`;
+  const fromVal=dpState.from.value;
+  const toVal=dpState.to.value;
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dateObj=new Date(y,m,d);
+    let cls='dp-day';
+    if(dateObj.getTime()===today.getTime())cls+=' today';
+    if(dateStr===fromVal||dateStr===toVal)cls+=' selected';
+    if(dateStr===fromVal&&toVal)cls+=' range-start';
+    if(dateStr===toVal&&fromVal)cls+=' range-end';
+    if(fromVal&&toVal&&dateStr>fromVal&&dateStr<toVal)cls+=' in-range';
+    let disabled=false;
+    if(which==='to'&&fromVal&&dateStr<=fromVal){cls+=' disabled';disabled=true;}
+    cells+=`<div class="${cls}" ${disabled?'':'onclick="selectDPDay(\''+which+'\',\''+dateStr+'\')"'}>${d}</div>`;
   }
-
-  // Current month
-  const fromVal = dpState.from.value;
-  const toVal = dpState.to.value;
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dateObj = new Date(y, m, d);
-    let cls = 'dp-day';
-
-    // Today
-    if (dateObj.getTime() === today.getTime()) cls += ' today';
-
-    // Selected
-    if (dateStr === fromVal || dateStr === toVal) cls += ' selected';
-    if (dateStr === fromVal && toVal) cls += ' range-start';
-    if (dateStr === toVal && fromVal) cls += ' range-end';
-
-    // In range
-    if (fromVal && toVal && dateStr > fromVal && dateStr < toVal) cls += ' in-range';
-
-    // Disable: if picking 'to', disable before 'from'
-    let disabled = false;
-    if (which === 'to' && fromVal && dateStr <= fromVal) { cls += ' disabled'; disabled = true; }
-
-    cells += `<div class="${cls}" ${disabled?'':'onclick="selectDPDay(\''+which+'\',\''+dateStr+'\')"'}>${d}</div>`;
-  }
-
-  // Next month padding
-  const totalCells = startWeekday + daysInMonth;
-  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-  for (let i = 1; i <= remaining; i++) {
-    cells += `<div class="dp-day other-month">${i}</div>`;
-  }
-
-  const el = document.getElementById('dp-'+which+'-dropdown');
-  el.innerHTML = `
+  const totalCells=startWeekday+daysInMonth;
+  const remaining=totalCells%7===0?0:7-(totalCells%7);
+  for(let i=1;i<=remaining;i++)cells+=`<div class="dp-day other-month">${i}</div>`;
+  const el=document.getElementById('dp-'+which+'-dropdown');
+  el.innerHTML=`
     <div class="dp-header">
-      <div class="dp-nav">
-        <button onclick="event.stopPropagation();dpNav('${which}',-1)">‹</button>
-      </div>
+      <div class="dp-nav"><button onclick="event.stopPropagation();dpNav('${which}',-1)">‹</button></div>
       <div class="dp-month-label">${MONTHS_FR[m]} ${y}</div>
-      <div class="dp-nav">
-        <button onclick="event.stopPropagation();dpNav('${which}',1)">›</button>
-      </div>
+      <div class="dp-nav"><button onclick="event.stopPropagation();dpNav('${which}',1)">›</button></div>
     </div>
-    <div class="dp-weekdays">${DAYS_FR.map(d => `<span>${d}</span>`).join('')}</div>
+    <div class="dp-weekdays">${DAYS_FR.map(d=>`<span>${d}</span>`).join('')}</div>
     <div class="dp-days">${cells}</div>
-    <div class="dp-footer">
-      <button class="dp-today-btn" onclick="event.stopPropagation();dpGoToday('${which}')">Aujourd'hui</button>
-    </div>
-  `;
+    <div class="dp-footer"><button class="dp-today-btn" onclick="event.stopPropagation();dpGoToday('${which}')">Aujourd'hui</button></div>`;
 }
-
-function dpNav(which, dir) {
-  const st = dpState[which];
-  st.viewMonth += dir;
-  if (st.viewMonth > 11) { st.viewMonth = 0; st.viewYear++; }
-  if (st.viewMonth < 0) { st.viewMonth = 11; st.viewYear--; }
+function dpNav(which,dir){
+  const st=dpState[which];
+  st.viewMonth+=dir;
+  if(st.viewMonth>11){st.viewMonth=0;st.viewYear++;}
+  if(st.viewMonth<0){st.viewMonth=11;st.viewYear--;}
   renderDP(which);
 }
-
-function dpGoToday(which) {
-  const now = new Date();
-  dpState[which].viewYear = now.getFullYear();
-  dpState[which].viewMonth = now.getMonth();
+function dpGoToday(which){
+  const now=new Date();
+  dpState[which].viewYear=now.getFullYear();
+  dpState[which].viewMonth=now.getMonth();
   renderDP(which);
 }
-
-function selectDPDay(which, dateStr) {
-  dpState[which].value = dateStr;
-  document.getElementById('date' + (which === 'from' ? 'From' : 'To')).value = dateStr;
+function selectDPDay(which,dateStr){
+  dpState[which].value=dateStr;
+  document.getElementById('date'+(which==='from'?'From':'To')).value=dateStr;
   updateDPDisplay(which);
   closeAllDP();
-
-  // If selecting 'from' and no 'to' yet, auto-open 'to'
-  if (which === 'from' && !dpState.to.value) {
-    const d = new Date(dateStr);
-    dpState.to.viewYear = d.getFullYear();
-    dpState.to.viewMonth = d.getMonth();
-    setTimeout(() => toggleDP('to'), 180);
+  if(which==='from'&&!dpState.to.value){
+    const d=new Date(dateStr);
+    dpState.to.viewYear=d.getFullYear();
+    dpState.to.viewMonth=d.getMonth();
+    setTimeout(()=>toggleDP('to'),180);
   }
-
-  // If selecting 'to' before 'from', fix it
-  if (which === 'to' && dpState.from.value && dateStr <= dpState.from.value) {
-    return; // disabled should prevent this
-  }
-
   onDateChange();
 }
-
-function clearDP(which) {
-  dpState[which].value = null;
-  document.getElementById('date' + (which === 'from' ? 'From' : 'To')).value = '';
+function clearDP(which){
+  dpState[which].value=null;
+  document.getElementById('date'+(which==='from'?'From':'To')).value='';
   updateDPDisplay(which);
   onDateChange();
 }
-
-function updateDPDisplay(which) {
-  const val = dpState[which].value;
-  const textEl = document.getElementById('dp-'+which+'-text');
-  const clearEl = document.getElementById('dp-'+which+'-clear');
-  if (val) {
-    const d = new Date(val);
-    const opts = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
-    textEl.textContent = d.toLocaleDateString('fr-FR', opts);
+function updateDPDisplay(which){
+  const val=dpState[which].value;
+  const textEl=document.getElementById('dp-'+which+'-text');
+  const clearEl=document.getElementById('dp-'+which+'-clear');
+  if(val){
+    const d=new Date(val);
+    textEl.textContent=d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
     textEl.classList.remove('empty');
-    clearEl.style.display = '';
-  } else {
-    textEl.textContent = 'Choisir une date';
+    clearEl.style.display='';
+  }else{
+    textEl.textContent='Choisir une date';
     textEl.classList.add('empty');
-    clearEl.style.display = 'none';
+    clearEl.style.display='none';
   }
 }
-
-// Close dropdowns on outside click
-document.addEventListener('click', e => {
-  if (openDP && !e.target.closest('.dp-wrap')) closeAllDP();
+document.addEventListener('click',e=>{
+  if(openDP&&!e.target.closest('.dp-wrap'))closeAllDP();
 });
 
 // ══════════════════════════════════════════════════════════
-// FLIGHT ARRIVAL OPTIONS
+// FLIGHT ARRIVAL — vol aller uniquement (FIX #2 #3 #4)
 // ══════════════════════════════════════════════════════════
-function setFlightOpt(leg, val) {
-  if (leg === 'dep') {
-    flightDepArrival = val;
-    document.getElementById('fo-dep-same').classList.toggle('active', val === 'same');
-    document.getElementById('fo-dep-next').classList.toggle('active', val === 'next');
-  } else {
-    flightRetArrival = val;
-    document.getElementById('fo-ret-same').classList.toggle('active', val === 'same');
-    document.getElementById('fo-ret-next').classList.toggle('active', val === 'next');
-  }
+function setFlightOpt(val){
+  flightDepArrival=val;
+  document.getElementById('fo-dep-same').classList.toggle('active',val==='same');
+  document.getElementById('fo-dep-next').classList.toggle('active',val==='next');
   onDateChange();
 }
 
 // ══════════════════════════════════════════════════════════
-// DATE & NIGHTS LOGIC (rewritten)
+// DATE & NIGHTS LOGIC
 // ══════════════════════════════════════════════════════════
-function onDateChange() {
-  const f = document.getElementById('dateFrom').value;
-  const t = document.getElementById('dateTo').value;
-  const flightOpts = document.getElementById('flight-opts');
-  const banner = document.getElementById('nights-banner');
-  const warning = document.getElementById('nights-warning');
+function onDateChange(){
+  const f=document.getElementById('dateFrom').value;
+  const t=document.getElementById('dateTo').value;
+  const flightOpts=document.getElementById('flight-opts');
+  const banner=document.getElementById('nights-banner');
+  const warning=document.getElementById('nights-warning');
 
-  // Show flight options as soon as departure date is set
-  if (f) {
-    flightOpts.style.display = 'flex';
-    // Update subtexts with actual dates
-    const depDate = new Date(f);
-    const depNext = new Date(f); depNext.setDate(depNext.getDate() + 1);
-    document.getElementById('fo-dep-same-sub').textContent = formatShort(depDate);
-    document.getElementById('fo-dep-next-sub').textContent = formatShort(depNext) + ' (vol de nuit)';
-
-    if (t) {
-      const retDate = new Date(t);
-      const retNext = new Date(t); retNext.setDate(retNext.getDate() + 1);
-      document.getElementById('fo-ret-same-sub').textContent = formatShort(retDate);
-      document.getElementById('fo-ret-next-sub').textContent = formatShort(retNext) + ' (vol de nuit)';
-    }
-  } else {
-    flightOpts.style.display = 'none';
+  if(f){
+    flightOpts.style.display='flex';
+    const depDate=new Date(f);
+    const depNext=new Date(f);depNext.setDate(depNext.getDate()+1);
+    document.getElementById('fo-dep-same-sub').textContent=formatShort(depDate);
+    document.getElementById('fo-dep-next-sub').textContent=formatShort(depNext)+' (vol de nuit)';
+  }else{
+    flightOpts.style.display='none';
   }
 
-  if (f && t) {
-    const days = Math.round((new Date(t) - new Date(f)) / 86400000);
-    if (days > 0) {
-      // Calculate nights of hotel needed
-      // First night: if vol aller arrives "lendemain", you don't need a hotel the departure night (you're on the plane)
-      //   but you arrive next day = first hotel night is day after departure
-      // Last night: if vol retour departs on return date and arrives same day, last hotel night is night before return
-      //   if vol retour arrives lendemain (night flight), you need hotel the night before AND you're traveling that night
+  if(f&&t){
+    const days=Math.round((new Date(t)-new Date(f))/86400000);
+    if(days>0){
+      /*
+        Modèle simplifié (FIX #3 confirmé — vol retour n'affecte pas le décompte hôtel) :
+        - Base = jours − 1  (ex: 10 → 20 mai = 9 nuits entre les deux dates)
+        - Vol aller "lendemain" : première nuit passée dans l'avion → −1 nuit hôtel
+        - Vol retour : qu'il soit de jour ou de nuit, l'utilisateur quitte l'hébergement
+          le matin/après-midi de la date de retour → aucun ajustement hôtel nécessaire
+      */
+      const baseNights=days-1;
+      let hotelNights=baseNights;
+      if(flightDepArrival==='next')hotelNights-=1;
+      hotelNights=Math.max(hotelNights,0);
 
-      // Simple model:
-      // Base = number of calendar nights between departure and return = days
-      // depArrival 'same': you arrive departure day → need hotel from night 1 (departure night)
-      // depArrival 'next': you arrive day after departure → you're on the plane departure night, no hotel needed → -1
-      // retArrival 'same': you depart return day during daytime → no hotel needed return night (you leave during the day)
-      // retArrival 'next': vol de nuit retour → you need hotel until return night then fly out → actually same, you still leave return day
-
-      // Actually let's think about it differently:
-      // Total calendar nights from departure evening to return morning = days - 1
-      // (e.g., depart May 10, return May 20 = 10 days of trip, 9 nights between them)
-      // Adjustments:
-      // If aller arrives LENDEMAIN: you spend the first night on the plane → -1 hotel night
-      //   (you depart evening of day 1, arrive morning of day 2, first hotel = night of day 2)
-      // If retour is vol de nuit (arrives lendemain): you need 1 extra hotel night
-      //   because you stay the last day and fly out at night → you need hotel the last night? No...
-      //   Actually if retour is vol de nuit departing return date evening, you DON'T need hotel that last night
-      //   But you DO have an extra day on location. The "lendemain" here means you arrive HOME the next day.
-      //   So for hotel purposes, same as "same day" return - last hotel night is night before return date.
-
-      // Revised simple model:
-      // Base nights of hotel = days - 1  (between departure and return)
-      // If vol aller arrives next day (overnight): first night is on the plane, so -1
-      // Vol retour doesn't change hotel count (you leave during the day or evening of return date either way)
-      // BUT if the user's return flight is overnight, they have an extra day on location but still leave return date evening
-
-const baseNights = days - 1; // e.g. May 10 → May 20 = 9 nights
-let hotelNights = baseNights;
-// Vol aller arrives next day → first night on the plane, not at hotel
-if (flightDepArrival === 'next') hotelNights -= 1;
-hotelNights = Math.max(hotelNights, 0);
-
-
-      // Show banner
       banner.classList.add('show');
-      document.getElementById('nb-number').textContent = hotelNights;
+      document.getElementById('nb-number').textContent=hotelNights;
+      let breakdown=`<strong>${days} jours</strong> (${formatShort(new Date(f))} → ${formatShort(new Date(t))})`;
+      breakdown+=` · ${baseNights} nuit${baseNights>1?'s':''} de base`;
+      if(flightDepArrival==='next')breakdown+=` · <span style="color:var(--sky)">−1 nuit vol aller</span>`;
+      document.getElementById('nb-breakdown').innerHTML=breakdown;
 
-      // Build breakdown text
-      let breakdown = `<strong>${days} jours</strong> (${formatShort(new Date(f))} → ${formatShort(new Date(t))})`;
-      breakdown += ` · ${baseNights} nuit${baseNights > 1 ? 's' : ''} de base`;
-      if (flightDepArrival === 'next') breakdown += ` · <span style="color:var(--sky)">−1 nuit vol aller</span>`;
-      document.getElementById('nb-breakdown').innerHTML = breakdown;
-
-      // Warning if stops nights don't match
-      const stopsNights = getTotalStopNights();
-      if (stopsNights > 0 && stopsNights !== hotelNights) {
+      // FIX #5: warning uniquement quand les dates sont présentes (source unique de vérité)
+      const stopsNights=getTotalStopNights();
+      if(stopsNights>0&&stopsNights!==hotelNights){
         warning.classList.add('show');
-        document.getElementById('nights-warning-text').textContent =
+        document.getElementById('nights-warning-text').textContent=
           `Les étapes totalisent ${stopsNights} nuit${stopsNights>1?'s':''} mais ${hotelNights} sont à prévoir. Ajuste les étapes.`;
-      } else {
+      }else{
         warning.classList.remove('show');
       }
-
-      updateCalc();
+      scheduleCalc();
       return;
     }
   }
-
   banner.classList.remove('show');
   warning.classList.remove('show');
-  updateCalc();
+  scheduleCalc();
 }
 
-function formatShort(d) {
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-}
+function formatShort(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
 
-function getTripNights() {
-  const f = document.getElementById('dateFrom').value;
-  const t = document.getElementById('dateTo').value;
-  if (f && t) {
-    const days = Math.round((new Date(t) - new Date(f)) / 86400000);
-    if (days > 0) {
-      let n = days - 1;
-      if (flightDepArrival === 'next') n -= 1;
-      return Math.max(n, 0);
-    }
+// FIX #5 + #6: getTripNights() n'a qu'une source de vérité (dates si dispo, sinon étapes)
+// ppd protégé contre division par zéro
+function getTripNights(){
+  const f=document.getElementById('dateFrom').value;
+  const t=document.getElementById('dateTo').value;
+  if(f&&t){
+    const days=Math.round((new Date(t)-new Date(f))/86400000);
+    if(days>0){let n=days-1;if(flightDepArrival==='next')n-=1;return Math.max(n,0);}
   }
-  return stops.reduce((s, st) => s + (parseInt(st.nights) || 0), 0);
+  // Pas de dates : fallback étapes uniquement, sans créer de divergence avec le warning (qui ne s'affiche que si dates présentes)
+  return stops.reduce((s,st)=>s+(parseInt(st.nights)||0),0);
 }
 
-function getTripDays() {
-  const f = document.getElementById('dateFrom').value;
-  const t = document.getElementById('dateTo').value;
-  if (f && t) { const d = Math.round((new Date(t) - new Date(f)) / 86400000); return d > 0 ? d : 0; }
+function getTripDays(){
+  const f=document.getElementById('dateFrom').value;
+  const t=document.getElementById('dateTo').value;
+  if(f&&t){const d=Math.round((new Date(t)-new Date(f))/86400000);return d>0?d:0;}
   return 0;
 }
 
 // ══════════════════════════════════════════════════════════
-// SYNC / SHEETS (unchanged)
+// SYNC / SHEETS
 // ══════════════════════════════════════════════════════════
 function setSyncState(s){
   const d=document.getElementById('sdot'),l=document.getElementById('slbl');
@@ -1054,7 +931,7 @@ function addStop(data={}){
   stops.push({id,city:data.city||'',nights:data.nights||'',total:data.total||''});
   renderStops();
 }
-function removeStop(id){stops=stops.filter(s=>s.id!==id);renderStops();updateCalc();}
+function removeStop(id){stops=stops.filter(s=>s.id!==id);renderStops();scheduleCalc();}
 function renderStops(){
   const el=document.getElementById('stops-list');
   el.innerHTML=stops.map((s,i)=>`
@@ -1073,7 +950,7 @@ function renderStops(){
             oninput="updateStopField('${s.id}','nights',this.value)"></div>
         <div><label class="fl">Total logement</label>
           <input class="fi" type="number" value="${s.total||''}" placeholder="0"
-            oninput="updateStopField('${s.id}','total',this.value);updateCalc()"></div>
+            oninput="updateStopField('${s.id}','total',this.value);scheduleCalc()"></div>
       </div>
       <div class="stop-subtotal" id="stop-sub-${s.id}">${s.total?fmt(parseFloat(s.total)):''}</div>
     </div>`).join('');
@@ -1083,7 +960,6 @@ function updateStopField(id,field,val){
   s[field]=field==='city'?val:(parseFloat(val)||'');
   const subEl=document.getElementById('stop-sub-'+id);
   if(subEl)subEl.textContent=s.total?fmt(parseFloat(s.total)):'';
-  // Re-check nights warning
   onDateChange();
 }
 function getHotelTotal(){return stops.reduce((s,st)=>s+(parseFloat(st.total)||0),0);}
@@ -1097,7 +973,7 @@ function addSource(data={}){
   sources.push({id,label:data.label||'',amount:data.amount||''});
   renderSources();
 }
-function removeSource(id){sources=sources.filter(s=>s.id!==id);renderSources();updateCalc();}
+function removeSource(id){sources=sources.filter(s=>s.id!==id);renderSources();scheduleCalc();}
 function renderSources(){
   const el=document.getElementById('src-list');
   el.innerHTML=sources.map(s=>`
@@ -1105,10 +981,10 @@ function renderSources(){
       <input class="fi" value="${s.label||''}" placeholder="Ex: Épargne Revolut"
         oninput="updateSourceField('${s.id}','label',this.value)">
       <input class="fi src-amt" type="number" value="${s.amount||''}" placeholder="0"
-        oninput="updateSourceField('${s.id}','amount',this.value);updateCalc()">
+        oninput="updateSourceField('${s.id}','amount',this.value);scheduleCalc()">
       <button class="src-del-btn" onclick="removeSource('${s.id}')">✕</button>
     </div>`).join('');
-  updateCalc();
+  scheduleCalc();
 }
 function updateSourceField(id,field,val){
   const s=sources.find(x=>x.id===id);if(s)s[field]=field==='label'?val:(parseFloat(val)||'');
@@ -1122,30 +998,36 @@ function setBudgetMode(mode){
   const budgetEl=document.getElementById('budget');
   if(mode==='auto'){budgetEl.readOnly=true;budgetEl.classList.add('auto-val');}
   else{budgetEl.readOnly=false;budgetEl.classList.remove('auto-val');budgetEl.focus();}
-  updateCalc();
+  scheduleCalc();
 }
 
 // ══════════════════════════════════════════════════════════
 // EXPENSE CATEGORIES
+// FIX #10: saisie d'un total → créée dans la première sous-section
+//          sous-sections → total = somme des sous-sections (champ readonly doré)
 // ══════════════════════════════════════════════════════════
 function initCatState(){
   catState={};
   CAT_DEFS.forEach(def=>{catState[def.id]={total:0,subs:[],open:false};});
 }
+
 function renderCats(){
   const el=document.getElementById('cats-container');
   el.innerHTML=CAT_DEFS.map(def=>{
     const st=catState[def.id];
     const subTotal=st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+    // Quand les subs sont ouvertes, le champ principal affiche la somme (readonly)
+    const showSubTotal=st.open&&st.subs.length>0;
     return `
       <div class="cat-block" id="catblock-${def.id}">
         <div class="cat-main-row">
           <div class="cat-label"><span class="cat-dot" style="background:${def.color}"></span>${def.icon} ${def.label}</div>
           <input class="fi cat-main-input" type="number"
-            value="${st.open&&st.subs.length?subTotal:(st.total||'')}"
+            id="cat-main-${def.id}"
+            value="${showSubTotal?subTotal:(st.total||'')}"
             placeholder="0"
-            ${st.open&&st.subs.length?'readonly style="color:var(--gold);opacity:.8"':''}
-            oninput="setCatTotal('${def.id}',this.value)">
+            ${showSubTotal?'readonly style="color:var(--gold);opacity:.8"':''}
+            oninput="onCatMainInput('${def.id}',this.value)">
           ${def.subs.length?`<button class="cat-split-btn${st.open?' open':''}" onclick="toggleCatSplit('${def.id}')">
             ${st.open?'↑ Réduire':'↓ Détailler'}</button>`:''}
         </div>
@@ -1153,10 +1035,10 @@ function renderCats(){
           <div class="cat-sub-rows" id="cat-subs-${def.id}">
             ${st.subs.map(sub=>`
               <div class="sub-row">
-                <input class="fi" value="${sub.label||''}" placeholder="Poste…"
+                <input class="fi" value="${escHtml(sub.label||'')}" placeholder="Poste…"
                   oninput="updateSubField('${def.id}','${sub.id}','label',this.value)">
                 <input class="fi mono-sm" type="number" value="${sub.amount||''}" placeholder="0"
-                  oninput="updateSubField('${def.id}','${sub.id}','amount',this.value);updateCalc()">
+                  oninput="updateSubField('${def.id}','${sub.id}','amount',this.value);onSubAmountChange('${def.id}')">
                 <button class="sub-del" onclick="removeSub('${def.id}','${sub.id}')">✕</button>
               </div>`).join('')}
             <button class="add-btn" style="margin-top:4px" onclick="addSub('${def.id}')">+ Ajouter un poste</button>
@@ -1165,22 +1047,75 @@ function renderCats(){
       </div>`;
   }).join('');
 }
-function setCatTotal(catId,val){catState[catId].total=parseFloat(val)||0;updateCalc();}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+// Appelé quand l'utilisateur tape dans le champ total principal (hors subs)
+function onCatMainInput(catId,val){
+  const st=catState[catId];
+  const num=parseFloat(val)||0;
+  if(st.open&&st.subs.length>0){
+    // Subs ouvertes → on ne devrait pas arriver ici (champ readonly), mais par sécurité on ignore
+    return;
+  }
+  st.total=num;
+  scheduleCalc();
+}
+
+// Appelé quand une sous-section change de montant
+function onSubAmountChange(catId){
+  const st=catState[catId];
+  // Met à jour le champ principal avec la somme
+  const subTotal=st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  st.total=subTotal;
+  const mainInput=document.getElementById('cat-main-'+catId);
+  if(mainInput){mainInput.value=subTotal||'';}
+  const subTotalEl=document.getElementById('cat-subs-'+catId)?.querySelector('.cat-sub-total span:last-child');
+  if(subTotalEl)subTotalEl.textContent=fmt(subTotal);
+  scheduleCalc();
+}
+
 function toggleCatSplit(catId){
-  const st=catState[catId];st.open=!st.open;
+  const st=catState[catId];
+  st.open=!st.open;
   if(st.open&&st.subs.length===0){
     const def=CAT_DEFS.find(d=>d.id===catId);
-    if(def&&def.subs.length){def.subs.forEach(label=>st.subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label,amount:''}));}
-    else{st.subs.push({id:'sub'+Date.now(),label:'',amount:''});}
+    if(def&&def.subs.length){
+      def.subs.forEach(label=>st.subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label,amount:''}));
+    }else{
+      st.subs.push({id:'sub'+Date.now(),label:'',amount:''});
+    }
+    // FIX #10: si un total global existait, le ventiler dans la première sous-section
+    if(st.total>0&&st.subs.length>0&&!st.subs[0].amount){
+      st.subs[0].amount=st.total;
+    }
   }
-  renderCats();updateCalc();
+  // Recalcule le total depuis les subs au cas où
+  if(st.open&&st.subs.length>0){
+    st.total=st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  }
+  renderCats();
+  scheduleCalc();
 }
-function addSub(catId){catState[catId].subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label:'',amount:''});renderCats();updateCalc();}
-function removeSub(catId,subId){catState[catId].subs=catState[catId].subs.filter(s=>s.id!==subId);renderCats();updateCalc();}
+
+function addSub(catId){
+  catState[catId].subs.push({id:'sub'+Date.now()+Math.random().toString(36).slice(2,4),label:'',amount:''});
+  renderCats();
+  scheduleCalc();
+}
+function removeSub(catId,subId){
+  catState[catId].subs=catState[catId].subs.filter(s=>s.id!==subId);
+  // Recalcule le total
+  const st=catState[catId];
+  st.total=st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
+  renderCats();
+  scheduleCalc();
+}
 function updateSubField(catId,subId,field,val){
   const sub=catState[catId].subs.find(s=>s.id===subId);
   if(sub)sub[field]=field==='label'?val:(parseFloat(val)||'');
 }
+
 function getCatTotal(catId){
   const st=catState[catId];
   if(st.open&&st.subs.length)return st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0);
@@ -1191,7 +1126,9 @@ function getCatTotal(catId){
 // MAIN CALC
 // ══════════════════════════════════════════════════════════
 function updateCalc(){
-  const curr=gcurr();const srcTotal=getSourcesTotal();const hotelTotal=getHotelTotal();
+  const curr=gcurr();
+  const srcTotal=getSourcesTotal();
+  const hotelTotal=getHotelTotal();
   let budget;
   if(budgetMode==='auto'){budget=srcTotal;document.getElementById('budget').value=budget||'';}
   else{budget=gv('budget');}
@@ -1208,9 +1145,13 @@ function updateCalc(){
   const bd={c_vols:getCatTotal('vols'),c_hotel:hotelTotal,c_transport:getCatTotal('transport'),c_repas:getCatTotal('repas'),c_activites:getCatTotal('activites'),c_shopping:getCatTotal('shopping'),c_autre:getCatTotal('autre')};
   const total=Object.values(bd).reduce((s,v)=>s+v,0);
   const remain=budget-total;
-  const days=getTripDays();const nights=getTripNights();
-  const stopsNights=getTotalStopNights();const displayNights=Math.max(nights,stopsNights);
-  const ppd=days?total/days:0;
+  const days=getTripDays();
+  const nights=getTripNights();
+  const stopsNights=getTotalStopNights();
+  // FIX #5: source unique pour les métriques — si dates présentes, nights vient des dates
+  const displayNights=nights;
+  // FIX #6: ppd protégé contre division par zéro
+  const ppd=days>0?total/days:0;
 
   const needFx=['NOK','CHF','$','£','MAD'].includes(curr);
   document.getElementById('fxbar').style.display=needFx?'flex':'none';
@@ -1236,9 +1177,13 @@ function updateCalc(){
   document.getElementById('met-days').textContent=days||'—';
   document.getElementById('met-nights').textContent=displayNights||'—';
   document.getElementById('met-remain').textContent=budget?fmt(Math.round(remain)):'—';
-  document.getElementById('met-ppd').textContent=ppd?fmt(Math.round(ppd)):'—';
+  // FIX #6: /jour affiché uniquement si calculable
+  document.getElementById('met-ppd').textContent=(ppd>0)?fmt(Math.round(ppd)):'—';
 
-  updateScore(total,budget);updateCharts(bd,total,budget,curr);updateProgress(bd,total,curr);updateWhatIf();
+  updateScore(total,budget);
+  updateCharts(bd,total,budget,curr);
+  updateProgress(bd,total,curr);
+  updateWhatIf();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1275,7 +1220,7 @@ function updateProgress(bd,total,curr){
 }
 
 // ══════════════════════════════════════════════════════════
-// WHAT-IF
+// WHAT-IF — FIX #6: ppd protégé
 // ══════════════════════════════════════════════════════════
 function updateWhatIf(){
   const curr=gcurr();
@@ -1285,7 +1230,8 @@ function updateWhatIf(){
   const en=parseInt(document.getElementById('wi-nights').value)||0;
   const ef=parseInt(document.getElementById('wi-food').value)||0;
   const ea=parseInt(document.getElementById('wi-act').value)||0;
-  const avgHotelPerNight=stops.length?stops.reduce((s,st)=>s+(parseFloat(st.total)||0),0)/Math.max(getTotalStopNights(),1):0;
+  const stopsNights=getTotalStopNights();
+  const avgHotelPerNight=stopsNights>0?stops.reduce((s,st)=>s+(parseFloat(st.total)||0),0)/stopsNights:0;
   document.getElementById('wi-nv').textContent='+'+en;
   document.getElementById('wi-fv').textContent='+'+fmt(ef,curr);
   document.getElementById('wi-av').textContent='+'+fmt(ea,curr);
@@ -1299,15 +1245,17 @@ function updateWhatIf(){
 }
 
 // ══════════════════════════════════════════════════════════
-// FORM DATA SERIALIZATION
+// FORM SERIALIZATION
+// FIX #4: overnightFlight dérivé uniquement de flightDepArrival
+//         backward compat relu correctement
 // ══════════════════════════════════════════════════════════
 function getFormData(){
   const bd={c_vols:getCatTotal('vols'),c_hotel:getHotelTotal(),c_transport:getCatTotal('transport'),c_repas:getCatTotal('repas'),c_activites:getCatTotal('activites'),c_shopping:getCatTotal('shopping'),c_autre:getCatTotal('autre')};
   const total=Object.values(bd).reduce((s,v)=>s+v,0);
   const budget=budgetMode==='auto'?getSourcesTotal():gv('budget');
   const days=getTripDays(),nights=getTripNights();
-  // Encode overnight as combined string for backward compat
-const overnightFlight = flightDepArrival==='next' ? '1' : '0';
+  // FIX #4: overnightFlight = '1' si vol ALLER de nuit (flightDepArrival==='next')
+  const overnightFlight=flightDepArrival==='next'?'1':'0';
   return {
     simName:document.getElementById('simName').value,
     destination:document.getElementById('destination').value,
@@ -1320,7 +1268,7 @@ const overnightFlight = flightDepArrival==='next' ? '1' : '0';
     fxRate:document.getElementById('fxRate').value,
     overnightFlight,
     flightDepArrival,
-    flightRetArrival,
+    // flightRetArrival n'est plus sérialisé (supprimé — FIX #3)
     notes:document.getElementById('notes').value,
     sources:JSON.stringify(sources.map(s=>({label:s.label,amount:s.amount}))),
     accommodationJSON:JSON.stringify(stops.map(s=>({city:s.city,nights:s.nights,total:s.total}))),
@@ -1330,11 +1278,11 @@ const overnightFlight = flightDepArrival==='next' ? '1' : '0';
     totalCost:total,remain:budget-total,totalDays:days,totalNights:nights,
   };
 }
+
 function setFormData(d){
   const fields=['simName','destination','currency','travelers','fxRate','notes'];
   fields.forEach(k=>{const el=document.getElementById(k);if(el)el.value=d[k]||'';});
 
-  // Set dates via custom picker
   if(d.dateFrom){
     dpState.from.value=d.dateFrom;
     document.getElementById('dateFrom').value=d.dateFrom;
@@ -1350,16 +1298,18 @@ function setFormData(d){
     updateDPDisplay('to');
   }
 
-  // Flight arrival options
-  flightDepArrival=d.flightDepArrival||'same';
-  flightRetArrival=d.flightRetArrival||'same';
-  // Backward compat: old overnightFlight='1' → retArrival='next'
-  if(!d.flightDepArrival&&!d.flightRetArrival&&(d.overnightFlight==='1'||d.overnightFlight===true)){
-    flightRetArrival='next';
+  // FIX #4: lecture backward compat — overnightFlight='1' → flightDepArrival='next'
+  // (ancienne convention = vol aller de nuit, cohérent avec le nouveau code)
+  if(d.flightDepArrival){
+    flightDepArrival=d.flightDepArrival;
+  }else if(d.overnightFlight==='1'||d.overnightFlight===true){
+    flightDepArrival='next';
+  }else{
+    flightDepArrival='same';
   }
+  // flightRetArrival ignoré à la lecture (FIX #3)
   document.getElementById('fo-dep-same').classList.toggle('active',flightDepArrival==='same');
   document.getElementById('fo-dep-next').classList.toggle('active',flightDepArrival==='next');
-
 
   budgetMode=d.budgetMode||'auto';setBudgetMode(budgetMode);
   if(budgetMode==='manual')document.getElementById('budget').value=d.budget||'';
@@ -1379,8 +1329,9 @@ function setFormData(d){
   initCatState();
   let saved=d.catStateSaved||d.catStateJSON;
   if(typeof saved==='string'){try{saved=JSON.parse(saved);}catch(e){saved=null;}}
-  if(saved){Object.keys(saved).forEach(k=>{if(catState[k])catState[k]={...catState[k],...saved[k]};});}
-  else{
+  if(saved){
+    Object.keys(saved).forEach(k=>{if(catState[k])catState[k]={...catState[k],...saved[k]};});
+  }else{
     if(d.c_transport)catState['transport'].total=d.c_transport;
     if(d.c_repas)catState['repas'].total=d.c_repas;
     if(d.c_activites)catState['activites'].total=d.c_activites;
@@ -1388,8 +1339,10 @@ function setFormData(d){
     if(d.c_autre)catState['autre'].total=d.c_autre;
     if(d.c_vols)catState['vols'].total=d.c_vols;
   }
-renderCats();onDateChange();
-  setTimeout(()=>updateCalc(), 50);
+  renderCats();
+  onDateChange();
+  // FIX #9: délai pour s'assurer que le DOM est stable
+  setTimeout(()=>updateCalc(),50);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1399,22 +1352,19 @@ function newSimulation(){
   curId=null;
   ['simName','destination','fxRate','notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('travelers').value=2;document.getElementById('currency').value='€';
-  // Reset dates
   dpState.from.value=null;dpState.to.value=null;
   document.getElementById('dateFrom').value='';document.getElementById('dateTo').value='';
   updateDPDisplay('from');updateDPDisplay('to');
-  // Reset flight opts
-  flightDepArrival='same';flightRetArrival='same';
+  flightDepArrival='same';
   document.getElementById('fo-dep-same').classList.add('active');
   document.getElementById('fo-dep-next').classList.remove('active');
   document.getElementById('flight-opts').style.display='none';
   document.getElementById('nights-banner').classList.remove('show');
   document.getElementById('nights-warning').classList.remove('show');
-
   stops=[];sources=[];initCatState();
   budgetMode='auto';setBudgetMode('auto');
   document.getElementById('wi-nights').value=0;document.getElementById('wi-food').value=0;document.getElementById('wi-act').value=0;
-  renderStops();renderSources();renderCats();updateCalc();
+  renderStops();renderSources();renderCats();scheduleCalc();
   toast('Nouveau formulaire','✦');renderAll();
 }
 function saveSimulation(){
@@ -1454,29 +1404,26 @@ function showImportModal(){
   sel.innerHTML='<option value="">— Choisir —</option>'+sims.map(s=>`<option value="${s.id}">${s.simName||'Sans titre'}</option>`).join('');
   document.getElementById('import-name').value='';
   document.getElementById('importModal').classList.add('show');
-  importMode = 'dup';
-  setImportMode('dup');
+  importMode='dup';setImportMode('dup');
 }
 function confirmImport(){
-  const id = document.getElementById('import-sel').value;
-  if (!id) { toast('Choisis une simulation source','⚠'); return; }
-  const sim = sims.find(s => s.id === id); if (!sim) return;
-
-  if (importMode === 'edit') {
+  const id=document.getElementById('import-sel').value;
+  if(!id){toast('Choisis une simulation source','⚠');return;}
+  const sim=sims.find(s=>s.id===id);if(!sim)return;
+  if(importMode==='edit'){
     closeModal('importModal');
-    curId = id;
+    curId=id;
     setFormData({...sim});
     showTab('form');
     toast(`"${sim.simName}" chargée — édition directe`,'✎');
     return;
   }
-
-  const name = document.getElementById('import-name').value.trim();
-  if (!name) { toast('Donne un nom à la copie','⚠'); return; }
+  const name=document.getElementById('import-name').value.trim();
+  if(!name){toast('Donne un nom à la copie','⚠');return;}
   closeModal('importModal');
-  curId = null;
+  curId=null;
   setFormData({...sim});
-  document.getElementById('simName').value = name;
+  document.getElementById('simName').value=name;
   showTab('form');
   toast(`Dupliqué depuis "${sim.simName}" — modifie et sauvegarde`,'📋');
 }
@@ -1484,6 +1431,7 @@ function importAs(id){
   const sim=sims.find(s=>s.id===id);if(!sim)return;
   document.getElementById('import-sel').innerHTML=`<option value="${id}" selected>${sim.simName}</option>`;
   document.getElementById('import-name').value=(sim.simName||'')+(sim.simName?' (copie)':'copie');
+  importMode='dup';setImportMode('dup');
   document.getElementById('importModal').classList.add('show');
 }
 
@@ -1542,9 +1490,10 @@ function loadAnalysisSim(){
   const bd={c_hotel:hotel};
   if(cs){CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{const key=cat.id.replace('c_','');const st=cs[key];if(st){bd[cat.id]=st.open&&st.subs&&st.subs.length?st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0):parseFloat(st.total)||0;}else bd[cat.id]=parseFloat(sim[cat.id])||0;});}
   else{CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{bd[cat.id]=parseFloat(sim[cat.id])||0;});}
-  const total=Object.values(bd).reduce((s,v)=>s+v,0);const budget=simBudget(sim);const days=parseInt(sim.totalDays)||0;const ppd=days?total/days:0;
+  const total=Object.values(bd).reduce((s,v)=>s+v,0);const budget=simBudget(sim);const days=parseInt(sim.totalDays)||0;
+  const ppd=days>0?total/days:0;
   document.getElementById('an-total').textContent=fmt(total,curr);
-  document.getElementById('an-ppd').textContent=ppd?fmt(Math.round(ppd),curr):'—';
+  document.getElementById('an-ppd').textContent=ppd>0?fmt(Math.round(ppd),curr):'—';
   document.getElementById('an-remain').textContent=budget?fmt(Math.round(budget-total),curr):'—';
   const active=CHART_CATS.filter(c=>bd[c.id]>0);
   if(anPie)anPie.destroy();
@@ -1564,14 +1513,13 @@ function initCompareSelects(){
 }
 function addCompareSlot(){cmpSlots.push('');initCompareSelects();renderCompare();}
 function removeCompareSlot(i){if(cmpSlots.length<=2)return;cmpSlots.splice(i,1);initCompareSelects();renderCompare();}
-
 function renderCompare(){
   const el=document.getElementById('compare-body');
   const selected=cmpSlots.map(id=>sims.find(s=>s.id===id)).filter(Boolean);
   if(selected.length<2){el.innerHTML='<div class="empty"><div class="ei">⇄</div><div class="et">Sélectionne au moins deux simulations.</div></div>';return;}
   function getSimBD(sim){let cities=sim.cities;if(!cities&&sim.accommodationJSON){try{cities=JSON.parse(sim.accommodationJSON);}catch(e){cities=[];}}const hotel=(cities||[]).reduce((s,c)=>s+(parseFloat(c.total||c.ppn)||0),0);let cs=sim.catStateSaved||sim.catStateJSON;if(typeof cs==='string'){try{cs=JSON.parse(cs);}catch(e){cs=null;}}const bd={c_hotel:hotel};CHART_CATS.filter(c=>c.id!=='c_hotel').forEach(cat=>{const key=cat.id.replace('c_','');if(cs&&cs[key]){const st=cs[key];bd[cat.id]=st.open&&st.subs&&st.subs.length?st.subs.reduce((s,x)=>s+(parseFloat(x.amount)||0),0):parseFloat(st.total)||0;}else bd[cat.id]=parseFloat(sim[cat.id])||0;});return bd;}
   const colors=['var(--gold)','var(--sky)','var(--sage)','var(--lavender)','var(--amber)'];
-  const rowDefs=[{label:'Budget',fn:(sim)=>fmt(simBudget(sim),sim.currency||'€'),num:(sim)=>simBudget(sim),lower:false},{label:'Total',fn:(sim,bd)=>fmt(Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>Object.values(bd).reduce((s,v)=>s+v,0),lower:true},{label:'Restant',fn:(sim,bd)=>fmt(simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),lower:false},{label:'Jours',fn:(sim)=>sim.totalDays||'—',num:(sim)=>parseInt(sim.totalDays)||0,lower:true},{label:'Nuits',fn:(sim)=>sim.totalNights||'—',num:(sim)=>parseInt(sim.totalNights)||0,lower:true},{label:'/jour',fn:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d?fmt(Math.round(t/d),sim.currency||'€'):'—';},num:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d?t/d:0;},lower:true},{label:'---'},...CHART_CATS.map(cat=>({label:cat.label,color:cat.color,fn:(sim,bd)=>bd[cat.id]?fmt(bd[cat.id],sim.currency||'€'):'—',num:(sim,bd)=>bd[cat.id]||0,lower:true}))];
+  const rowDefs=[{label:'Budget',fn:(sim)=>fmt(simBudget(sim),sim.currency||'€'),num:(sim)=>simBudget(sim),lower:false},{label:'Total',fn:(sim,bd)=>fmt(Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>Object.values(bd).reduce((s,v)=>s+v,0),lower:true},{label:'Restant',fn:(sim,bd)=>fmt(simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),sim.currency||'€'),num:(sim,bd)=>simBudget(sim)-Object.values(bd).reduce((s,v)=>s+v,0),lower:false},{label:'Jours',fn:(sim)=>sim.totalDays||'—',num:(sim)=>parseInt(sim.totalDays)||0,lower:true},{label:'Nuits',fn:(sim)=>sim.totalNights||'—',num:(sim)=>parseInt(sim.totalNights)||0,lower:true},{label:'/jour',fn:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d>0?fmt(Math.round(t/d),sim.currency||'€'):'—';},num:(sim,bd)=>{const t=Object.values(bd).reduce((s,v)=>s+v,0),d=parseInt(sim.totalDays)||0;return d>0?t/d:0;},lower:true},{label:'---'},...CHART_CATS.map(cat=>({label:cat.label,color:cat.color,fn:(sim,bd)=>bd[cat.id]?fmt(bd[cat.id],sim.currency||'€'):'—',num:(sim,bd)=>bd[cat.id]||0,lower:true}))];
   const bds=selected.map(sim=>getSimBD(sim));
   let html=`<div class="card"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:${180+selected.length*160}px"><thead><tr><th style="text-align:left;padding:8px 10px;font-size:10.5px;font-family:'JetBrains Mono',monospace;color:var(--muted);border-bottom:1px solid var(--border);min-width:120px">Critère</th>${selected.map((sim,i)=>`<th style="text-align:right;padding:8px 10px;font-size:13px;font-family:'Cormorant Garamond',serif;font-weight:600;color:${colors[i%colors.length]};border-bottom:1px solid var(--border);min-width:140px">${sim.simName||'Sim '+(i+1)}</th>`).join('')}</tr></thead><tbody>`;
   rowDefs.forEach(row=>{if(row.label==='---'){html+=`<tr><td colspan="${1+selected.length}" style="padding:3px 0;border-bottom:1px solid var(--border)"></td></tr>`;return;}const nums=selected.map((sim,si)=>row.num?row.num(sim,bds[si]):0);const validNums=nums.filter(v=>v>0);const minVal=validNums.length?Math.min(...validNums):null;html+=`<tr><td style="padding:7px 10px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.04)">${row.color?`<span style="width:6px;height:6px;border-radius:50%;background:${row.color};display:inline-block;margin-right:5px;vertical-align:middle"></span>`:''}${row.label}</td>${selected.map((sim,si)=>{const str=row.fn?row.fn(sim,bds[si]):'—';const num=nums[si];const isWin=validNums.length>1&&row.lower&&num===minVal&&num>0;const isLos=validNums.length>1&&row.lower&&num===Math.max(...validNums)&&num!==minVal&&num>0;return `<td style="text-align:right;padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;border-bottom:1px solid rgba(255,255,255,.04);color:${isWin?'var(--sage)':isLos?'var(--rose)':'var(--text)'};font-weight:${isWin?500:400}">${str}${isWin?' ✓':''}</td>`;}).join('')}</tr>`;});
@@ -1612,9 +1560,11 @@ document.addEventListener('keydown',e=>{
 // INIT
 // ══════════════════════════════════════════════════════════
 initCatState();
-renderStops();renderSources();renderCats();
+renderStops();
+renderSources();
+renderCats();
 loadFromSheets();
-updateCalc();
+scheduleCalc();
 </script>
 </body>
 </html>
