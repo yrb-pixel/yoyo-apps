@@ -1388,7 +1388,8 @@ function setFormData(d){
     if(d.c_autre)catState['autre'].total=d.c_autre;
     if(d.c_vols)catState['vols'].total=d.c_vols;
   }
-  renderCats();onDateChange();updateCalc();
+renderCats();onDateChange();
+  setTimeout(()=>updateCalc(), 50);
 }
 
 // ══════════════════════════════════════════════════════════
