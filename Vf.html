@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Les étapes d'une FIV, simplement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f4ede1;
+    --paper-2: #ebe0cc;
+    --accent: #c94a3d;
+    --accent-soft: #e8a69c;
+    --blush: #f5d5ce;
+    --sage: #7a8d6b;
+    --gold: #c89b5e;
+    --line: rgba(26,26,26,0.15);
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+font-family: ‘Inter Tight’, sans-serif;
+background: var(–paper);
+color: var(–ink);
+line-height: 1.55;
+overflow-x: hidden;
+}
+
+/* Texture grain */
+body::before {
+content: “”;
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: 1000;
+opacity: 0.35;
+mix-blend-mode: multiply;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘3’ stitchTiles=‘stitch’/%3E%3CfeColorMatrix values=‘0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.15 0’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
+}
+
+.wrap {
+max-width: 760px;
+margin: 0 auto;
+padding: 48px 24px 120px;
+position: relative;
+}
+
+/* ——— HERO ——— */
+.hero {
+padding: 32px 0 48px;
+border-bottom: 1px solid var(–line);
+margin-bottom: 56px;
+position: relative;
+}
+
+.kicker {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-weight: 300;
+font-size: 14px;
+letter-spacing: 0.08em;
+color: var(–accent);
+text-transform: uppercase;
+margin-bottom: 20px;
+opacity: 0;
+animation: fadeUp 0.7s ease-out 0.1s forwards;
+}
+
+h1 {
+font-family: ‘Fraunces’, serif;
+font-weight: 400;
+font-size: clamp(42px, 7vw, 68px);
+line-height: 0.98;
+letter-spacing: -0.02em;
+margin-bottom: 24px;
+opacity: 0;
+animation: fadeUp 0.8s ease-out 0.2s forwards;
+}
+
+h1 em {
+font-style: italic;
+font-weight: 300;
+color: var(–accent);
+}
+
+.lead {
+font-size: 17px;
+max-width: 520px;
+color: rgba(26,26,26,0.75);
+opacity: 0;
+animation: fadeUp 0.8s ease-out 0.35s forwards;
+}
+
+.duration-badge {
+position: absolute;
+top: 32px;
+right: 0;
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 13px;
+color: var(–ink);
+opacity: 0.5;
+text-align: right;
+line-height: 1.4;
+}
+
+.duration-badge strong {
+font-style: normal;
+font-weight: 500;
+display: block;
+font-size: 22px;
+color: var(–ink);
+opacity: 1;
+}
+
+/* ——— STEPS ——— */
+.step {
+position: relative;
+padding: 48px 0 48px 88px;
+border-top: 1px solid var(–line);
+opacity: 0;
+animation: fadeUp 0.7s ease-out forwards;
+}
+
+.step:nth-child(1) { animation-delay: 0.5s; }
+.step:nth-child(2) { animation-delay: 0.6s; }
+.step:nth-child(3) { animation-delay: 0.7s; }
+.step:nth-child(4) { animation-delay: 0.8s; }
+.step:nth-child(5) { animation-delay: 0.9s; }
+.step:nth-child(6) { animation-delay: 1.0s; }
+
+.step:last-of-type {
+border-bottom: 1px solid var(–line);
+}
+
+.num {
+position: absolute;
+left: 0;
+top: 48px;
+font-family: ‘Fraunces’, serif;
+font-weight: 300;
+font-style: italic;
+font-size: 56px;
+line-height: 1;
+color: var(–accent);
+}
+
+.num::before {
+content: “”;
+position: absolute;
+top: 50%;
+left: -4px;
+width: 70px;
+height: 1px;
+background: var(–accent);
+opacity: 0.3;
+transform: translate(-100%, -50%);
+}
+
+.step-meta {
+display: flex;
+align-items: baseline;
+gap: 16px;
+margin-bottom: 12px;
+flex-wrap: wrap;
+}
+
+.step-title {
+font-family: ‘Fraunces’, serif;
+font-weight: 500;
+font-size: 28px;
+line-height: 1.15;
+letter-spacing: -0.01em;
+}
+
+.step-duration {
+font-family: ‘Inter Tight’, sans-serif;
+font-size: 12px;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+color: var(–sage);
+font-weight: 500;
+padding: 4px 10px;
+border: 1px solid var(–sage);
+border-radius: 100px;
+white-space: nowrap;
+}
+
+.step-body {
+font-size: 16.5px;
+color: rgba(26,26,26,0.82);
+max-width: 580px;
+}
+
+.step-body p + p { margin-top: 14px; }
+
+.step-visual {
+margin-top: 24px;
+padding: 20px 24px;
+background: var(–paper-2);
+border-left: 3px solid var(–accent-soft);
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 15.5px;
+color: var(–ink);
+border-radius: 0 8px 8px 0;
+}
+
+.step-visual::before {
+content: “↳ “;
+color: var(–accent);
+font-style: normal;
+}
+
+/* ——— DECORATIVE CELL SVG ——— */
+.ornament {
+position: absolute;
+top: 20px;
+right: 0;
+width: 80px;
+height: 80px;
+opacity: 0.35;
+}
+
+@media (max-width: 600px) {
+.ornament { width: 48px; height: 48px; top: 30px; }
+}
+
+/* ——— CLOSING ——— */
+.closing {
+margin-top: 72px;
+text-align: center;
+padding: 40px 24px;
+}
+
+.closing p {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-weight: 300;
+font-size: 22px;
+line-height: 1.45;
+color: var(–ink);
+max-width: 480px;
+margin: 0 auto;
+}
+
+.closing p::before,
+.closing p::after {
+content: “—”;
+display: inline-block;
+margin: 0 12px;
+color: var(–accent);
+opacity: 0.5;
+}
+
+.footnote {
+margin-top: 32px;
+font-size: 12px;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+color: rgba(26,26,26,0.45);
+}
+
+/* ——— ANIMATIONS ——— */
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(14px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+0%, 100% { transform: scale(1); opacity: 0.35; }
+50% { transform: scale(1.08); opacity: 0.55; }
+}
+
+.pulse { animation: pulse 3s ease-in-out infinite; }
+
+/* ——— RESPONSIVE ——— */
+@media (max-width: 600px) {
+.wrap { padding: 32px 20px 80px; }
+.step { padding: 36px 0 36px 56px; }
+.num { font-size: 40px; top: 36px; }
+.num::before { width: 40px; }
+.step-title { font-size: 22px; }
+.duration-badge { position: static; margin-bottom: 16px; text-align: left; }
+.duration-badge strong { font-size: 18px; display: inline; margin-right: 8px; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+
+  <header class="hero">
+    <div class="duration-badge">
+      Un cycle complet<br>
+      <strong>≈ 4 à 6 semaines</strong>
+    </div>
+    <div class="kicker">Comprendre simplement</div>
+    <h1>La <em>fécondation in&nbsp;vitro</em>, étape par étape</h1>
+    <p class="lead">Six étapes, du premier rendez-vous au test de grossesse. Sans jargon, juste l'essentiel pour comprendre ce qui se passe à chaque moment.</p>
+  </header>
+
+  <!-- STEP 1 -->
+
+  <article class="step">
+    <svg class="ornament pulse" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="50" r="6" fill="#c94a3d"/>
+      <circle cx="50" cy="50" r="20" fill="none" stroke="#c94a3d" stroke-width="0.5" stroke-dasharray="2 3"/>
+    </svg>
+    <div class="num">01</div>
+    <div class="step-meta">
+      <h2 class="step-title">La stimulation ovarienne</h2>
+      <span class="step-duration">10 à 14 jours</span>
+    </div>
+    <div class="step-body">
+      <p>Normalement, chaque mois, un seul ovule arrive à maturité. Pour une FIV, on en veut plusieurs. On s'injecte donc chaque jour des hormones pour que les ovaires en produisent une dizaine en même temps.</p>
+      <p>Pendant cette période, on fait des échographies et des prises de sang tous les 2-3 jours pour surveiller la croissance des ovules.</p>
+      <div class="step-visual">Imagez un verger où l'on accélère la maturation de plusieurs fruits à la fois, au lieu d'un seul.</div>
+    </div>
+  </article>
+
+  <!-- STEP 2 -->
+
+  <article class="step">
+    <svg class="ornament" viewBox="0 0 100 100">
+      <path d="M 20 50 Q 50 20, 80 50 Q 50 80, 20 50 Z" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="50" r="8" fill="#e8a69c"/>
+    </svg>
+    <div class="num">02</div>
+    <div class="step-meta">
+      <h2 class="step-title">Le déclenchement</h2>
+      <span class="step-duration">1 injection</span>
+    </div>
+    <div class="step-body">
+      <p>Quand les ovules sont prêts, on fait une dernière injection, à heure très précise, qui déclenche leur maturation finale.</p>
+      <p>36 heures plus tard, exactement, c'est le moment d'aller les chercher.</p>
+      <div class="step-visual">C'est le coup d'envoi. Le timing est millimétré.</div>
+    </div>
+  </article>
+
+  <!-- STEP 3 -->
+
+  <article class="step">
+    <svg class="ornament" viewBox="0 0 100 100">
+      <circle cx="35" cy="50" r="12" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="55" cy="40" r="8" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="60" cy="60" r="10" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="75" cy="48" r="6" fill="#c94a3d" opacity="0.5"/>
+    </svg>
+    <div class="num">03</div>
+    <div class="step-meta">
+      <h2 class="step-title">La ponction des ovules</h2>
+      <span class="step-duration">15 à 30 min</span>
+    </div>
+    <div class="step-body">
+      <p>Intervention courte sous anesthésie légère. Le médecin récupère les ovules directement dans les ovaires, avec une fine aiguille guidée par échographie.</p>
+      <p>Le même jour, le partenaire fournit un échantillon de sperme (ou on utilise des gamètes congelés).</p>
+      <div class="step-visual">Retour à la maison quelques heures après. Pas d'hospitalisation.</div>
+    </div>
+  </article>
+
+  <!-- STEP 4 -->
+
+  <article class="step">
+    <svg class="ornament" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="22" fill="#f5d5ce"/>
+      <circle cx="50" cy="50" r="22" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="50" r="4" fill="#c94a3d"/>
+      <path d="M 75 45 L 58 50" stroke="#c94a3d" stroke-width="1.5"/>
+      <circle cx="75" cy="45" r="3" fill="#c94a3d"/>
+    </svg>
+    <div class="num">04</div>
+    <div class="step-meta">
+      <h2 class="step-title">La fécondation au laboratoire</h2>
+      <span class="step-duration">En quelques heures</span>
+    </div>
+    <div class="step-body">
+      <p>Au labo, ovules et spermatozoïdes sont mis en contact. Deux techniques&nbsp;:</p>
+      <p><strong>FIV classique</strong> : on les dépose ensemble et on laisse faire la nature.<br>
+      <strong>ICSI</strong> : on injecte directement un spermatozoïde sélectionné dans chaque ovule (utilisée si le sperme a des difficultés à féconder seul).</p>
+      <div class="step-visual">C'est le moment « in vitro » au sens propre : dans le verre, à la place du corps.</div>
+    </div>
+  </article>
+
+  <!-- STEP 5 -->
+
+  <article class="step">
+    <svg class="ornament" viewBox="0 0 100 100">
+      <circle cx="30" cy="50" r="8" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="50" r="10" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="50" r="3" fill="#c94a3d"/>
+      <circle cx="70" cy="50" r="12" fill="none" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="66" cy="46" r="2" fill="#c94a3d"/>
+      <circle cx="74" cy="50" r="2" fill="#c94a3d"/>
+      <circle cx="68" cy="54" r="2" fill="#c94a3d"/>
+    </svg>
+    <div class="num">05</div>
+    <div class="step-meta">
+      <h2 class="step-title">La culture des embryons</h2>
+      <span class="step-duration">3 à 5 jours</span>
+    </div>
+    <div class="step-body">
+      <p>Les ovules fécondés deviennent des embryons. Le biologiste les observe chaque jour dans un incubateur à 37°C pour voir lesquels se développent le mieux.</p>
+      <p>À la fin, on sélectionne le ou les meilleurs embryons. Les autres de bonne qualité peuvent être congelés pour plus tard.</p>
+      <div class="step-visual">Tous les embryons ne « prennent » pas. C'est normal — la sélection naturelle commence ici.</div>
+    </div>
+  </article>
+
+  <!-- STEP 6 -->
+
+  <article class="step">
+    <svg class="ornament" viewBox="0 0 100 100">
+      <path d="M 50 20 Q 30 40, 35 60 Q 40 80, 50 82 Q 60 80, 65 60 Q 70 40, 50 20 Z"
+            fill="#f5d5ce" stroke="#c94a3d" stroke-width="1"/>
+      <circle cx="50" cy="55" r="5" fill="#c94a3d"/>
+    </svg>
+    <div class="num">06</div>
+    <div class="step-meta">
+      <h2 class="step-title">Le transfert &amp; l'attente</h2>
+      <span class="step-duration">10 min + 12 jours</span>
+    </div>
+    <div class="step-body">
+      <p>Le médecin dépose l'embryon dans l'utérus à l'aide d'un fin cathéter. C'est indolore, sans anesthésie, et ça ressemble à un frottis.</p>
+      <p>Puis vient la partie la plus difficile : attendre 10 à 12 jours avant de faire la prise de sang qui dira si la grossesse a commencé.</p>
+      <div class="step-visual">Cette période d'attente porte un nom : les « two week wait ». Elle est souvent la plus éprouvante du parcours.</div>
+    </div>
+  </article>
+
+  <!-- CLOSING -->
+
+  <div class="closing">
+    <p>Un cycle ne marche pas toujours du premier coup. En France, 4 tentatives sont prises en charge par la Sécurité sociale avant 43&nbsp;ans.</p>
+    <div class="footnote">Résumé pédagogique · à titre d'information</div>
+  </div>
+
+</div>
+
+</body>
+</html>
