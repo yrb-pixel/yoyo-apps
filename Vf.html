@@ -120,6 +120,125 @@ color: var(–ink);
 opacity: 1;
 }
 
+/* ——— SIMULATEUR ——— */
+.simulator {
+background: var(–paper-2);
+border: 1px solid var(–line);
+border-radius: 12px;
+padding: 28px 28px 24px;
+margin-bottom: 48px;
+opacity: 0;
+animation: fadeUp 0.8s ease-out 0.5s forwards;
+position: relative;
+}
+
+.simulator-header {
+display: flex;
+align-items: baseline;
+justify-content: space-between;
+gap: 12px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+
+.simulator-title {
+font-family: ‘Fraunces’, serif;
+font-weight: 500;
+font-size: 22px;
+letter-spacing: -0.01em;
+}
+
+.simulator-title em {
+font-style: italic;
+font-weight: 300;
+color: var(–accent);
+}
+
+.simulator-hint {
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-size: 13px;
+color: rgba(26,26,26,0.55);
+}
+
+.sim-inputs {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px;
+}
+
+@media (max-width: 540px) {
+.sim-inputs { grid-template-columns: 1fr; }
+}
+
+.sim-field label {
+display: block;
+font-size: 11px;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: rgba(26,26,26,0.6);
+margin-bottom: 6px;
+font-weight: 500;
+}
+
+.sim-field input {
+width: 100%;
+padding: 12px 14px;
+font-family: ‘Inter Tight’, sans-serif;
+font-size: 15px;
+color: var(–ink);
+background: var(–paper);
+border: 1px solid var(–line);
+border-radius: 8px;
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sim-field input:focus {
+border-color: var(–accent);
+box-shadow: 0 0 0 3px rgba(201, 74, 61, 0.12);
+}
+
+.sim-summary {
+margin-top: 18px;
+padding-top: 16px;
+border-top: 1px dashed var(–line);
+font-size: 14px;
+color: rgba(26,26,26,0.75);
+display: none;
+}
+
+.sim-summary.active { display: block; }
+
+.sim-summary strong {
+font-family: ‘Fraunces’, serif;
+font-weight: 500;
+color: var(–accent);
+font-size: 15px;
+}
+
+/* ——— DATE PILL dans chaque étape ——— */
+.step-date {
+display: inline-block;
+font-family: ‘Fraunces’, serif;
+font-style: italic;
+font-weight: 400;
+font-size: 15px;
+color: var(–accent);
+margin-bottom: 12px;
+padding: 3px 0;
+border-bottom: 1px solid var(–accent-soft);
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.step-date.active { opacity: 1; }
+
+.step-date::before {
+content: “⌖ “;
+opacity: 0.7;
+}
+
 /* ——— STEPS ——— */
 .step {
 position: relative;
@@ -310,6 +429,26 @@ to { opacity: 1; transform: translateY(0); }
     <p class="lead">Six étapes, du premier rendez-vous au test de grossesse. Sans jargon, juste l'essentiel pour comprendre ce qui se passe à chaque moment.</p>
   </header>
 
+  <!-- SIMULATEUR -->
+
+  <section class="simulator">
+    <div class="simulator-header">
+      <div class="simulator-title">Projeter <em>votre</em> calendrier</div>
+      <div class="simulator-hint">Indicatif · dates ajustables selon protocole</div>
+    </div>
+    <div class="sim-inputs">
+      <div class="sim-field">
+        <label for="startDate">Premier jour des dernières règles</label>
+        <input type="date" id="startDate" />
+      </div>
+      <div class="sim-field">
+        <label for="cycleLength">Durée habituelle du cycle (jours)</label>
+        <input type="number" id="cycleLength" min="21" max="45" value="28" />
+      </div>
+    </div>
+    <div class="sim-summary" id="simSummary"></div>
+  </section>
+
   <!-- STEP 1 -->
 
   <article class="step">
@@ -323,6 +462,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">La stimulation ovarienne</h2>
       <span class="step-duration">10 à 14 jours</span>
     </div>
+    <div class="step-date" data-step="1"></div>
     <div class="step-body">
       <p>Normalement, chaque mois, un seul ovule arrive à maturité. Pour une FIV, on en veut plusieurs. On s'injecte donc chaque jour des hormones pour que les ovaires en produisent une dizaine en même temps.</p>
       <p>Pendant cette période, on fait des échographies et des prises de sang tous les 2-3 jours pour surveiller la croissance des ovules.</p>
@@ -342,6 +482,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">Le déclenchement</h2>
       <span class="step-duration">1 injection</span>
     </div>
+    <div class="step-date" data-step="2"></div>
     <div class="step-body">
       <p>Quand les ovules sont prêts, on fait une dernière injection, à heure très précise, qui déclenche leur maturation finale.</p>
       <p>36 heures plus tard, exactement, c'est le moment d'aller les chercher.</p>
@@ -363,6 +504,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">La ponction des ovules</h2>
       <span class="step-duration">15 à 30 min</span>
     </div>
+    <div class="step-date" data-step="3"></div>
     <div class="step-body">
       <p>Intervention courte sous anesthésie légère. Le médecin récupère les ovules directement dans les ovaires, avec une fine aiguille guidée par échographie.</p>
       <p>Le même jour, le partenaire fournit un échantillon de sperme (ou on utilise des gamètes congelés).</p>
@@ -385,6 +527,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">La fécondation au laboratoire</h2>
       <span class="step-duration">En quelques heures</span>
     </div>
+    <div class="step-date" data-step="4"></div>
     <div class="step-body">
       <p>Au labo, ovules et spermatozoïdes sont mis en contact. Deux techniques&nbsp;:</p>
       <p><strong>FIV classique</strong> : on les dépose ensemble et on laisse faire la nature.<br>
@@ -410,6 +553,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">La culture des embryons</h2>
       <span class="step-duration">3 à 5 jours</span>
     </div>
+    <div class="step-date" data-step="5"></div>
     <div class="step-body">
       <p>Les ovules fécondés deviennent des embryons. Le biologiste les observe chaque jour dans un incubateur à 37°C pour voir lesquels se développent le mieux.</p>
       <p>À la fin, on sélectionne le ou les meilleurs embryons. Les autres de bonne qualité peuvent être congelés pour plus tard.</p>
@@ -430,6 +574,7 @@ to { opacity: 1; transform: translateY(0); }
       <h2 class="step-title">Le transfert &amp; l'attente</h2>
       <span class="step-duration">10 min + 12 jours</span>
     </div>
+    <div class="step-date" data-step="6"></div>
     <div class="step-body">
       <p>Le médecin dépose l'embryon dans l'utérus à l'aide d'un fin cathéter. C'est indolore, sans anesthésie, et ça ressemble à un frottis.</p>
       <p>Puis vient la partie la plus difficile : attendre 10 à 12 jours avant de faire la prise de sang qui dira si la grossesse a commencé.</p>
@@ -445,6 +590,87 @@ to { opacity: 1; transform: translateY(0); }
   </div>
 
 </div>
+
+<script>
+  (function() {
+    const startInput = document.getElementById('startDate');
+    const cycleInput = document.getElementById('cycleLength');
+    const summary = document.getElementById('simSummary');
+    const dateEls = document.querySelectorAll('.step-date');
+
+    // Préremplir avec la date d'aujourd'hui
+    const today = new Date();
+    const isoToday = today.toISOString().split('T')[0];
+    startInput.value = isoToday;
+
+    const fmt = (d) => {
+      const days = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+      const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+      return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    };
+
+    const fmtRange = (d1, d2) => `${d1.getDate()} ${['jan.','fév.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'][d1.getMonth()]} → ${d2.getDate()} ${['jan.','fév.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'][d2.getMonth()]}`;
+
+    const addDays = (date, days) => {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    };
+
+    const addHours = (date, hours) => {
+      const d = new Date(date);
+      d.setHours(d.getHours() + hours);
+      return d;
+    };
+
+    function update() {
+      if (!startInput.value) return;
+      const start = new Date(startInput.value + 'T08:00:00');
+      const cycle = parseInt(cycleInput.value) || 28;
+
+      // Protocole FIV long classique — ajustable selon centre
+      // J1 = premier jour des règles
+      // Stimulation : généralement J2 à J12 (~10-12 jours)
+      // Déclenchement : J12 en soirée
+      // Ponction : J14 (36h après déclenchement)
+      // Fécondation : J14 (même jour)
+      // Culture : J14 → J19 (5 jours max, blastocyste)
+      // Transfert : J17 (J3) ou J19 (J5, blastocyste) — on prend J5
+      // Test grossesse : transfert + 12 jours = J31
+
+      const stimStart = addDays(start, 1);       // J2
+      const stimEnd = addDays(start, 11);         // J12
+      const trigger = addDays(start, 11);         // J12 soir
+      const ponction = addDays(start, 13);        // J14
+      const fecondation = addDays(start, 13);     // J14 (même jour)
+      const cultureEnd = addDays(start, 18);      // J19
+      const transfer = addDays(start, 18);        // J19 (J5 blasto)
+      const testDate = addDays(transfer, 12);     // ~J31
+
+      const dates = {
+        1: `${fmtRange(stimStart, stimEnd)} · env. 10 jours`,
+        2: `${fmt(trigger)} (soirée)`,
+        3: `${fmt(ponction)} · matin`,
+        4: `${fmt(fecondation)} · après la ponction`,
+        5: `${fmtRange(addDays(fecondation, 1), cultureEnd)}`,
+        6: `Transfert : ${fmt(transfer)} · Test : ${fmt(testDate)}`
+      };
+
+      dateEls.forEach(el => {
+        const step = el.getAttribute('data-step');
+        el.textContent = dates[step];
+        el.classList.add('active');
+      });
+
+      summary.classList.add('active');
+      summary.innerHTML = `Cycle démarré le <strong>${fmt(start)}</strong> · Ponction estimée vers <strong>${fmt(ponction)}</strong> · Test de grossesse vers <strong>${fmt(testDate)}</strong>`;
+    }
+
+    startInput.addEventListener('change', update);
+    cycleInput.addEventListener('input', update);
+    update();
+  })();
+</script>
 
 </body>
 </html>
