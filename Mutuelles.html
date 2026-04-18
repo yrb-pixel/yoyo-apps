@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remboursements Mutuelles</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f2ec;--ink:#1a1814;--muted:#8a8070;--border:#ddd8ce;
+  --surface:#fff;--surface2:#f0ece4;
+  --gold:#c4862a;--gold-light:#f5e6cc;
+  --teal:#2a7c6f;--teal-light:#d0ebe7;
+  --red:#c43a2a;--red-light:#f5d8d4;--green:#2a6e3f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Syne',sans-serif;min-height:100vh;padding:0 0 80px}
+
+.header{background:var(–ink);padding:40px 40px 36px;position:relative;overflow:hidden}
+.header::after{content:’’;position:absolute;right:-60px;top:-60px;width:300px;height:300px;border-radius:50%;border:60px solid rgba(255,255,255,.04);pointer-events:none}
+.header-eyebrow{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(–muted);margin-bottom:10px}
+.header h1{font-family:‘Instrument Serif’,serif;font-style:italic;font-weight:400;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;color:#f5f2ec}
+.header-chips{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.chip{font-size:.68rem;letter-spacing:.06em;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6)}
+.chip.gold{border-color:var(–gold);color:var(–gold)}
+.chip.teal{border-color:#5bc8af;color:#5bc8af}
+
+.person-bar{background:var(–ink);border-top:1px solid rgba(255,255,255,.08);padding:0 40px;display:flex}
+.person-btn{padding:14px 28px;background:transparent;border:none;border-bottom:3px solid transparent;font-family:‘Syne’,sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:color .15s,border-color .15s;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:8px}
+.person-btn .dot{width:8px;height:8px;border-radius:50%;opacity:.5;transition:opacity .15s}
+.person-btn.you .dot{background:var(–gold)}
+.person-btn.zin .dot{background:#5bc8af}
+.person-btn.active{color:#f5f2ec}
+.person-btn.active .dot{opacity:1}
+.person-btn.you.active{border-bottom-color:var(–gold)}
+.person-btn.zin.active{border-bottom-color:#5bc8af}
+
+.person-context{max-width:720px;margin:0 auto;padding:0 20px}
+.ctx-badge{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:0 0 12px 12px;font-size:.78rem;font-weight:600;margin-bottom:-8px}
+.ctx-badge.you{background:var(–gold-light);color:var(–gold)}
+.ctx-badge.zin{background:var(–teal-light);color:var(–teal)}
+.ctx-badge .ctx-detail{font-size:.68rem;font-weight:400;opacity:.75;margin-left:auto}
+
+.main{max-width:720px;margin:0 auto;padding:28px 20px;display:flex;flex-direction:column;gap:20px}
+
+.card{background:var(–surface);border:1px solid var(–border);border-radius:16px;padding:28px;animation:rise .4s ease both}
+.card-label{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(–muted);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.card-label::after{content:’’;flex:1;height:1px;background:var(–border)}
+
+.pmss-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pmss-row label{font-size:.8rem;color:var(–muted)}
+.pmss-input-wrap{display:flex;align-items:center;gap:6px;background:var(–surface2);border:1px solid var(–border);border-radius:8px;padding:7px 12px}
+.pmss-input-wrap span{font-size:.8rem;color:var(–muted)}
+.pmss-input-wrap input{width:80px;background:none;border:none;font-family:‘Syne’,sans-serif;font-size:.9rem;font-weight:600;color:var(–gold);outline:none;text-align:right}
+.pmss-annual{font-size:.75rem;color:var(–muted);margin-left:4px}
+
+.form-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.form-cols{grid-template-columns:1fr}}
+.form-cols .full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:6px}
+.field-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(–muted)}
+
+select,input[type=“number”].fi{background:var(–surface2);border:1px solid var(–border);border-radius:10px;color:var(–ink);font-family:‘Syne’,sans-serif;font-size:.85rem;padding:11px 14px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;appearance:none;-webkit-appearance:none}
+select{cursor:pointer;background-image:url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%238a8070’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+select:focus,input[type=“number”].fi:focus{border-color:var(–gold);box-shadow:0 0 0 3px var(–gold-light)}
+select option{background:#fff}
+
+.br-box{background:var(–surface2);border:1px solid var(–border);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+.br-row{display:flex;justify-content:space-between;align-items:center;font-size:.78rem}
+.br-key{color:var(–muted)}
+.br-val{font-weight:600}
+.br-edit-wrap{display:flex;align-items:center;gap:5px}
+.br-edit-input{width:75px;padding:3px 8px;background:var(–surface);border:1px solid var(–gold);border-radius:6px;font-family:‘Syne’,sans-serif;font-size:.82rem;font-weight:700;color:var(–gold);outline:none;text-align:right}
+.br-edit-unit{font-size:.75rem;color:var(–muted)}
+.br-note{font-size:.7rem;color:var(–muted);border-top:1px solid var(–border);padding-top:7px;margin-top:2px;line-height:1.5}
+
+.toggle{display:flex;border:1px solid var(–border);border-radius:10px;overflow:hidden}
+.toggle button{flex:1;padding:10px 8px;background:transparent;border:none;font-family:‘Syne’,sans-serif;font-size:.72rem;color:var(–muted);cursor:pointer;transition:background .15s,color .15s;line-height:1.5;text-align:center}
+.toggle button.on{background:var(–ink);color:var(–bg)}
+.toggle button+button{border-left:1px solid var(–border)}
+
+.btn{width:100%;padding:15px;border:none;border-radius:10px;font-family:‘Syne’,sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s,transform .1s}
+.btn:hover{opacity:.85;transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn.you-btn{background:var(–gold);color:#fff}
+.btn.zin-btn{background:var(–teal);color:#fff}
+
+#results{display:none}
+#results.show{display:block;animation:rise .35s ease both}
+
+.results-who{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:.8rem;font-weight:600}
+.results-who .who-dot{width:10px;height:10px;border-radius:50%}
+.results-who.you .who-dot{background:var(–gold)}
+.results-who.zin .who-dot{background:var(–teal)}
+.results-who.you{color:var(–gold)}
+.results-who.zin{color:var(–teal)}
+
+.results-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:420px){.results-strip{grid-template-columns:1fr}}
+
+.rbox{border-radius:12px;padding:18px 16px;display:flex;flex-direction:column;gap:4px}
+.rbox.m1{background:var(–gold-light)}
+.rbox.m2{background:var(–teal-light)}
+.rbox.rac{background:var(–red-light)}
+.rbox.zero{background:#d4edd9}
+.rbox-label{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.rbox.m1 .rbox-label{color:var(–gold)}
+.rbox.m2 .rbox-label{color:var(–teal)}
+.rbox.rac .rbox-label{color:var(–red)}
+.rbox.zero .rbox-label{color:var(–green)}
+.rbox-amount{font-family:‘Instrument Serif’,serif;font-size:2rem;line-height:1}
+.rbox.m1 .rbox-amount{color:var(–gold)}
+.rbox.m2 .rbox-amount{color:var(–teal)}
+.rbox.rac .rbox-amount{color:var(–red)}
+.rbox.zero .rbox-amount{color:var(–green)}
+.rbox-sub{font-size:.68rem;color:var(–muted)}
+
+.breakdown{border:1px solid var(–border);border-radius:12px;overflow:hidden}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(–border);font-size:.82rem}
+.brow:last-child{border-bottom:none}
+.brow.total{background:var(–surface2);font-weight:700}
+.brow-key{color:var(–muted);flex:1}
+.brow-key strong{color:var(–ink);font-weight:700}
+.brow-val{font-weight:600;min-width:90px;text-align:right}
+.brow-val.pos{color:var(–green)}
+.brow-val.neg{color:var(–red)}
+.brow-val.zero{color:var(–green)}
+
+.notice-box{margin-top:16px;background:var(–surface2);border-left:3px solid var(–gold);border-radius:0 8px 8px 0;padding:12px 16px;font-size:.75rem;color:var(–muted);line-height:1.6}
+.notice-box strong{color:var(–ink)}
+
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Simulateur personnel · v3.2</div>
+  <h1>Remboursements<br>Santé</h1>
+  <div class="header-chips">
+    <div class="chip gold">Mercer · Base Responsable</div>
+    <div class="chip teal">Benefiz · Offre de base</div>
+    <div class="chip">BR officielles NGAP/CCAM intégrées</div>
+  </div>
+</div>
+
+<div class="person-bar">
+  <button class="person-btn you active" id="pbtn-you" onclick="setPerson('you')">
+    <span class="dot"></span>Younes
+  </button>
+  <button class="person-btn zin" id="pbtn-zin" onclick="setPerson('zin')">
+    <span class="dot"></span>Zineb
+  </button>
+</div>
+
+<div class="person-context">
+  <div class="ctx-badge you" id="ctx-badge">
+    <span>👤</span>
+    <span id="ctx-text">Younes — Mutuelle 1 : <strong>Mercer</strong> · Mutuelle 2 : <strong>Benefiz</strong></span>
+    <span class="ctx-detail" id="ctx-detail">Mercer intervient en premier</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Paramètres -->
+
+  <div class="card">
+    <div class="card-label">Paramètres</div>
+    <div class="pmss-row">
+      <label>PMSS mensuel 2026</label>
+      <div class="pmss-input-wrap">
+        <input type="number" id="pmss" value="3925" min="1" step="1" oninput="onPmssChange()">
+        <span>€/mois</span>
+      </div>
+      <span class="pmss-annual">→ <strong id="pmss-a">47 100 €</strong>/an</span>
+    </div>
+  </div>
+
+  <!-- Saisie -->
+
+  <div class="card">
+    <div class="card-label">Dépense</div>
+    <div class="form-cols">
+
+```
+  <div class="field full">
+    <div class="field-label">Type de soin</div>
+    <select id="care" onchange="onCareChange()">
+      <optgroup label="🏥 Hospitalisation">
+        <option value="hospit_sejour">Frais de séjour</option>
+        <option value="hospit_honoraires">Honoraires chirurgicaux / anesthésie</option>
+        <option value="hospit_chambre">Chambre particulière (par jour)</option>
+        <option value="hospit_fj">Forfait journalier hospitalier</option>
+        <option value="hospit_fpu">Forfait Patient Urgence</option>
+        <option value="hospit_naissance">Naissance / Adoption (forfait)</option>
+      </optgroup>
+      <optgroup label="🩺 Soins courants">
+        <option value="med_g">Médecin généraliste</option>
+        <option value="med_s">Médecin spécialiste</option>
+        <option value="med_radio">Radiologie / Échographie / Scanner / IRM</option>
+        <option value="med_kine">Kinésithérapeute (séance)</option>
+        <option value="med_infirmier">Infirmier (soin courant)</option>
+        <option value="med_psy_seance">Psychologue / Psychiatre (remb. SS)</option>
+        <option value="med_chirurgie">Petite chirurgie / Acte de spécialité</option>
+        <option value="labo">Analyses de laboratoire</option>
+        <option value="transport">Transport médical</option>
+        <option value="medicaments">Médicaments remboursés SS</option>
+        <option value="medicaments_nrss">Médicaments prescrits non remboursés SS</option>
+        <option value="contraception_nrss">Contraception prescrite non remb. SS</option>
+        <option value="appareillage">Appareillage / Prothèses médicales</option>
+      </optgroup>
+      <optgroup label="🦷 Dentaire">
+        <option value="dent_soin">Soins dentaires (détartrage, carie…)</option>
+        <option value="dent_proth_sourire">Prothèse — dents du sourire</option>
+        <option value="dent_proth_fond">Prothèse — dents du fond de bouche</option>
+        <option value="dent_proth_nrss">Prothèse non remb. SS (bridge dent saine…)</option>
+        <option value="dent_implant">Implant dentaire (pose)</option>
+        <option value="dent_implant_fm">Implant dentaire (faux-moignon)</option>
+        <option value="dent_paro_nrss">Parodontologie non remb. SS</option>
+        <option value="dent_ortho">Orthodontie remb. SS (par semestre)</option>
+        <option value="dent_ortho_nrss">Orthodontie non remb. SS</option>
+      </optgroup>
+      <optgroup label="👁 Optique (panier libre adulte)">
+        <option value="opt_monture">Monture</option>
+        <option value="opt_verres_simples">2 verres simples (unifocaux)</option>
+        <option value="opt_verres_complexes">2 verres complexes</option>
+        <option value="opt_verres_tres_complexes">2 verres très complexes / progressifs</option>
+        <option value="opt_lentilles">Lentilles (y compris entretien, par an)</option>
+        <option value="opt_refractif">Chirurgie réfractive (par œil)</option>
+      </optgroup>
+      <optgroup label="👂 Audiologie">
+        <option value="auditif">Aide auditive (panier libre, adulte >20 ans)</option>
+      </optgroup>
+      <optgroup label="💆 Médecines douces">
+        <option value="medoc_douce">Ostéo / Acupuncture / Chiro / Psy libéral… (séance)</option>
+      </optgroup>
+      <optgroup label="🌿 Prévention & bien-être">
+        <option value="prev_psy">Psychologue (prévention, non remb. SS)</option>
+        <option value="prev_sophro">Sophrologie</option>
+        <option value="prev_diete">Diététicien</option>
+        <option value="prev_tabac">Sevrage tabagique</option>
+        <option value="prev_vaccin">Vaccins prescrits non remb. SS</option>
+        <option value="prev_homeo">Homéopathie prescrite non remb. SS</option>
+        <option value="prev_apa">Activité physique adaptée sur prescription (APA)</option>
+        <option value="prev_osteo">Ostéodensitométrie osseuse (sur prescription)</option>
+        <option value="prev_hpv">Test HPV non pris en charge SS</option>
+      </optgroup>
+      <optgroup label="🌊 Cure thermale">
+        <option value="cure_transport">Cure thermale — Transport & hébergement</option>
+        <option value="cure_honoraires">Cure thermale — Honoraires médicaux</option>
+      </optgroup>
+      <optgroup label="👶 Maternité & procréation">
+        <option value="pma_nrss">Assistance médicale à la procréation non remb. SS (par acte)</option>
+      </optgroup>
+      <optgroup label="📱 Téléconsultation">
+        <option value="teleconsult_mg">Téléconsultation médecin généraliste (Livi / AXA)</option>
+        <option value="teleconsult_ms">Téléconsultation médecin spécialiste (Livi)</option>
+        <option value="teleconsult_psy">Téléconsultation psychologue (Livi)</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="field full" id="sector-wrap" style="display:none">
+    <div class="field-label">Secteur du médecin</div>
+    <div class="toggle">
+      <button id="s1btn" class="on" onclick="setSector('S1')">Secteur 1 / OPTAM<br><small style="opacity:.6;font-size:.64rem">Signataire DPTM</small></button>
+      <button id="s2btn" onclick="setSector('S2')">Secteur 2–3 / Hors OPTAM<br><small style="opacity:.6;font-size:.64rem">Non signataire</small></button>
+    </div>
+  </div>
+
+  <div class="field full">
+    <div class="field-label">Base de remboursement (BR) — pré-remplie, modifiable</div>
+    <div class="br-box">
+      <div class="br-row">
+        <span class="br-key">BR officielle</span>
+        <span class="br-val">
+          <div class="br-edit-wrap">
+            <input type="number" class="br-edit-input" id="br-edit" step="0.01" min="0" oninput="onBrEdit()">
+            <span class="br-edit-unit">€</span>
+          </div>
+        </span>
+      </div>
+      <div class="br-row">
+        <span class="br-key">Taux SS (TM)</span>
+        <span class="br-val" id="tm-display">—</span>
+      </div>
+      <div class="br-row">
+        <span class="br-key">Rembt SS estimé</span>
+        <span class="br-val" id="ss-est" style="color:var(--green)">—</span>
+      </div>
+      <div class="br-note" id="br-note">—</div>
+    </div>
+  </div>
+
+  <div class="field full">
+    <div class="field-label">Montant de la dépense réelle (€)</div>
+    <input type="number" class="fi" id="depense" placeholder="ex : 85.00" step="0.01" min="0" oninput="updateSSEst()">
+  </div>
+
+  <div class="field full">
+    <button class="btn you-btn" id="calc-btn" onclick="calculate()">Calculer le remboursement →</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- Résultats -->
+
+  <div class="card" id="results">
+    <div class="card-label">Résultats</div>
+    <div class="results-who you" id="results-who">
+      <div class="who-dot"></div>
+      <span id="results-who-text">Younes</span>
+    </div>
+    <div class="results-strip">
+      <div class="rbox m1">
+        <div class="rbox-label" id="r-m1-label">Mercer</div>
+        <div class="rbox-amount" id="r-m1">—</div>
+        <div class="rbox-sub">Mutuelle 1</div>
+      </div>
+      <div class="rbox m2">
+        <div class="rbox-label" id="r-m2-label">Benefiz</div>
+        <div class="rbox-amount" id="r-m2">—</div>
+        <div class="rbox-sub">Mutuelle 2</div>
+      </div>
+      <div class="rbox rac" id="rac-box">
+        <div class="rbox-label" id="rac-label">Reste à charge</div>
+        <div class="rbox-amount" id="r-rac">—</div>
+        <div class="rbox-sub" id="r-total-sub">—</div>
+      </div>
+    </div>
+    <div class="breakdown">
+      <div class="brow"><span class="brow-key"><strong>Dépense totale</strong></span><span class="brow-val" id="bd-dep">—</span></div>
+      <div class="brow"><span class="brow-key">Sécurité Sociale</span><span class="brow-val pos" id="bd-ss">—</span></div>
+      <div class="brow"><span class="brow-key" id="bd-m1-key">Mutuelle 1</span><span class="brow-val pos" id="bd-m1">—</span></div>
+      <div class="brow"><span class="brow-key" id="bd-m2-key">Mutuelle 2</span><span class="brow-val pos" id="bd-m2">—</span></div>
+      <div class="brow total"><span class="brow-key"><strong>Reste à charge</strong></span><span class="brow-val" id="bd-rac">—</span></div>
+    </div>
+    <div class="notice-box" id="notice-box"></div>
+  </div>
+
+</div>
+
+<script>
+let sector = 'S1', brOverride = null, person = 'you';
+
+const PERSONS = {
+  you: { name:'Younes', m1:'mercer',  m2:'benefiz', btnClass:'you-btn' },
+  zin: { name:'Zineb',  m1:'benefiz', m2:'mercer',  btnClass:'zin-btn' },
+};
+
+// ── BR officielles NGAP/CCAM 2026 ─────────────────────────────────────────
+const BRD = {
+  // Hospitalisation
+  hospit_sejour:             {br:null,  tm:.80, note:'Variable selon GHS hospitalier. Mercer : 400% BR. Benefiz : 200% BRSS.'},
+  hospit_honoraires:         {br:null,  tm:.80, note:'Variable selon acte CCAM. S1 — Mercer : TM+425% BR, Benefiz : 500% BRSS. Hors OPTAM — Mercer : TM+100% BR, Benefiz : 200% BRSS.'},
+  hospit_chambre:            {br:0,     tm:0,   note:'Non remb. SS. Mercer : 5% PMSS mensuel/j. Benefiz : 130 €/j. Cumulables.'},
+  hospit_fj:                 {br:20,    tm:0,   note:'Forfait journalier 2026 = 20 €/j, non remb. SS. Mercer : 100%. Benefiz : rembt intégral (coordonné).'},
+  hospit_fpu:                {br:24,    tm:0,   note:'Forfait Patient Urgence 2026 = 24 €, non remb. SS. Mercer : 100%.'},
+  hospit_naissance:          {br:0,     tm:0,   note:'Mercer : 30% PMSS mensuel (doublé si naissance multiple). Benefiz : forfait 300 €.'},
+  // Soins courants
+  med_g:                     {br:26.50, tm:.70, note:'Consultation généraliste — tarif conventionnel fixe 2026.'},
+  med_s:                     {br:31.50, tm:.70, note:'Spécialiste accès direct (C2). Accès secondaire : 30 €. Modifier si besoin.'},
+  med_radio:                 {br:null,  tm:.70, note:'Radio simple ≈ 23 €, écho ≈ 28 €, scanner ≈ 25 €, IRM ≈ 69 €.'},
+  med_kine:                  {br:16.13, tm:.60, note:'Séance kiné AMK4 — tarif NGAP officiel 2026.'},
+  med_infirmier:             {br:4.05,  tm:.60, note:'AMI2 soin courant. Variable selon acte.'},
+  med_psy_seance:            {br:46.70, tm:.70, note:'Consultation psy remboursée SS depuis 2022. BR fixe.'},
+  med_chirurgie:             {br:null,  tm:.70, note:'Variable selon acte CCAM. Saisir la BR de votre feuille de soins.'},
+  labo:                      {br:null,  tm:.60, note:'Variable selon analyse.'},
+  transport:                 {br:null,  tm:.65, note:'Variable. Saisir la BR indiquée par la SS.'},
+  medicaments:               {br:null,  tm:.30, note:'Taux variable : 15% (vignette bleue), 30%, 65%, 100%.'},
+  medicaments_nrss:          {br:0,     tm:0,   note:'Non remb. SS. Mercer : 2% PMSS mensuel ≈ 78,50 €/an. Benefiz : 150 €/an. Cumulables.'},
+  contraception_nrss:        {br:0,     tm:0,   note:'Non remb. SS. Mercer : 1% PMSS mensuel ≈ 39,25 €/an. Pas de prise en charge spécifique Benefiz (inclus dans enveloppe médicaments nrss).'},
+  appareillage:              {br:null,  tm:.60, note:'Variable selon code LPP. Mercer : 440% BR. Benefiz : 500% BRSS.'},
+  // Dentaire
+  dent_soin:                 {br:null,  tm:.70, note:'Détartrage ≈ 28,92 €, carie 1 face ≈ 16,56 €, 2 faces ≈ 22,08 €.'},
+  dent_proth_sourire:        {br:null,  tm:.70, note:'Ex : couronne céramique antérieure — BR panier maîtrisé ≈ 107,50 €.'},
+  dent_proth_fond:           {br:null,  tm:.70, note:'Ex : couronne postérieure — BR panier maîtrisé ≈ 107,50 €.'},
+  dent_proth_nrss:           {br:0,     tm:0,   note:'Non remb. SS. Mercer : 376,25 €/acte (max 3/an). Benefiz : 300 €/an. Cumulables.'},
+  dent_implant:              {br:0,     tm:0,   note:'Non remb. SS. Mercer : 19,25% PMSS mensuel ≈ 755 €/implant (max 3/an). Benefiz : 850 €/an global implantologie.'},
+  dent_implant_fm:           {br:0,     tm:0,   note:'Non remb. SS. Mercer : 5,75% PMSS mensuel ≈ 226 €. Benefiz : inclus dans plafond 850 €/an.'},
+  dent_paro_nrss:            {br:0,     tm:0,   note:'Non remb. SS. Mercer : 98 €/an. Benefiz : 325 €/an. Cumulables.'},
+  dent_ortho:                {br:193.50,tm:.70, note:'BR semestre orthodontie ≈ 193,50 €. Max 4 semestres.'},
+  dent_ortho_nrss:           {br:0,     tm:0,   note:'Non remb. SS. Mercer : 400% BRR/semestre (max 4 sem). Benefiz : 700 €/an.'},
+  // Optique
+  opt_monture:               {br:0,     tm:0,   note:'Panier libre. Mercer : 100 €. Benefiz : 100 €. Renouvellement tous les 2 ans.'},
+  opt_verres_simples:        {br:0,     tm:0,   note:'Panier libre. Mercer : 250 € (2 verres). Benefiz : jusqu\'à 320 € (2×160 €).'},
+  opt_verres_complexes:      {br:0,     tm:0,   note:'Panier libre. Mercer : 440 €. Benefiz : jusqu\'à 600 € (2×300 €).'},
+  opt_verres_tres_complexes: {br:0,     tm:0,   note:'Panier libre. Mercer : 600 €. Benefiz : jusqu\'à 700 € (2×350 €).'},
+  opt_lentilles:             {br:0,     tm:0,   note:'Forfaits annuels. Mercer : 350 €/an. Benefiz : 350 €/an. Cumulables.'},
+  opt_refractif:             {br:0,     tm:0,   note:'Par œil/an. Mercer : 750 €. Benefiz : 900 €. Cumulables → jusqu\'à 1 650 €.'},
+  // Audiologie
+  auditif:                   {br:null,  tm:0,   note:'Hors 100% santé. Mercer : 1 700 € − RSS/oreille (1 appareil/oreille tous les 4 ans). Benefiz : forfait 800 €/oreille.'},
+  // Médecines douces
+  medoc_douce:               {br:0,     tm:0,   note:'Par séance (max 5/an). Mercer : 50 €. Benefiz : 100 €. Praticien avec n° ADELI/FINESS requis (Mercer).'},
+  // Prévention
+  prev_psy:                  {br:0,     tm:0,   note:'Mercer : 1,40% PMSS/séance ≈ 54,95 € (max 4 séances/an). Benefiz : 50% dans forfait prévention 30 €/an.'},
+  prev_sophro:               {br:0,     tm:0,   note:'Mercer : 0,70% PMSS/séance ≈ 27,48 € (max 4 séances/an). Benefiz : 50% dans forfait prévention 30 €/an.'},
+  prev_diete:                {br:0,     tm:0,   note:'Mercer : 2% PMSS/séance ≈ 78,50 € (max 3 séances/an). Benefiz : 50% dans forfait prévention 30 €/an.'},
+  prev_tabac:                {br:0,     tm:0,   note:'Mercer : 100 €/an. Benefiz : 50% dans forfait prévention 30 €/an.'},
+  prev_vaccin:               {br:0,     tm:0,   note:'Mercer : 6% PMSS mensuel ≈ 235 €/an. Benefiz : 50% dans forfait prévention 30 €/an.'},
+  prev_homeo:                {br:0,     tm:0,   note:'Mercer : forfait 60 €/an/bénéficiaire. Benefiz : non pris en charge spécifiquement.'},
+  prev_apa:                  {br:0,     tm:0,   note:'Activité physique adaptée sur prescription médicale (affection longue durée). Mercer : 200 €/an. Benefiz : non listé.'},
+  prev_osteo:                {br:0,     tm:0,   note:'Ostéodensitométrie sur prescription. Mercer : 100 €/an. Benefiz : inclus dans forfait prévention 30 €/an (50%).'},
+  prev_hpv:                  {br:null,  tm:0,   note:'Test HPV non pris en charge SS. Mercer : 100% BR − MR, tous les 3 ans. Bénéficiaire. Saisir la BR du test.'},
+  // Cure thermale
+  cure_transport:            {br:0,     tm:0,   note:'Cure thermale acceptée SS. Mercer : 20% PMSS mensuel ≈ 785 €. Benefiz : non pris en charge spécifiquement.'},
+  cure_honoraires:           {br:null,  tm:.70, note:'Honoraires cure thermale. Remboursés comme soins courants (voir médecin généraliste/spécialiste selon acte).'},
+  // Procréation
+  pma_nrss:                  {br:0,     tm:0,   note:'PMA non prise en charge SS. Mercer : 300 €/acte (max 2 actes). Benefiz : non listé.'},
+  // Téléconsultation
+  teleconsult_mg:            {br:26.50, tm:.70, note:'Téléconsultation MG via Livi (Benefiz) ou AXA (Mercer). Remboursement intégral par les deux mutuelles.'},
+  teleconsult_ms:            {br:31.50, tm:.70, note:'Téléconsultation spécialiste via Livi. Remboursement intégral Benefiz. Mercer : comme soins courants.'},
+  teleconsult_psy:           {br:46.70, tm:.70, note:'Téléconsultation psychologue via Livi. Remboursement intégral Benefiz.'},
+};
+
+const SECTOR_TYPES = new Set(['hospit_honoraires','med_g','med_s','med_radio','med_kine','med_infirmier','med_psy_seance','med_chirurgie','labo','cure_honoraires']);
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+const getPMSS = () => parseFloat(document.getElementById('pmss').value) || 3925;
+const fmt = n => Math.max(0,n).toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:2});
+const cl = (v,a,b) => Math.max(a,Math.min(b,v));
+const getEffectiveBR = () => brOverride !== null ? brOverride : (BRD[document.getElementById('care').value]?.br ?? null);
+
+// ── Person ─────────────────────────────────────────────────────────────────
+function setPerson(p) {
+  person = p;
+  document.getElementById('pbtn-you').classList.toggle('active', p==='you');
+  document.getElementById('pbtn-zin').classList.toggle('active', p==='zin');
+  const badge = document.getElementById('ctx-badge');
+  badge.className = 'ctx-badge ' + p;
+  if (p==='you') {
+    document.getElementById('ctx-text').innerHTML = 'Younes — Mutuelle 1 : <strong>Mercer</strong> · Mutuelle 2 : <strong>Benefiz</strong>';
+    document.getElementById('ctx-detail').textContent = 'Mercer intervient en premier';
+  } else {
+    document.getElementById('ctx-text').innerHTML = 'Zineb — Mutuelle 1 : <strong>Benefiz</strong> · Mutuelle 2 : <strong>Mercer</strong>';
+    document.getElementById('ctx-detail').textContent = 'Benefiz intervient en premier';
+  }
+  document.getElementById('calc-btn').className = 'btn ' + PERSONS[p].btnClass;
+  document.getElementById('results').classList.remove('show');
+}
+
+function onPmssChange() {
+  document.getElementById('pmss-a').textContent = (getPMSS()*12).toLocaleString('fr-FR') + ' €';
+  updateSSEst();
+}
+
+function onCareChange() {
+  brOverride = null;
+  const t = document.getElementById('care').value;
+  const d = BRD[t] || {};
+  document.getElementById('sector-wrap').style.display = SECTOR_TYPES.has(t) ? 'block' : 'none';
+  const brEl = document.getElementById('br-edit');
+  if (d.br != null && d.br > 0)   { brEl.value = d.br; brEl.placeholder = d.br; }
+  else if (d.br === 0)             { brEl.value = ''; brEl.placeholder = '0 (non remb. SS)'; }
+  else                             { brEl.value = ''; brEl.placeholder = 'à saisir'; }
+  document.getElementById('tm-display').textContent = d.tm ? (d.tm*100).toFixed(0)+'%' : '0%';
+  document.getElementById('br-note').textContent = d.note || '';
+  updateSSEst();
+}
+
+function onBrEdit() {
+  const v = parseFloat(document.getElementById('br-edit').value);
+  brOverride = isNaN(v) ? null : v;
+  updateSSEst();
+}
+
+function updateSSEst() {
+  const t = document.getElementById('care').value;
+  const d = BRD[t] || {};
+  const br = getEffectiveBR() ?? 0;
+  const dep = parseFloat(document.getElementById('depense').value) || 0;
+  const ss = Math.min(br * (d.tm||0), dep);
+  document.getElementById('ss-est').textContent = ss > 0 ? '≈ ' + fmt(ss) : '— (non remb. SS)';
+}
+
+function setSector(s) {
+  sector = s;
+  document.getElementById('s1btn').classList.toggle('on', s==='S1');
+  document.getElementById('s2btn').classList.toggle('on', s==='S2');
+}
+
+// ── Mercer calc ────────────────────────────────────────────────────────────
+function calcMercer(t, br, ss, dep, P) {
+  const lft = Math.max(0, dep - ss);
+  let m = 0, n = [];
+  switch(t) {
+    case 'hospit_sejour':         m = cl(br*4.00-ss,0,lft); n.push('Mercer : 400% BR.'); break;
+    case 'hospit_honoraires':
+      if(sector==='S1'){m=cl(br*4.25,0,lft);n.push('OPTAM — Mercer : TM+425% BR.');}
+      else             {m=cl(br*2.00-ss,0,lft);n.push('Hors OPTAM — Mercer : TM+100% BR.');}
+      break;
+    case 'hospit_chambre':        m=Math.min(dep,P*0.05); n.push(`Mercer : ${fmt(P*0.05)}/j.`); break;
+    case 'hospit_fj':             m=dep; n.push('Mercer : 100% FR.'); break;
+    case 'hospit_fpu':            m=dep; n.push('Mercer : 100% FR.'); break;
+    case 'hospit_naissance':      m=P*0.30; n.push(`Mercer : 30% PMSS = ${fmt(P*0.30)} (doublé si multiple).`); break;
+    case 'med_g':
+      if(sector==='S1'){m=cl(br*1.20,0,lft);n.push('S1 — Mercer : TM+120% BR.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Hors OPTAM — Mercer : TM+100% BR.');}
+      break;
+    case 'med_s':
+      if(sector==='S1'){m=cl(br*2.50,0,lft);n.push('S1 — Mercer : TM+250% BR.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Hors OPTAM — Mercer : TM+100% BR.');}
+      break;
+    case 'med_radio':
+      if(sector==='S1'){m=cl(br*2.50,0,lft);n.push('S1 — Mercer : TM+250% BR.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Hors OPTAM — Mercer : TM+100% BR.');}
+      break;
+    case 'med_kine':              m=cl(br*0.90,0,lft); n.push('Mercer : 90% BR.'); break;
+    case 'med_infirmier':         m=cl(br*0.90,0,lft); n.push('Mercer : 90% BR.'); break;
+    case 'med_psy_seance':        m=cl(br-ss,0,lft); n.push('Mercer : TM.'); break;
+    case 'med_chirurgie':
+      if(sector==='S1'){m=cl(br*3.70,0,lft);n.push('S1 — Mercer : TM+370% BR.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Hors OPTAM — Mercer : TM+100% BR.');}
+      break;
+    case 'labo':                  m=cl(br-ss,0,lft); n.push('Mercer : TM.'); break;
+    case 'transport':             m=cl(br-ss,0,lft); n.push('Mercer : TM.'); break;
+    case 'medicaments':           m=cl(br-ss,0,lft); n.push('Mercer : TM.'); break;
+    case 'medicaments_nrss':      m=Math.min(dep,P*0.02); n.push(`Mercer : ${fmt(P*0.02)}/an.`); break;
+    case 'contraception_nrss':    m=Math.min(dep,P*0.01); n.push(`Mercer : ${fmt(P*0.01)}/an.`); break;
+    case 'appareillage':          m=cl(br*4.40,0,lft); n.push('Mercer : 440% BR.'); break;
+    case 'dent_soin':             m=cl(br*2.00-ss,0,lft); n.push('Mercer : 200% BR.'); break;
+    case 'dent_proth_sourire':    m=cl(br*5.50-ss,0,lft); n.push('Mercer : 550% BR−RSS.'); break;
+    case 'dent_proth_fond':       m=cl(br*5.00-ss,0,lft); n.push('Mercer : 500% BR−RSS.'); break;
+    case 'dent_proth_nrss':       m=Math.min(dep,376.25); n.push('Mercer : 376,25 €/acte (max 3/an).'); break;
+    case 'dent_implant':          m=Math.min(dep,P*0.1925); n.push(`Mercer : ${fmt(P*0.1925)}/implant (max 3/an).`); break;
+    case 'dent_implant_fm':       m=Math.min(dep,P*0.0575); n.push(`Mercer : ${fmt(P*0.0575)}.`); break;
+    case 'dent_paro_nrss':        m=Math.min(dep,98); n.push('Mercer : 98 €/an.'); break;
+    case 'dent_ortho':            m=cl(br*4.00-ss,0,lft); n.push('Mercer : 400% BR.'); break;
+    case 'dent_ortho_nrss':       m=Math.min(dep,dep); n.push('Mercer : 400% BRR/semestre (max 4 sem).'); break;
+    case 'opt_monture':           m=Math.min(dep,100); n.push('Mercer : 100 €.'); break;
+    case 'opt_verres_simples':    m=Math.min(dep,250); n.push('Mercer : 250 €.'); break;
+    case 'opt_verres_complexes':  m=Math.min(dep,440); n.push('Mercer : 440 €.'); break;
+    case 'opt_verres_tres_complexes': m=Math.min(dep,600); n.push('Mercer : 600 €.'); break;
+    case 'opt_lentilles':         m=Math.min(dep,350); n.push('Mercer : 350 €/an.'); break;
+    case 'opt_refractif':         m=Math.min(dep,750); n.push('Mercer : 750 €/œil.'); break;
+    case 'auditif':               m=Math.min(Math.max(dep-ss,0),Math.max(1700-ss,0)); n.push('Mercer : 1 700 €−RSS/oreille.'); break;
+    case 'medoc_douce':           m=Math.min(dep,50); n.push('Mercer : 50 €/séance (max 5/an).'); break;
+    case 'prev_psy':              m=Math.min(dep,P*0.014); n.push(`Mercer : ${fmt(P*0.014)}/séance (max 4/an).`); break;
+    case 'prev_sophro':           m=Math.min(dep,P*0.007); n.push(`Mercer : ${fmt(P*0.007)}/séance (max 4/an).`); break;
+    case 'prev_diete':            m=Math.min(dep,P*0.02); n.push(`Mercer : ${fmt(P*0.02)}/séance (max 3/an).`); break;
+    case 'prev_tabac':            m=Math.min(dep,100); n.push('Mercer : 100 €/an.'); break;
+    case 'prev_vaccin':           m=Math.min(dep,P*0.06); n.push(`Mercer : ${fmt(P*0.06)}/an.`); break;
+    case 'prev_homeo':            m=Math.min(dep,60); n.push('Mercer : 60 €/an.'); break;
+    case 'prev_apa':              m=Math.min(dep,200); n.push('Mercer : 200 €/an (APA sur prescription).'); break;
+    case 'prev_osteo':            m=Math.min(dep,100); n.push('Mercer : 100 €/an.'); break;
+    case 'prev_hpv':              m=Math.min(br,dep); n.push('Mercer : 100% BR−MR (tous les 3 ans).'); break;
+    case 'cure_transport':        m=Math.min(dep,P*0.20); n.push(`Mercer : 20% PMSS = ${fmt(P*0.20)}.`); break;
+    case 'cure_honoraires':
+      if(sector==='S1'){m=cl(br*2.50,0,lft);n.push('Cure thermale honoraires — Mercer comme soins courants S1.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Cure thermale honoraires — Mercer hors OPTAM.');}
+      break;
+    case 'pma_nrss':              m=Math.min(dep,300); n.push('Mercer : 300 €/acte (max 2 actes/an).'); break;
+    case 'teleconsult_mg':        m=Math.min(dep,dep); n.push('Mercer (AXA téléconsult) : rembt intégral.'); break;
+    case 'teleconsult_ms':
+      if(sector==='S1'){m=cl(br*2.50,0,lft);n.push('Mercer : TM+250% BR.');}
+      else             {m=cl(br*1.00,0,lft);n.push('Mercer : TM+100% BR.');}
+      break;
+    case 'teleconsult_psy':       m=cl(br-ss,0,lft); n.push('Mercer : TM.'); break;
+  }
+  return {amount:Math.max(0,m), notices:n};
+}
+
+// ── Benefiz calc ───────────────────────────────────────────────────────────
+function calcBenefiz(t, br, ss, m_prev, dep) {
+  const lft2 = Math.max(0, dep - ss - m_prev);
+  let b = 0, n = [];
+  switch(t) {
+    case 'hospit_sejour':         b=cl(br*2.00-ss-m_prev,0,lft2); n.push('Benefiz : 200% BRSS.'); break;
+    case 'hospit_honoraires':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'hospit_chambre':        b=Math.min(lft2,130); n.push('Benefiz : 130 €/j.'); break;
+    case 'hospit_fj':             b=0; n.push('Benefiz : rembt intégral coordonné (Mercer couvre déjà).'); break;
+    case 'hospit_fpu':            b=0; break;
+    case 'hospit_naissance':      b=300; n.push('Benefiz : forfait 300 €/naissance.'); break;
+    case 'med_g':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'med_s':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'med_radio':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'med_kine':              b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'med_infirmier':         b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'med_psy_seance':        b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'med_chirurgie':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'labo':                  b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'transport':             b=cl(br-ss-m_prev,0,lft2); n.push('Benefiz : 100% BRSS.'); break;
+    case 'medicaments':           b=cl(br-ss-m_prev,0,lft2); n.push('Benefiz : 100% BRSS.'); break;
+    case 'medicaments_nrss':      b=Math.min(dep,150); n.push('Benefiz : 150 €/an.'); break;
+    case 'contraception_nrss':    b=0; n.push('Benefiz : inclus dans enveloppe médicaments non remb. (150 €/an global).'); break;
+    case 'appareillage':          b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'dent_soin':             b=cl(br*3.00-ss-m_prev,0,lft2); n.push('Benefiz : 300% BRSS.'); break;
+    case 'dent_proth_sourire':    b=cl(br*5.00-ss-m_prev,0,lft2); n.push('Benefiz : 500% BRSS.'); break;
+    case 'dent_proth_fond':       b=cl(br*4.50-ss-m_prev,0,lft2); n.push('Benefiz : 450% BRSS.'); break;
+    case 'dent_proth_nrss':       b=Math.min(dep,300); n.push('Benefiz : 300 €/an.'); break;
+    case 'dent_implant':          b=Math.min(dep,850); n.push('Benefiz : 850 €/an global implantologie.'); break;
+    case 'dent_implant_fm':       b=0; n.push('Benefiz : inclus dans plafond 850 €/an.'); break;
+    case 'dent_paro_nrss':        b=Math.min(dep,325); n.push('Benefiz : 325 €/an.'); break;
+    case 'dent_ortho':            b=cl(br*4.50-ss-m_prev,0,lft2); n.push('Benefiz : 450% BRSS.'); break;
+    case 'dent_ortho_nrss':       b=Math.min(dep,700); n.push('Benefiz : 700 €/an.'); break;
+    case 'opt_monture':           b=Math.min(lft2,100); n.push('Benefiz : 100 €.'); break;
+    case 'opt_verres_simples':    b=Math.min(lft2,320); n.push('Benefiz : jusqu\'à 320 € (2×160 €).'); break;
+    case 'opt_verres_complexes':  b=Math.min(lft2,600); n.push('Benefiz : jusqu\'à 600 € (2×300 €).'); break;
+    case 'opt_verres_tres_complexes': b=Math.min(lft2,700); n.push('Benefiz : jusqu\'à 700 € (2×350 €).'); break;
+    case 'opt_lentilles':         b=Math.min(dep,350); n.push('Benefiz : 350 €/an.'); break;
+    case 'opt_refractif':         b=Math.min(dep,900); n.push('Benefiz : 900 €/œil.'); break;
+    case 'auditif':               b=Math.min(lft2,800); n.push('Benefiz : 800 €/oreille.'); break;
+    case 'medoc_douce':           b=Math.min(dep,100); n.push('Benefiz : 100 €/séance (max 5/an).'); break;
+    case 'prev_psy':              b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_sophro':           b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_diete':            b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_tabac':            b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_vaccin':           b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_homeo':            b=0; n.push('Benefiz : non pris en charge spécifiquement.'); break;
+    case 'prev_apa':              b=0; n.push('Benefiz : non listé au contrat.'); break;
+    case 'prev_osteo':            b=Math.min(dep*.50,15); n.push('Benefiz : 50% dans forfait prévention 30 €/an.'); break;
+    case 'prev_hpv':              b=0; n.push('Benefiz : non listé spécifiquement.'); break;
+    case 'cure_transport':        b=0; n.push('Benefiz : non pris en charge spécifiquement.'); break;
+    case 'cure_honoraires':
+      if(sector==='S1'){b=cl(br*5.00-ss-m_prev,0,lft2);n.push('Benefiz : 500% BRSS.');}
+      else             {b=cl(br*2.00-ss-m_prev,0,lft2);n.push('Benefiz : 200% BRSS.');}
+      break;
+    case 'pma_nrss':              b=0; n.push('Benefiz : non listé au contrat.'); break;
+    case 'teleconsult_mg':        b=Math.min(lft2,lft2); n.push('Benefiz (Livi) : rembt intégral.'); break;
+    case 'teleconsult_ms':        b=Math.min(lft2,lft2); n.push('Benefiz (Livi) : rembt intégral.'); break;
+    case 'teleconsult_psy':       b=Math.min(lft2,lft2); n.push('Benefiz (Livi) : rembt intégral.'); break;
+  }
+  return {amount:Math.max(0,b), notices:n};
+}
+
+// ── Main calculate ─────────────────────────────────────────────────────────
+function calculate() {
+  const t = document.getElementById('care').value;
+  const dep = parseFloat(document.getElementById('depense').value) || 0;
+  if (dep <= 0) { alert('Saisir un montant de dépense.'); return; }
+
+  const P = getPMSS();
+  const d = BRD[t] || {};
+  const br = getEffectiveBR() ?? dep;
+  let ss = Math.min(br * (d.tm||0), dep);
+
+  const cfg = PERSONS[person];
+  let m1_amount, m2_amount, m1_name, m2_name, allNotices;
+
+  if (cfg.m1 === 'mercer') {
+    // Younes : Mercer first
+    const mr = calcMercer(t, br, ss, dep, P);
+    m1_amount = mr.amount;
+    m1_name = 'Mercer';
+    const bz = calcBenefiz(t, br, ss, m1_amount, dep);
+    m2_amount = bz.amount;
+    m2_name = 'Benefiz';
+    allNotices = [...mr.notices, ...bz.notices];
+  } else {
+    // Zineb : Benefiz first
+    const bz = calcBenefiz(t, br, ss, 0, dep);
+    m1_amount = bz.amount;
+    m1_name = 'Benefiz';
+    const mr = calcMercer(t, br, ss + m1_amount, dep, P);
+    m2_amount = mr.amount;
+    m2_name = 'Mercer';
+    allNotices = [...bz.notices, ...mr.notices];
+  }
+
+  // Clamp to real expenses
+  ss        = Math.max(0, Math.min(ss, dep));
+  m1_amount = Math.max(0, Math.min(m1_amount, dep - ss));
+  m2_amount = Math.max(0, Math.min(m2_amount, dep - ss - m1_amount));
+  const total = ss + m1_amount + m2_amount;
+  const rac   = Math.max(0, dep - total);
+
+  // UI
+  document.getElementById('r-m1-label').textContent = m1_name;
+  document.getElementById('r-m2-label').textContent = m2_name;
+  document.getElementById('bd-m1-key').innerHTML = `${m1_name} <span style="font-size:.7rem;opacity:.6">(Mutuelle 1)</span>`;
+  document.getElementById('bd-m2-key').innerHTML = `${m2_name} <span style="font-size:.7rem;opacity:.6">(Mutuelle 2)</span>`;
+
+  const whoEl = document.getElementById('results-who');
+  whoEl.className = 'results-who ' + person;
+  document.getElementById('results-who-text').textContent =
+    `${cfg.name} · ${m1_name} en premier, ${m2_name} en second`;
+
+  document.getElementById('r-m1').textContent      = fmt(m1_amount);
+  document.getElementById('r-m2').textContent      = fmt(m2_amount);
+  document.getElementById('r-rac').textContent     = fmt(rac);
+  document.getElementById('r-total-sub').textContent = 'Couvert : ' + fmt(total);
+
+  const racBox = document.getElementById('rac-box');
+  racBox.className = 'rbox ' + (rac < 0.01 ? 'zero' : 'rac');
+  document.getElementById('rac-label').textContent = rac < 0.01 ? '✓ Aucun reste' : 'Reste à charge';
+
+  document.getElementById('bd-dep').textContent = fmt(dep);
+  document.getElementById('bd-ss').textContent  = '+ ' + fmt(ss);
+  document.getElementById('bd-m1').textContent  = '+ ' + fmt(m1_amount);
+  document.getElementById('bd-m2').textContent  = '+ ' + fmt(m2_amount);
+
+  const racEl = document.getElementById('bd-rac');
+  racEl.textContent = fmt(rac);
+  racEl.className = 'brow-val ' + (rac < 0.01 ? 'zero' : 'neg');
+
+  document.getElementById('notice-box').innerHTML = allNotices.filter(Boolean).length
+    ? '<strong>Notes :</strong> ' + allNotices.filter(Boolean).join(' ')
+    : '';
+
+  const res = document.getElementById('results');
+  res.className = 'card show';
+  setTimeout(() => res.scrollIntoView({behavior:'smooth',block:'nearest'}), 60);
+}
+
+// Init
+onPmssChange();
+onCareChange();
+</script>
+
+</body>
+</html>
