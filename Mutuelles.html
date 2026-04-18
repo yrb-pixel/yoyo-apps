@@ -1,339 +1,186 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Remboursements Mutuelles</title>
-    <style>
-        /* ── Variables ── */
-        :root {
-            --gold: #B8750A;
-            --gold-bg: #FEF3DC;
-            --teal: #1A6B5E;
-            --teal-bg: #DCF0EC;
-            --red: #B83A2A;
-            --red-bg: #FDEAE7;
-            --green: #1A6B3A;
-            --green-bg: #DCF0E5;
-            --ink: #111111;
-            --sub: #555555;
-            --border: #DDDDDD;
-            --bg: #F4F4F4;
-            --white: #FFFFFF;
-            --radius: 12px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Remboursements Mutuelles</title>
 
-        /* ── Reset & Base ── */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { 
-            background: var(--bg); 
-            color: var(--ink); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            font-size: 15px; 
-            line-height: 1.5;
-            -webkit-text-size-adjust: 100%;
-        }
+<style>
+:root {
+  --gold: #B8750A;
+  --gold-bg: #FEF3DC;
+  --teal: #1A6B5E;
+  --teal-bg: #DCF0EC;
+  --red: #B83A2A;
+  --red-bg: #FDEAE7;
+  --green: #1A6B3A;
+  --green-bg: #DCF0E5;
+  --ink: #111111;
+  --sub: #555555;
+  --border: #DDDDDD;
+  --bg: #F4F4F4;
+  --white: #FFFFFF;
+  --radius: 12px;
+}
 
-        /* ── Header ── */
-        .hdr {
-            background: var(--white);
-            border-bottom: 4px solid var(--gold);
-            padding: 20px 16px 16px;
-        }
-        .hdr-eye { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--sub); margin-bottom: 6px; }
-        .hdr-title { font-size: 26px; font-weight: 700; color: var(--ink); letter-spacing: -.5px; }
-        .hdr-title span { color: var(--gold); }
-        .hdr-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-        .hdr-chip {
-            font-size: 11px; font-weight: 600; padding: 4px 10px;
-            border-radius: 20px; border: 1.5px solid;
-        }
-        .hdr-chip.gold { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
-        .hdr-chip.teal { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
-        .hdr-chip.grey { border-color: var(--border); color: var(--sub); background: var(--white); }
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* ── Tabs ── */
-        .tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); }
-        .tab {
-            flex: 1; padding: 12px 8px; border: none; background: transparent;
-            font-family: inherit; font-size: 14px; font-weight: 600;
-            color: var(--sub); cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 7px;
-            border-bottom: 3px solid transparent; margin-bottom: -1px;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .tab .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .tab.you .dot { background: var(--gold); }
-        .tab.zin .dot { background: var(--teal); }
-        .tab.you.active { color: var(--gold); border-bottom-color: var(--gold); }
-        .tab.zin.active { color: var(--teal); border-bottom-color: var(--teal); }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
 
-        /* ── Context ── */
-        .ctx { padding: 10px 16px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .ctx.you { background: var(--gold-bg); color: var(--gold); }
-        .ctx.zin { background: var(--teal-bg); color: var(--teal); }
-        .ctx-detail { margin-left: auto; font-weight: 400; font-size: 12px; opacity: .8; }
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
-        /* ── Main ── */
-        .main { padding: 12px 12px 60px; display: flex; flex-direction: column; gap: 10px; max-width: 600px; margin: 0 auto; }
+button, select, input {
+  -webkit-tap-highlight-color: transparent;
+}
 
-        /* ── Card ── */
-        .card { background: var(--white); border-radius: var(--radius); padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-        .card-title { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); font-weight: 700; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+/* Header */
+.hdr {
+  background: var(--white);
+  border-bottom: 4px solid var(--gold);
+  padding: 20px 16px 16px;
+}
+.hdr-eye {
+  font-size: 10px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--sub);
+  margin-bottom: 6px;
+}
+.hdr-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.hdr-title span { color: var(--gold); }
+.hdr-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.hdr-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1.5px solid;
+}
+.hdr-chip.gold { border-color: var(--gold); color: var(--gold); background: var(--gold-bg); }
+.hdr-chip.teal { border-color: var(--teal); color: var(--teal); background: var(--teal-bg); }
+.hdr-chip.grey { border-color: var(--border); color: var(--sub); background: var(--white); }
 
-        /* ── Fields & Inputs ── */
-        .field { display: flex; flex-direction: column; gap: 5px; }
-        .flabel { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); font-weight: 600; }
-        
-        .pmss-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .pmss-pill { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 10px; }
-        .pmss-pill input { width: 72px; border: none; background: transparent; font-size: 16px; font-weight: 700; color: var(--gold); text-align: right; outline: none; }
+/* Tabs */
+.tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--border); }
+.tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sub);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-        .sel-wrap { position: relative; }
-        .sel-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--sub); pointer-events: none; }
-        
-        select, input.num, .br-input {
-            width: 100%; padding: 11px 12px;
-            background: var(--bg); border: 1.5px solid var(--border);
-            border-radius: 10px; font-family: inherit; font-size: 16px; /* 16px empêche le zoom auto sur iPhone */
-            color: var(--ink); appearance: none; -webkit-appearance: none; outline: none;
-        }
-        select:focus, input:focus { border-color: var(--gold); }
+/* Main */
+.main {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
 
-        /* ── Specific Styles ── */
-        .seg { display: flex; background: var(--bg); border-radius: 10px; padding: 3px; gap: 3px; }
-        .seg-btn { flex: 1; padding: 8px 6px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--sub); cursor: pointer; }
-        .seg-btn.on { background: var(--white); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+/* Card */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+}
 
-        .br-box { background: var(--bg); border-radius: 10px; border: 1.5px solid var(--border); overflow: hidden; }
-        .br-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .br-input { width: 80px; padding: 4px 8px; border: 1.5px solid var(--gold); background: var(--white); text-align: right; }
-        .br-note { padding: 8px 12px; font-size: 11px; color: var(--sub); background: var(--white); border-top: 1px solid var(--border); }
+/* Inputs */
+input[type="number"], select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-size: 16px;
+  background: var(--bg);
+}
 
-        .cta {
-            width: 100%; padding: 16px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 700; cursor: pointer; color: white;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .cta.you { background: var(--gold); }
-        .cta.zin { background: var(--teal); }
+/* Button */
+.cta {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--gold);
+  color: white;
+  margin-top: 10px;
+  min-height: 48px;
+}
 
-        /* ── Results ── */
-        #results { display: none; margin-top: 10px; }
-        #results.show { display: block; animation: up 0.3s ease-out; }
+/* Results */
+#results { display: none; }
+#results.show { display: block; }
 
-        .res-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-        .rbox { border-radius: 10px; padding: 12px 8px; text-align: center; }
-        .rbox.m1 { background: var(--gold-bg); color: var(--gold); }
-        .rbox.m2 { background: var(--teal-bg); color: var(--teal); }
-        .rbox.rac { background: var(--red-bg); color: var(--red); }
-        .rbox.rac0 { background: var(--green-bg); color: var(--green); }
-        .rbox-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        .rbox-amt { font-size: 18px; font-weight: 800; }
-
-        .bdown { border-radius: 10px; border: 1.5px solid var(--border); overflow: hidden; }
-        .brow { display: flex; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .brow.tot { background: var(--bg); font-weight: 700; }
-        .pos { color: var(--green); }
-        .neg { color: var(--red); }
-
-        @keyframes up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+</style>
 </head>
+
 <body>
 
 <div class="hdr">
-    <div class="hdr-eye">Simulateur personnel · v3.3</div>
-    <div class="hdr-title">Remboursements <span>Santé</span></div>
-    <div class="hdr-chips">
-        <span class="hdr-chip gold">Mercer · Base Responsable</span>
-        <span class="hdr-chip teal">Benefiz · Offre de base</span>
-    </div>
-</div>
-
-<div class="tabs">
-    <button class="tab you active" id="tab-you" onclick="setPerson('you')"><span class="dot"></span> Younes</button>
-    <button class="tab zin" id="tab-zin" onclick="setPerson('zin')"><span class="dot"></span> Zineb</button>
-</div>
-
-<div class="ctx you" id="ctx">
-    <span>👤</span>
-    <span id="ctx-txt">Younes — M1 : <b>Mercer</b> · M2 : <b>Benefiz</b></span>
+  <div class="hdr-eye">Simulateur personnel · v3.3</div>
+  <div class="hdr-title">Remboursements <span>Santé</span></div>
 </div>
 
 <div class="main">
-    <div class="card">
-        <div class="card-title">Paramètres</div>
-        <div class="pmss-row">
-            <span class="flabel">PMSS 2026</span>
-            <div class="pmss-pill">
-                <input type="number" id="pmss" value="3925" oninput="onPmss()">
-                <span>€/m</span>
-            </div>
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-title">Soin & Dépense</div>
-        <div style="display:flex; flex-direction:column; gap:15px;">
-            <div class="field">
-                <div class="flabel">Type de soin</div>
-                <div class="sel-wrap">
-                    <select id="care" onchange="onCare()">
-                        <optgroup label="🩺 Soins courants">
-                            <option value="med_g">Médecin généraliste</option>
-                            <option value="med_s">Médecin spécialiste</option>
-                            <option value="med_radio">Radiologie</option>
-                        </optgroup>
-                        <optgroup label="🦷 Dentaire">
-                            <option value="dent_soin">Soins dentaires</option>
-                            <option value="dent_proth_sourire">Prothèse (sourire)</option>
-                            <option value="dent_implant">Implant dentaire</option>
-                        </optgroup>
-                        <optgroup label="👁 Optique">
-                            <option value="opt_monture">Monture</option>
-                            <option value="opt_verres_complexes">2 verres complexes</option>
-                        </optgroup>
-                        <optgroup label="💆 Autres">
-                            <option value="medoc_douce">Médecines douces</option>
-                        </optgroup>
-                    </select>
-                </div>
-            </div>
+<div class="card">
+  <label>PMSS</label>
+  <input type="number" id="pmss" value="3925">
+</div>
 
-            <div class="field" id="sector-wrap">
-                <div class="flabel">Secteur</div>
-                <div class="seg">
-                    <button class="seg-btn on" id="s1btn" onclick="setSector('S1')">S1 / OPTAM</button>
-                    <button class="seg-btn" id="s2btn" onclick="setSector('S2')">S2 / Hors OPTAM</button>
-                </div>
-            </div>
+<div class="card">
+  <label>Dépense</label>
+  <input type="number" id="depense" placeholder="ex : 85">
+  <button class="cta" onclick="calculate()">Calculer</button>
+</div>
 
-            <div class="field">
-                <div class="flabel">Base de remb. (BR)</div>
-                <div class="br-box">
-                    <div class="br-row">
-                        <span>BR officielle</span>
-                        <input type="number" class="br-input" id="br-edit" step="0.01" oninput="updateSSEst()">
-                    </div>
-                    <div class="br-note" id="br-note">Sélectionnez un soin</div>
-                </div>
-            </div>
+<div class="card" id="results">
+  <h3>Résultat</h3>
+  <p id="output"></p>
+</div>
 
-            <div class="field">
-                <div class="flabel">Dépense réelle (€)</div>
-                <input type="number" class="num" id="depense" placeholder="0.00" step="0.01" inputmode="decimal" oninput="updateSSEst()">
-            </div>
-
-            <button class="cta you" id="cta-btn" onclick="calculate()">Calculer →</button>
-        </div>
-    </div>
-
-    <div class="card" id="results">
-        <div class="res-strip">
-            <div class="rbox m1">
-                <div class="rbox-lbl" id="r-m1-lbl">M1</div>
-                <div class="rbox-amt" id="r-m1">0 €</div>
-            </div>
-            <div class="rbox m2">
-                <div class="rbox-lbl" id="r-m2-lbl">M2</div>
-                <div class="rbox-amt" id="r-m2">0 €</div>
-            </div>
-            <div class="rbox rac" id="rac-box">
-                <div class="rbox-lbl" id="rac-lbl">Reste</div>
-                <div class="rbox-amt" id="r-rac">0 €</div>
-            </div>
-        </div>
-
-        <div class="bdown">
-            <div class="brow"><span>Dépense</span><span id="bd-dep">0 €</span></div>
-            <div class="brow"><span>Sécu. Sociale</span><span class="pos" id="bd-ss">0 €</span></div>
-            <div class="brow"><span id="bd-m1-k">M1</span><span class="pos" id="bd-m1">0 €</span></div>
-            <div class="brow"><span id="bd-m2-k">M2</span><span class="pos" id="bd-m2">0 €</span></div>
-            <div class="brow tot"><span>Reste à charge</span><span id="bd-rac">0 €</span></div>
-        </div>
-    </div>
 </div>
 
 <script>
-    let sector = 'S1', person = 'you';
-    const BRD = {
-        med_g: { br: 26.50, tm: 0.70, note: 'Généraliste S1' },
-        med_s: { br: 31.50, tm: 0.70, note: 'Spécialiste S1' },
-        med_radio: { br: 23.00, tm: 0.70, note: 'Radio base' },
-        dent_soin: { br: 28.92, tm: 0.70, note: 'Détartrage' },
-        dent_proth_sourire: { br: 107.50, tm: 0.70, note: 'Couronne maîtrisée' },
-        dent_implant: { br: 0, tm: 0, note: 'Forfait Mercer/Benefiz' },
-        opt_monture: { br: 0.05, tm: 0.60, note: 'LPP Monture' },
-        opt_verres_complexes: { br: 0.10, tm: 0.60, note: 'LPP Verres' },
-        medoc_douce: { br: 0, tm: 0, note: 'Forfait séance' }
-    };
+function calculate(){
+  const pmss = parseFloat(document.getElementById("pmss").value) || 0;
+  const dep = parseFloat(document.getElementById("depense").value) || 0;
 
-    function setPerson(p) {
-        person = p;
-        document.getElementById('tab-you').classList.toggle('active', p === 'you');
-        document.getElementById('tab-zin').classList.toggle('active', p === 'zin');
-        document.getElementById('ctx').className = 'ctx ' + p;
-        document.getElementById('ctx-txt').innerHTML = p === 'you' ? 'Younes — M1 : <b>Mercer</b> · M2 : <b>Benefiz</b>' : 'Zineb — M1 : <b>Benefiz</b> · M2 : <b>Mercer</b>';
-        document.getElementById('cta-btn').className = 'cta ' + p;
-        document.getElementById('results').classList.remove('show');
-    }
+  const remboursement = Math.min(dep, pmss * 0.1);
 
-    function onCare() {
-        const val = document.getElementById('care').value;
-        const d = BRD[val];
-        document.getElementById('br-edit').value = d.br;
-        document.getElementById('br-note').textContent = d.note;
-        updateSSEst();
-    }
+  document.getElementById("output").innerText =
+    "Remboursement estimé : " + remboursement.toFixed(2) + " €";
 
-    function updateSSEst() {
-        const br = parseFloat(document.getElementById('br-edit').value) || 0;
-        const tm = BRD[document.getElementById('care').value].tm;
-        const dep = parseFloat(document.getElementById('depense').value) || 0;
-        // Estimation simple affichée en temps réel
-    }
-
-    function setSector(s) {
-        sector = s;
-        document.getElementById('s1btn').classList.toggle('on', s === 'S1');
-        document.getElementById('s2btn').classList.toggle('on', s === 'S2');
-    }
-
-    function calculate() {
-        const dep = parseFloat(document.getElementById('depense').value) || 0;
-        const br = parseFloat(document.getElementById('br-edit').value) || 0;
-        const care = document.getElementById('care').value;
-        const tm = BRD[care].tm;
-        
-        let ss = br * tm;
-        let m1 = 0, m2 = 0;
-
-        // Logique simplifiée pour l'exemple
-        if (person === 'you') { // Mercer d'abord
-            m1 = Math.min(dep - ss, br * 2); 
-            m2 = Math.min(dep - ss - m1, 50);
-        } else { // Benefiz d'abord
-            m1 = Math.min(dep - ss, br * 3);
-            m2 = Math.min(dep - ss - m1, 30);
-        }
-
-        const rac = Math.max(0, dep - ss - m1 - m2);
-
-        document.getElementById('bd-dep').textContent = dep.toFixed(2) + ' €';
-        document.getElementById('bd-ss').textContent = '+ ' + ss.toFixed(2) + ' €';
-        document.getElementById('bd-m1').textContent = '+ ' + m1.toFixed(2) + ' €';
-        document.getElementById('bd-m2').textContent = '+ ' + m2.toFixed(2) + ' €';
-        document.getElementById('bd-rac').textContent = rac.toFixed(2) + ' €';
-        
-        document.getElementById('r-m1').textContent = m1.toFixed(2) + ' €';
-        document.getElementById('r-m2').textContent = m2.toFixed(2) + ' €';
-        document.getElementById('r-rac').textContent = rac.toFixed(2) + ' €';
-
-        document.getElementById('results').classList.add('show');
-    }
-
-    window.onload = onCare;
+  document.getElementById("results").classList.add("show");
+}
 </script>
+
 </body>
 </html>
