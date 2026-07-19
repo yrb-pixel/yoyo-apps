@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#14151A">
+<title>Console de lancement — Figurines 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14151A; --panel:#1B1D24; --panel-raised:#20222B; --console:#101115; --line:#2E313B;
+    --paper:#ECEAE3; --mute:#93959F; --mute-dim:#5B5D68;
+    --signal:#FF5A1F; --signal-ink:#1A0D06; --signal-dim:rgba(255,90,31,.14); --signal-soft:rgba(255,90,31,.4);
+    --scan:#56E1CB; --scan-dim:rgba(86,225,203,.14); --scan-text:#C9E8E2;
+    --gold:#E8B84B; --gold-dim:rgba(232,184,75,.14);
+    --radius:10px;
+    --mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink); color:var(--paper); font-family:var(--sans);
+    line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh;
+    background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.045) 1px, transparent 0);
+    background-size:22px 22px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:22px 16px 90px;opacity:0;transition:opacity .35s ease;}
+  body.is-ready .wrap{opacity:1;}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--scan);margin-bottom:10px;}
+  .h1{font-family:var(--mono);font-weight:700;font-size:clamp(24px,6.4vw,34px);margin:0 0 8px;letter-spacing:-.01em;}
+  .sub{color:var(--mute);font-size:14.5px;max-width:54ch;margin:0 0 22px;}
+
+  /* ---- build-plate progress stack (signature element) ---- */
+  .stack{display:flex;gap:4px;align-items:flex-end;height:46px;margin:6px 0 8px;}
+  .stack__cell{flex:1;height:100%;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:3px;position:relative;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+  .stack__cell:hover{border-color:var(--mute-dim);}
+  .stack__cell[data-current="true"]{border-color:var(--signal);box-shadow:0 0 0 1px var(--signal-soft);}
+  .stack__fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#FF7A45,var(--signal));transition:height .5s cubic-bezier(.4,0,.2,1);}
+  .stack__ticks{display:flex;gap:4px;margin-bottom:16px;}
+  .stack__tick{flex:1;text-align:center;font-family:var(--mono);font-size:9px;color:var(--mute-dim);}
+  .progress-readout{font-family:var(--mono);font-size:12px;color:var(--mute);}
+  .progress-readout strong{color:var(--paper);}
+  .current-readout{font-family:var(--mono);font-size:11.5px;color:var(--scan);margin-top:4px;}
+
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:4px;margin:20px 0 20px;position:sticky;top:10px;z-index:30;backdrop-filter:blur(8px);}
+  .tab-btn{flex:1;border:none;background:transparent;color:var(--mute);font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;padding:9px 6px;border-radius:7px;cursor:pointer;transition:background .15s,color .15s;}
+  .tab-btn[aria-selected="true"]{background:var(--signal);color:var(--signal-ink);font-weight:600;}
+  .tab-btn:focus-visible{outline:2px solid var(--scan);outline-offset:2px;}
+
+  /* ---- phase headers ---- */
+  .phase-head{display:flex;align-items:center;gap:10px;margin:28px 0 12px;}
+  .phase-head:first-child{margin-top:4px;}
+  .phase-head__idx{font-family:var(--mono);font-size:11px;color:var(--signal);white-space:nowrap;}
+  .phase-head__line{flex:1;height:1px;background:var(--line);}
+  .phase-head__title{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);white-space:nowrap;}
+
+  /* ---- week card ---- */
+  .week{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;scroll-margin-top:100px;}
+  .week[data-current="true"]{border-color:var(--signal-soft);}
+  .week__head{display:flex;align-items:flex-start;gap:12px;width:100%;padding:13px 14px;background:none;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit;}
+  .week__head:focus-visible{outline:2px solid var(--scan);outline-offset:-2px;}
+  .week__idx{font-family:var(--mono);font-weight:700;font-size:19px;color:var(--mute-dim);min-width:34px;padding-top:1px;}
+  .week[data-current="true"] .week__idx{color:var(--signal);}
+  .week__meta{flex:1;min-width:0;}
+  .week__title{font-weight:600;font-size:14.5px;margin:0 0 2px;}
+  .week__dates{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .week__badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;align-items:center;}
+  .badge{font-family:var(--mono);font-size:10px;padding:2.5px 7px;border-radius:20px;border:1px solid var(--line);color:var(--mute);white-space:nowrap;}
+  .badge--phone{color:var(--scan);border-color:rgba(86,225,203,.3);background:var(--scan-dim);}
+  .badge--budget{color:var(--gold);border-color:rgba(232,184,75,.3);background:var(--gold-dim);}
+  .week__progress-pill{font-family:var(--mono);font-size:10.5px;color:var(--mute-dim);margin-left:auto;}
+  .week__chev{width:18px;height:18px;flex-shrink:0;margin-top:3px;color:var(--mute-dim);transition:transform .2s;}
+  .week.is-open .week__chev{transform:rotate(180deg);}
+  .week__body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .week.is-open .week__body{max-height:4000px;}
+  .week__body-inner{padding:2px 14px 16px;}
+
+  .block-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-dim);margin:16px 0 8px;}
+  .pourquoi{border-left:2px solid var(--scan);padding-left:11px;color:var(--mute);font-size:13.3px;margin:0;}
+
+  /* ---- actions ---- */
+  .action{display:flex;gap:10px;align-items:flex-start;padding:7px 4px;border-radius:7px;}
+  .action:hover{background:rgba(255,255,255,.025);}
+  .checkbox{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex-shrink:0;margin-top:2px;border:1.5px solid var(--line);border-radius:5px;background:var(--panel-raised);cursor:pointer;position:relative;transition:.15s;}
+  .checkbox:hover{border-color:var(--mute-dim);}
+  .checkbox:checked{background:var(--signal);border-color:var(--signal);}
+  .checkbox:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid var(--signal-ink);border-width:0 2px 2px 0;transform:rotate(45deg);}
+  .checkbox:focus-visible{outline:2px solid var(--scan);outline-offset:2px;}
+  .action__body{flex:1;min-width:0;}
+  .action__text{font-size:13.8px;line-height:1.45;cursor:pointer;display:inline;}
+  .action.is-done .action__text{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--mute-dim);}
+  .prompt-toggle{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-family:var(--mono);font-size:10.5px;color:var(--scan);background:var(--scan-dim);border:1px solid rgba(86,225,203,.3);padding:3.5px 9px;border-radius:20px;cursor:pointer;}
+  .prompt-toggle:focus-visible{outline:2px solid var(--scan);outline-offset:2px;}
+
+  /* ---- tips ---- */
+  .tip{display:flex;gap:8px;font-size:12.8px;color:var(--mute);padding:7px 9px;background:rgba(255,255,255,.02);border-radius:7px;margin-bottom:5px;}
+  .tip__mark{font-family:var(--mono);color:var(--signal);flex-shrink:0;}
+
+  /* ---- gate ---- */
+  .gate{margin-top:14px;border:1px solid rgba(255,90,31,.35);background:var(--signal-dim);border-radius:8px;padding:11px 13px;}
+  .gate__label{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--signal);margin-bottom:5px;}
+  .gate__text{font-size:13px;color:var(--paper);opacity:.92;margin:0;}
+
+  /* ---- console / prompt block ---- */
+  .console{margin-top:9px;background:var(--console);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .console__bar{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;background:var(--panel-raised);border-bottom:1px solid var(--line);}
+  .console__label{font-family:var(--mono);font-size:10px;color:var(--scan);letter-spacing:.06em;}
+  .copy-btn{font-family:var(--mono);font-size:10.5px;color:var(--console);background:var(--scan);border:none;padding:4px 10px;border-radius:5px;cursor:pointer;font-weight:600;}
+  .copy-btn:focus-visible{outline:2px solid var(--paper);outline-offset:2px;}
+  .console__body{padding:12px 13px;font-family:var(--mono);font-size:12px;line-height:1.65;color:var(--scan-text);white-space:pre-wrap;}
+
+  /* ---- notes ---- */
+  .notes{width:100%;background:var(--panel-raised);border:1px solid var(--line);border-radius:7px;color:var(--paper);font-family:var(--sans);font-size:13px;padding:9px 10px;margin-top:2px;resize:vertical;min-height:50px;}
+  .notes::placeholder{color:var(--mute-dim);}
+  .notes:focus-visible{outline:2px solid var(--scan);outline-offset:1px;}
+
+  /* ---- prompts tab ---- */
+  .prompt-card{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+  .prompt-card:last-child{border-bottom:none;margin-bottom:0;}
+  .prompt-card__head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .prompt-card__head h3{margin:0;font-size:14px;font-weight:600;}
+  .prompt-card__desc{color:var(--mute);font-size:12px;margin:0;}
+
+  /* ---- budget tab ---- */
+  .budget-intro{color:var(--mute);font-size:13px;margin:0 0 16px;}
+  .budget-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .budget-row__label{color:var(--paper);font-size:13.5px;}
+  .budget-row__week{font-family:var(--mono);font-size:10.5px;color:var(--mute-dim);margin-top:2px;}
+  .budget-row__amt{font-family:var(--mono);color:var(--gold);font-weight:600;font-size:13.5px;white-space:nowrap;}
+  .budget-total{display:flex;justify-content:space-between;align-items:center;padding-top:16px;margin-top:4px;}
+  .budget-total__label{font-size:14.5px;font-weight:600;}
+  .budget-total__amt{font-family:var(--mono);color:var(--gold);font-weight:700;font-size:17px;}
+  .budget-note{color:var(--mute-dim);font-size:11.8px;margin-top:12px;line-height:1.55;}
+
+  /* ---- footer ---- */
+  footer{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;}
+  .reset-btn{font-family:var(--mono);font-size:11px;color:var(--mute);background:none;border:1px solid var(--line);padding:9px 16px;border-radius:7px;cursor:pointer;}
+  .reset-btn:hover{color:var(--paper);border-color:var(--mute-dim);}
+  .credit{font-family:var(--mono);font-size:10.5px;color:var(--mute-dim);}
+
+  .save-flag{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--panel);border:1px solid var(--line);color:var(--paper);font-family:var(--mono);font-size:11.5px;padding:8px 16px;border-radius:20px;transition:.25s;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.45);z-index:50;}
+  .save-flag.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+  @media (max-width:380px){
+    .stack{gap:3px;height:40px;}
+    .h1{font-size:22px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">CONSOLE PERSO — YOUNES · JUIL → OCT 2026</div>
+  <h1 class="h1">Console de lancement</h1>
+  <p class="sub">Figurines 3D personnalisées par IA — du fichier photo au colis, en 12 semaines, 2 à 3h par semaine.</p>
+
+  <div class="stack" id="stack"></div>
+  <div class="stack__ticks" id="stackTicks"></div>
+  <div class="progress-readout" id="overallReadout">0 / 0 étapes complétées · 0%</div>
+  <div class="current-readout" id="currentReadout"></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" type="button" role="tab" data-tab="plan" aria-selected="true">Plan</button>
+    <button class="tab-btn" type="button" role="tab" data-tab="prompts" aria-selected="false">Prompts</button>
+    <button class="tab-btn" type="button" role="tab" data-tab="budget" aria-selected="false">Budget</button>
+  </div>
+
+  <div class="tabpanel" id="panel-plan">
+    <div id="planRoot"></div>
+  </div>
+
+  <div class="tabpanel" id="panel-prompts" hidden>
+    <p class="budget-intro">Tous les prompts du plan, au même endroit — copie et adapte les crochets [ ] avant d'envoyer.</p>
+    <div id="promptsRoot"></div>
+  </div>
+
+  <div class="tabpanel" id="panel-budget" hidden>
+    <p class="budget-intro">Postes de dépense engagés sur les 12 semaines. Le reste de l'enveloppe (~2 000–2 600 € au total dans l'étude de marché) reste en réserve pour les imprévus, les renouvellements d'abonnement au-delà du 1er mois, et les 500 € de publicité conditionnels de la semaine 12.</p>
+    <div id="budgetRoot"></div>
+  </div>
+
+  <footer>
+    <button class="reset-btn" id="resetBtn" type="button">Réinitialiser ma progression</button>
+    <div class="credit">Construit avec Claude · plan validé le 19 juillet 2026</div>
+  </footer>
+</div>
+
+<div class="save-flag" id="saveFlag">Sauvegardé ✓</div>
+
+<script>
+// ============================================================
+// DONNÉES
+// ============================================================
+const START_DATE = new Date(2026, 6, 20); // 20 juillet 2026
+const MS_WEEK = 7 * 24 * 60 * 60 * 1000;
+const STORAGE_KEY = 'figurine-plan-progress';
+
+const PROMPTS = {
+  'gemini-face': `Transforme cette photo en figurine miniature de collection, style vinyle/cartoon avec une tête légèrement surdimensionnée façon figurine pop culture. Vue de face, pose neutre debout, bras le long du corps, expression naturelle. Fond uni gris clair, éclairage studio homogène, sans ombre portée marquée. Conserve fidèlement les traits du visage, la coiffure, les lunettes et la tenue de la photo d'origine. Pas de packaging, pas de décor, pas de texte : uniquement le sujet seul, cadré en pied, sur fond neutre.`,
+  'gemini-profile': `Même personnage que l'image précédente, dans le même style et la même pose, mais vu de profil (ou de dos si le profil n'est pas net sur la photo source). Même fond gris uni, même éclairage, mêmes proportions. Objectif : donner une deuxième vue cohérente pour améliorer la reconstruction 3D.`,
+  'noms': `Je crée une marque de figurines 3D personnalisées à partir d'une photo, style cartoon/collection, imprimées en France. Cible : cadeaux (anniversaires, mariages, EVJF/EVG). Propose-moi 15 noms de marque courts (1 à 2 mots), mémorables, disponibles en .fr si possible, qui n'évoquent ni Funko ni Pop (contrainte de marque déposée à éviter). Évite les noms trop génériques déjà utilisés sur ce marché (type MiniMoi, Miniu, Mini-pop).`,
+  'cgv': `Rédige des CGV pour [nom de marque], vente de figurines 3D personnalisées réalisées à partir d'une photo, vendues par une micro-entreprise en France, livraison en France uniquement. Précise que le droit de rétractation ne s'applique pas car le produit est personnalisé (art. L221-28 du Code de la consommation), un délai de production de 7 à 10 jours ouvrés, un paiement intégral à la commande, et une clause de validation d'aperçu 3D avant lancement de la production.`,
+  'rgpd': `Rédige une politique de confidentialité RGPD pour [nom de marque], qui traite des photos de visages envoyées par les clients pour créer des figurines personnalisées. Précise : la base légale (consentement explicite), la finalité unique (création de la figurine commandée), une durée de conservation des photos et modèles 3D de 30 jours après livraison, le droit d'accès/rectification/effacement, et l'absence de réutilisation marketing des photos sans accord écrit séparé du client.`,
+  'captions': `Rédige 5 légendes courtes pour des vidéos Instagram/TikTok montrant la transformation d'une photo en figurine 3D imprimée (de la photo de départ à l'objet fini dans la main de la personne). Ton enthousiaste mais pas trop marketing, orienté surprise et émotion. Inclus 3 à 5 hashtags pertinents par légende, sans mentionner Funko ni Pop.`,
+  'etsy': `Rédige une fiche produit Etsy pour une figurine 3D personnalisée réalisée à partir d'une photo, style cartoon/collection, 9-10 cm, imprimée en 4 couleurs, livrée en boîte cadeau, délai de production de 7 à 10 jours ouvrés, fabriquée en France. Ton chaleureux et rassurant, insiste sur l'étape de validation de l'aperçu 3D avant impression (zéro mauvaise surprise sur la ressemblance). Donne-moi un titre optimisé SEO, une description de 150 à 200 mots, et 5 tags.`,
+  'bilan': `Voici les retours de mes premières ventes de figurines personnalisées : [colle ici tes notes — ressemblance perçue, délai perçu, remarques des acheteurs]. Aide-moi à structurer un bilan : ce qui fonctionne, ce qui doit être corrigé avant d'investir en publicité, et si le taux de satisfaction sur la ressemblance justifie de lancer les 500 € de publicité prévus pour la fenêtre de Noël.`
+};
+
+const PROMPT_INDEX = [
+  {id:'gemini-face', week:'S1', title:'Image figurine — vue de face', desc:"Pour styliser une photo brute en image de figurine, avant de la passer dans l'outil image → 3D."},
+  {id:'gemini-profile', week:'S1', title:'Image figurine — variante profil/dos', desc:'Une deuxième vue du même sujet pour améliorer la fidélité du modèle 3D généré.'},
+  {id:'noms', week:'S2', title:'Brainstorm de noms de marque', desc:'Pour sortir une shortlist de noms disponibles, distincts de Funko/Pop.'},
+  {id:'cgv', week:'S6', title:'Rédaction des CGV', desc:'Base de conditions générales de vente, à toujours croiser avec service-public.fr.'},
+  {id:'rgpd', week:'S6', title:'Politique de confidentialité RGPD', desc:'Pour cadrer proprement la collecte des photos de visages envoyées par les clients.'},
+  {id:'captions', week:'S9', title:'Légendes réseaux sociaux', desc:'Pour accompagner les vidéos de transformation photo → figurine.'},
+  {id:'etsy', week:'S11', title:'Fiche produit Etsy', desc:'Titre, description et tags pour les 3-4 premières fiches boutique.'},
+  {id:'bilan', week:'S12', title:'Analyse du bilan de lancement', desc:'Pour structurer la décision go/no-go sur la publicité de Noël.'}
+];
+
+const PHASE_NAMES = {1:'Validation', 2:'Vacances — mode léger', 3:'Fabrication', 4:'Lancement'};
+
+const PLAN = [
+  {
+    id:'S1', phase:1, dates:'20 – 26 juillet', title:'Le test décisif', mode:'normal', hours:'2–3h',
+    budget:{amount:'20–25 €', label:'Abonnement agrégateur IA 3D (Meshy ou 3D AI Studio)'},
+    pourquoi:"Tout le projet repose sur un pari technique : est-ce que l'IA arrive à transformer une photo en figurine reconnaissable ? On le vérifie avant de dépenser un centime en imprimante.",
+    actions:[
+      {text:"Créer un compte sur l'agrégateur IA 3D (3D AI Studio ou Meshy) et souscrire l'offre d'entrée — résiliable à tout moment"},
+      {text:"Rassembler 10 photos tests : toi, Zineb, 3 à 4 amis aux profils variés (barbe, lunettes, cheveux longs, voile, carnations différentes) — la variété stress-teste le pipeline"},
+      {text:"Styliser chaque photo en image « figurine » avec Gemini", promptId:'gemini-face'},
+      {text:"Pour 2-3 cas, générer aussi une vue de profil pour comparer la fidélité 3D obtenue", promptId:'gemini-profile'},
+      {text:"Passer chaque image stylisée dans l'outil image → 3D, exporter en STL"},
+      {text:"Noter pour chacun des 10 : ressemblance sur 5, temps passé, quel moteur rend le mieux pour ce visage"},
+      {text:"Calculer le score final : X/10 jugés reconnaissables"}
+    ],
+    tips:[
+      "Évite les prompts « viraux » vus sur Instagram (avec boîte, bureau, écran en fond) : parfaits pour un post, mais ils polluent la reconstruction 3D. Ici, le but c'est le sujet seul, sur fond neutre.",
+      "Si un moteur échoue sur un visage, essaie-en un autre avant d'abandonner — Meshy, Tripo et Hitem3D n'ont pas les mêmes forces selon les visages."
+    ],
+    gate:{title:'Gate n°1 — fin de semaine', text:"≥ 6 visages reconnaissables sur 10 → on continue le plan tel quel. En dessous, on ajuste le pipeline (autre moteur, prompt revu) avant tout achat de matériel."}
+  },
+  {
+    id:'S2', phase:1, dates:'27 juillet – 2 août', title:'Marque et cadre légal', mode:'normal', hours:'2–3h', budget:null,
+    pourquoi:"Le nom se vérifie juridiquement avant qu'on s'y attache, et ton contrat de travail mérite une relecture avant d'aller plus loin — par prudence, pas parce qu'il y a un problème identifié.",
+    actions:[
+      {text:"Lister 5 noms de marque candidats — éviter tout mot proche de « Pop » ou « Funko » (marques déposées)", promptId:'noms'},
+      {text:"Vérifier la disponibilité de chaque nom sur la base de l'INPI (bases-marques.inpi.fr)"},
+      {text:"Vérifier la disponibilité du .fr / .com et des handles Instagram/TikTok pour chaque candidat"},
+      {text:"Relire ton contrat de travail — chercher une éventuelle clause d'exclusivité ou de non-concurrence"},
+      {text:"Reprendre les 3-4 cas les moins concluants du test IA de la semaine 1 (autre moteur ou prompt ajusté)"}
+    ],
+    tips:["Vérifie aussi que le nom ne sonne pas trop proche phonétiquement d'un concurrent existant (Miniu, Mini-pop) — la ressemblance sonore peut aussi poser problème en cas de litige."]
+  },
+  {
+    id:'S3', phase:1, dates:'3 – 9 août', title:'Boucler avant le départ', mode:'normal', hours:'1–2h',
+    budget:{amount:'10–15 €', label:'Nom de domaine'},
+    pourquoi:"Départ en vacances mercredi : on fixe les fondations identitaires maintenant pour pouvoir avancer léger depuis le téléphone ensuite.",
+    actions:[
+      {text:"Choisir LE nom définitif parmi la shortlist"},
+      {text:"Acheter le nom de domaine correspondant"},
+      {text:"Réserver les handles Instagram et TikTok, même vides — juste pour bloquer le nom"},
+      {text:"Créer un dossier (Drive ou Notes) avec des captures d'écran des concurrents : prix, délais, ce qui plaît ou déplaît visuellement"}
+    ],
+    tips:["Pas besoin de logo ni de charte graphique cette semaine — juste le nom et les réservations. Le reste attend d'avoir de vraies figurines à montrer."]
+  },
+  {
+    id:'S4', phase:2, dates:'10 – 16 août', title:'Repérage visuel', mode:'phone', hours:'30–45 min', budget:null,
+    pourquoi:"Semaine volontairement légère — tu es en vacances. On profite des temps morts pour du repérage visuel, sans obligation de résultat.",
+    actions:[
+      {text:"Chercher « figurine personnalisée », « custom pop figure », « nano banana figurine » sur Instagram/TikTok/Pinterest et sauvegarder 15-20 exemples qui te plaisent (mise en scène, packaging, style de vidéo)"},
+      {text:"Sauvegarder des captures des pages produit concurrentes (Miniu, Etsy, Funko Pop Yourself) : comment ils présentent prix, tailles, délais"},
+      {text:"Noter 3 idées d'accroche pour ta bio Instagram, à envoyer pour qu'on les affine ensemble"}
+    ],
+    tips:["Centralise tout dans un seul album photo ou dossier de favoris — ça te fera gagner du temps à la rentrée."]
+  },
+  {
+    id:'S5', phase:2, dates:'17 – 23 août', title:'Commande du matériel', mode:'phone', hours:'30–45 min',
+    budget:{amount:'600–750 €', label:'Imprimante A1 Combo + filaments + outillage — le plus gros poste du plan'},
+    pourquoi:"Le seul achat matériel du plan de vacances — calé pour arriver pile à ton retour, ni avant (colis qui traîne), ni pendant ton absence.",
+    actions:[
+      {text:"Commander la Bambu Lab A1 Combo (AMS Lite) — viser une livraison autour du 31 août"},
+      {text:"Commander 6 à 8 bobines de PLA : teintes carnation, cheveux, couleurs vives pour vêtements, une couleur de socle"},
+      {text:"Commander le petit outillage : pince coupante, cutter, lime à ongle fine, colle cyanoacrylate"},
+      {text:"Regarder 2-3 tutos « Bambu Studio débutant » pendant les temps morts"}
+    ],
+    tips:["Vérifie l'adresse de livraison si tu n'es pas chez toi : fais-la livrer chez un proche, ou calcule pour qu'elle arrive après ton retour."]
+  },
+  {
+    id:'S6', phase:2, dates:'24 – 30 août', title:'CGV et RGPD', mode:'phone', hours:'30–45 min', budget:null,
+    pourquoi:"Les documents légaux demandent de la rédaction mais pas de charge mentale — on les prépare à deux, tu relis depuis le téléphone entre deux baignades.",
+    actions:[
+      {text:"Rédiger les CGV avec Claude (conditions de vente, délais, litiges)", promptId:'cgv'},
+      {text:"Rédiger la politique de confidentialité RGPD avec Claude (photos de visages, consentement, durée de conservation)", promptId:'rgpd'},
+      {text:"Lister tes 10 cobayes de l'entourage pour la série de lancement de la semaine 9 — proches motivés à tester et à donner un avis honnête"}
+    ],
+    tips:["Croise toujours le résultat avec les fiches officielles de service-public.fr avant publication — une IA rédige une bonne base, la relecture finale se fait avec la source ouverte à côté."]
+  },
+  {
+    id:'S7', phase:3, dates:'31 août – 6 septembre', title:'Déballage', mode:'normal', hours:'3h', budget:null,
+    pourquoi:"Premier contact avec la machine — calibration et premiers tests avant de viser la qualité commerciale.",
+    actions:[
+      {text:"Déballage, montage, calibration guidée (l'A1 automatise l'essentiel)"},
+      {text:"Premier « benchy » (pièce de calibration standard) pour vérifier que tout fonctionne"},
+      {text:"Trancher et imprimer une première figurine en mono-couleur à partir d'un modèle validé en semaine 1"},
+      {text:"Tenter une première impression multicouleur avec l'AMS sur un modèle simple"},
+      {text:"Tenir un journal des réglages (température, vitesse, hauteur de couche) qui donnent le meilleur résultat"}
+    ],
+    tips:["Ne vise pas la perfection cette semaine : l'objectif est de comprendre la machine, pas de sortir un produit vendable. Les ratés sont normaux et utiles."]
+  },
+  {
+    id:'S8', phase:3, dates:'7 – 13 septembre', title:'Monter en qualité', mode:'normal', hours:'2–3h', budget:null,
+    pourquoi:"La semaine où tu passes de « ça imprime » à « c'est vendable » : on affine jusqu'à un niveau que tu oserais montrer à un client.",
+    actions:[
+      {text:"Itérer sur les réglages : hauteur de couche plus fine sur le visage, gestion de la purge AMS pour limiter le gâchis"},
+      {text:"Produire 2 à 3 prototypes complets (impression + ébavurage + finition)"},
+      {text:"Chronométrer précisément : temps machine réel et grammes de filament par pièce, pour recalculer ton coût matière réel"},
+      {text:"Si un visage ne « passe » pas bien en 3D, premier essai de retouche manuelle dans Blender"}
+    ],
+    tips:["Ce chronométrage sert à ajuster les unit economics de l'étude de marché — note tout, le prix final en dépend."]
+  },
+  {
+    id:'S9', phase:3, dates:'14 – 20 septembre', title:'Série et contenu', mode:'normal', hours:'2–3h (+ temps machine en fond)',
+    budget:{amount:'100–150 €', label:'Packaging — 100 boîtes à fenêtre + calage'},
+    pourquoi:"Première vraie série de production, et surtout la matière première pour le contenu : le moment le plus vidéogénique du projet, à ne pas rater.",
+    actions:[
+      {text:"Lancer la série des 5 à 8 figurines de l'entourage (cobayes listés en semaine 6)"},
+      {text:"Filmer systématiquement : photo de départ, image stylisée, time-lapse d'impression, ébavurage, réaction à l'unboxing"},
+      {text:"Rédiger 5 légendes courtes pour les réseaux sociaux à partir de ces séquences", promptId:'captions'},
+      {text:"Commander le packaging : 100 boîtes à fenêtre + calage"}
+    ],
+    tips:["Le format qui marche le mieux sur ce produit : la boucle complète en 15-20 secondes, photo → transformation → objet fini dans la main de la personne. Pas besoin de montage complexe."]
+  },
+  {
+    id:'S10', phase:4, dates:'21 – 27 septembre', title:'Officialisation', mode:'normal', hours:'2–3h',
+    budget:{amount:'100–150 €', label:'RC Pro (assurance responsabilité civile professionnelle)'},
+    pourquoi:"Tu as la preuve que le produit fonctionne (semaines 7 à 9) : c'est le bon moment pour officialiser — ni trop tôt (incertitude technique), ni trop tard (tu rates la fenêtre de Noël).",
+    actions:[
+      {text:"Immatriculation micro-entreprise sur le guichet unique de l'INPI (~45 min, gratuit)"},
+      {text:"Devis et souscription d'une RC Pro"},
+      {text:"Finaliser les CGV et la politique RGPD rédigées en semaine 6, avec les infos officielles (SIRET, adresse)"},
+      {text:"Ouvrir un compte bancaire dédié à l'activité — pas obligatoire sous 10 000 € de CA en micro, mais plus clair dès le départ"}
+    ],
+    tips:["Le SIRET met parfois 1 à 3 semaines à arriver après l'immatriculation : lance cette étape tôt dans la semaine, tu en as besoin pour facturer légalement dès la première vente."]
+  },
+  {
+    id:'S11', phase:4, dates:'28 septembre – 4 octobre', title:'Ouverture boutique', mode:'normal', hours:'2–3h', budget:null,
+    pourquoi:"La boutique en ligne, enfin — mais seulement maintenant que le produit, le prix et les visuels sont prouvés par les neuf dernières semaines.",
+    actions:[
+      {text:"Ouvrir la boutique Etsy"},
+      {text:"Créer 3 à 4 fiches produit : figurine solo, duo/couple, animal de compagnie", promptId:'etsy'},
+      {text:"Publier les 5 meilleurs contenus de la semaine 9 sur Instagram et TikTok"},
+      {text:"Ouvrir les précommandes à l'entourage avec -20 % — premiers vrais retours avant le grand public"}
+    ],
+    tips:["Mets en avant l'étape de validation de l'aperçu 3D avant impression dans toutes tes fiches : c'est ton argument anti-objection n°1 (« et si ça ne me ressemble pas ? »)."]
+  },
+  {
+    id:'S12', phase:4, dates:'5 – 11 octobre', title:'Premières ventes et bilan', mode:'normal', hours:'2–3h', budget:null,
+    pourquoi:"Semaine de vérité : premières vraies commandes, et le calcul qui décide de la suite.",
+    actions:[
+      {text:"Produire et expédier les précommandes de l'entourage"},
+      {text:"Recueillir un retour écrit ou vocal de chaque acheteur : ressemblance, délai perçu, ce qu'il changerait"},
+      {text:"Faire le bilan chiffré : taux de ressemblance satisfaisante, temps réel par pièce, coût matière réel, marge réelle vs. estimée dans l'étude", promptId:'bilan'},
+      {text:"Décider : go/no-go sur le budget publicité de 500 € pour la fenêtre de Noël, et sur le développement de l'offre mariage"}
+    ],
+    tips:["Ce bilan reprend les chiffres de l'étude de marché initiale — c'est le moment de vérifier si les hypothèses tenaient la route."],
+    gate:{title:'Gate n°2 — fin de semaine', text:"Taux de satisfaction ressemblance ≥ 90 % et temps/pièce soutenable → lancement des 500 € de publicité fin octobre. Sinon, une semaine de plus en itération avant d'ouvrir le robinet publicitaire."}
+  }
+];
+
+const BUDGET_ITEMS = PLAN.filter(w => w.budget).map(w => ({week:w.id, label:w.budget.label, amount:w.budget.amount}));
+
+// ============================================================
+// ÉTAT + PERSISTANCE
+// ============================================================
+let STATE = {checks:{}, notes:{}};
+
+function hasStorage(){
+  return typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function';
+}
+
+function debounce(fn, delay){
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+}
+
+async function loadState(){
+  if (!hasStorage()) return;
+  try{
+    const res = await window.storage.get(STORAGE_KEY);
+    if (res && res.value){
+      const parsed = JSON.parse(res.value);
+      STATE.checks = parsed.checks || {};
+      STATE.notes = parsed.notes || {};
+    }
+  }catch(e){ /* pas de données existantes, ou API indisponible hors Claude.ai — on démarre à zéro */ }
+}
+
+async function saveState(){
+  if (!hasStorage()){ flashSaved('Session locale (non sauvegardée)'); return; }
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(STATE));
+    flashSaved('Sauvegardé ✓');
+  }catch(e){ flashSaved('Erreur de sauvegarde'); }
+}
+const debouncedSave = debounce(saveState, 700);
+
+// ============================================================
+// UTILS
+// ============================================================
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function currentWeekIndex(){
+  const diff = Date.now() - START_DATE.getTime();
+  let idx = Math.floor(diff / MS_WEEK);
+  if (idx < 0) idx = 0;
+  if (idx > PLAN.length - 1) idx = PLAN.length - 1;
+  return idx;
+}
+
+let saveFlagTimer;
+function flashSaved(msg){
+  const el = document.getElementById('saveFlag');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(saveFlagTimer);
+  saveFlagTimer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+async function doCopy(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    }catch(e2){ return false; }
+  }
+}
+
+// ============================================================
+// RENDU
+// ============================================================
+function renderStack(){
+  const stack = document.getElementById('stack');
+  const ticks = document.getElementById('stackTicks');
+  stack.innerHTML = PLAN.map(w => `
+    <div class="stack__cell" data-week="${w.id}" title="${w.id} · ${w.dates}">
+      <div class="stack__fill" data-fill="${w.id}"></div>
+    </div>`).join('');
+  ticks.innerHTML = PLAN.map((w,i) => `<div class="stack__tick">${i+1}</div>`).join('');
+}
+
+function renderWeekCard(w, i){
+  const badges = [
+    `<span class="badge">${w.hours}</span>`,
+    w.mode === 'phone' ? `<span class="badge badge--phone">📱 mode léger</span>` : '',
+    w.budget ? `<span class="badge badge--budget">${w.budget.amount}</span>` : ''
+  ].join('');
+
+  const actionsHtml = w.actions.map((a, ai) => {
+    const key = `${w.id}-${ai}`;
+    const promptHtml = a.promptId ? `
+      <button class="prompt-toggle" type="button" data-prompt="${a.promptId}">Voir le prompt</button>
+      <div class="console" data-prompt-block="${a.promptId}" hidden>
+        <div class="console__bar">
+          <span class="console__label">PROMPT À COPIER</span>
+          <button class="copy-btn" type="button" data-copy="${a.promptId}">Copier</button>
+        </div>
+        <div class="console__body">${escapeHtml(PROMPTS[a.promptId])}</div>
+      </div>` : '';
+    return `
+      <div class="action" data-key="${key}">
+        <input type="checkbox" class="checkbox" id="chk-${key}" data-key="${key}">
+        <div class="action__body">
+          <label class="action__text" for="chk-${key}">${escapeHtml(a.text)}</label>
+          ${promptHtml}
+        </div>
+      </div>`;
+  }).join('');
+
+  const tipsHtml = (w.tips || []).map(t => `
+    <div class="tip"><span class="tip__mark">›</span><span>${escapeHtml(t)}</span></div>`).join('');
+
+  const gateHtml = w.gate ? `
+    <div class="gate">
+      <div class="gate__label">🔒 ${escapeHtml(w.gate.title)}</div>
+      <p class="gate__text">${escapeHtml(w.gate.text)}</p>
+    </div>` : '';
+
+  return `
+  <section class="week" id="week-${w.id}" data-week="${w.id}">
+    <button class="week__head" type="button" aria-expanded="false" aria-controls="body-${w.id}">
+      <span class="week__idx">S${i+1}</span>
+      <span class="week__meta">
+        <span class="week__title">${escapeHtml(w.title)}</span><br>
+        <span class="week__dates">${w.dates}</span>
+        <div class="week__badges">${badges}<span class="week__progress-pill" data-progress="${w.id}">0/${w.actions.length}</span></div>
+      </span>
+      <svg class="week__chev" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="week__body" id="body-${w.id}"><div class="week__body-inner">
+      <div class="block-label">Pourquoi</div>
+      <p class="pourquoi">${escapeHtml(w.pourquoi)}</p>
+      <div class="block-label">Actions</div>
+      ${actionsHtml}
+      ${tipsHtml ? `<div class="block-label">Astuces</div>${tipsHtml}` : ''}
+      ${gateHtml}
+      <div class="block-label">Notes perso</div>
+      <textarea class="notes" data-week="${w.id}" placeholder="Tes notes pour cette semaine (facultatif)…"></textarea>
+    </div></div>
+  </section>`;
+}
+
+function renderPlan(){
+  const root = document.getElementById('planRoot');
+  let html = '';
+  let lastPhase = null;
+  PLAN.forEach((w, i) => {
+    if (w.phase !== lastPhase){
+      html += `<div class="phase-head"><span class="phase-head__idx">PHASE ${String(w.phase).padStart(2,'0')}</span><span class="phase-head__line"></span><span class="phase-head__title">${PHASE_NAMES[w.phase]}</span></div>`;
+      lastPhase = w.phase;
+    }
+    html += renderWeekCard(w, i);
+  });
+  root.innerHTML = html;
+}
+
+function renderPrompts(){
+  const root = document.getElementById('promptsRoot');
+  root.innerHTML = PROMPT_INDEX.map(p => `
+    <div class="prompt-card">
+      <div class="prompt-card__head">
+        <span class="badge">${p.week}</span>
+        <h3>${escapeHtml(p.title)}</h3>
+      </div>
+      <p class="prompt-card__desc">${escapeHtml(p.desc)}</p>
+      <div class="console">
+        <div class="console__bar">
+          <span class="console__label">PROMPT À COPIER</span>
+          <button class="copy-btn" type="button" data-copy="${p.id}">Copier</button>
+        </div>
+        <div class="console__body">${escapeHtml(PROMPTS[p.id])}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderBudget(){
+  const root = document.getElementById('budgetRoot');
+  const rows = BUDGET_ITEMS.map(b => `
+    <div class="budget-row">
+      <div>
+        <div class="budget-row__label">${escapeHtml(b.label)}</div>
+        <div class="budget-row__week">${b.week}</div>
+      </div>
+      <div class="budget-row__amt">${b.amount}</div>
+    </div>`).join('');
+  root.innerHTML = `
+    ${rows}
+    <div class="budget-total">
+      <span class="budget-total__label">Total engagé sur 12 semaines</span>
+      <span class="budget-total__amt">≈ 830 – 1 090 €</span>
+    </div>
+    <p class="budget-note">Calculé à partir des postes ci-dessus uniquement. Hors renouvellements mensuels d'abonnement au-delà du premier mois, hors 500 € de publicité (conditionnels au Gate n°2 de la semaine 12).</p>
+  `;
+}
+
+// ============================================================
+// MISE À JOUR DE LA PROGRESSION
+// ============================================================
+function updateWeekProgress(weekId){
+  const week = PLAN.find(w => w.id === weekId);
+  const total = week.actions.length;
+  let done = 0;
+  week.actions.forEach((a, ai) => { if (STATE.checks[`${weekId}-${ai}`]) done++; });
+
+  const pill = document.querySelector(`[data-progress="${weekId}"]`);
+  if (pill) pill.textContent = `${done}/${total}`;
+
+  const fill = document.querySelector(`[data-fill="${weekId}"]`);
+  if (fill) fill.style.height = total ? `${Math.round((done/total)*100)}%` : '0%';
+}
+
+function updateOverallProgress(){
+  let total = 0, done = 0;
+  PLAN.forEach(w => {
+    total += w.actions.length;
+    w.actions.forEach((a, ai) => { if (STATE.checks[`${w.id}-${ai}`]) done++; });
+  });
+  const pct = total ? Math.round((done/total)*100) : 0;
+  const readout = document.getElementById('overallReadout');
+  readout.innerHTML = `<strong>${done}</strong> / ${total} étapes complétées · ${pct}%`;
+}
+
+function applyStateToDom(){
+  document.querySelectorAll('.checkbox').forEach(cb => {
+    const checked = !!STATE.checks[cb.dataset.key];
+    cb.checked = checked;
+    cb.closest('.action').classList.toggle('is-done', checked);
+  });
+  document.querySelectorAll('.notes').forEach(ta => {
+    ta.value = STATE.notes[ta.dataset.week] || '';
+  });
+  PLAN.forEach(w => updateWeekProgress(w.id));
+  updateOverallProgress();
+}
+
+function highlightCurrentWeek(){
+  const idx = currentWeekIndex();
+  const currentId = PLAN[idx].id;
+
+  document.querySelectorAll('.week').forEach(el => {
+    const isCurrent = el.dataset.week === currentId;
+    el.dataset.current = isCurrent ? 'true' : 'false';
+    if (isCurrent){
+      el.classList.add('is-open');
+      el.querySelector('.week__head').setAttribute('aria-expanded', 'true');
+    }
+  });
+  document.querySelectorAll('.stack__cell').forEach(c => {
+    c.dataset.current = c.dataset.week === currentId ? 'true' : 'false';
+  });
+
+  const w = PLAN[idx];
+  document.getElementById('currentReadout').textContent = `Semaine en cours : S${idx+1} · ${w.dates}`;
+}
+
+function openAndScrollTo(weekId){
+  const el = document.getElementById(`week-${weekId}`);
+  if (!el) return;
+  el.classList.add('is-open');
+  el.querySelector('.week__head').setAttribute('aria-expanded', 'true');
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ============================================================
+// ÉVÉNEMENTS
+// ============================================================
+function bindEvents(){
+  // Cases à cocher
+  document.body.addEventListener('change', (e) => {
+    const cb = e.target.closest('.checkbox');
+    if (!cb) return;
+    const key = cb.dataset.key;
+    STATE.checks[key] = cb.checked;
+    cb.closest('.action').classList.toggle('is-done', cb.checked);
+    updateWeekProgress(key.split('-')[0]);
+    updateOverallProgress();
+    debouncedSave();
+  });
+
+  // Notes libres
+  document.body.addEventListener('input', (e) => {
+    const ta = e.target.closest('.notes');
+    if (!ta) return;
+    STATE.notes[ta.dataset.week] = ta.value;
+    debouncedSave();
+  });
+
+  // Clics : accordéon, prompts, copier, cellules du stack, onglets
+  document.body.addEventListener('click', (e) => {
+    const head = e.target.closest('.week__head');
+    if (head){
+      const week = head.closest('.week');
+      const willOpen = !week.classList.contains('is-open');
+      week.classList.toggle('is-open', willOpen);
+      head.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+
+    const toggle = e.target.closest('.prompt-toggle');
+    if (toggle){
+      const id = toggle.dataset.prompt;
+      const block = toggle.parentElement.querySelector(`[data-prompt-block="${id}"]`);
+      const hidden = block.hasAttribute('hidden');
+      if (hidden){ block.removeAttribute('hidden'); toggle.textContent = 'Masquer le prompt'; }
+      else { block.setAttribute('hidden',''); toggle.textContent = 'Voir le prompt'; }
+      return;
+    }
+
+    const copyBtn = e.target.closest('.copy-btn');
+    if (copyBtn){
+      const id = copyBtn.dataset.copy;
+      const text = PROMPTS[id];
+      const original = copyBtn.textContent;
+      doCopy(text).then(ok => {
+        copyBtn.textContent = ok ? 'Copié ✓' : 'Erreur';
+        setTimeout(() => { copyBtn.textContent = original; }, 1500);
+      });
+      return;
+    }
+
+    const cell = e.target.closest('.stack__cell');
+    if (cell){
+      document.querySelector('[data-tab="plan"]').click();
+      openAndScrollTo(cell.dataset.week);
+      return;
+    }
+
+    const tabBtn = e.target.closest('.tab-btn');
+    if (tabBtn){
+      document.querySelectorAll('.tab-btn').forEach(b => b.setAttribute('aria-selected', 'false'));
+      tabBtn.setAttribute('aria-selected', 'true');
+      document.querySelectorAll('.tabpanel').forEach(p => p.hidden = true);
+      document.getElementById(`panel-${tabBtn.dataset.tab}`).hidden = false;
+      return;
+    }
+  });
+
+  // Réinitialisation
+  document.getElementById('resetBtn').addEventListener('click', async () => {
+    if (!confirm('Réinitialiser toute ta progression et tes notes ? Cette action est irréversible.')) return;
+    STATE = {checks:{}, notes:{}};
+    await saveState();
+    applyStateToDom();
+  });
+}
+
+// ============================================================
+// INITIALISATION
+// ============================================================
+async function init(){
+  renderStack();
+  renderPlan();
+  renderPrompts();
+  renderBudget();
+  bindEvents();
+  await loadState();
+  applyStateToDom();
+  highlightCurrentWeek();
+  document.body.classList.add('is-ready');
+}
+
+init();
+</script>
+</body>
+</html>
