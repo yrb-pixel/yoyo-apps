@@ -736,6 +736,9 @@ svg.leaflet-image-layer.leaflet-interactive path {
 @media(max-width:850px){.today-restos{grid-template-columns:1fr}.today-hero{padding:22px 18px;min-height:225px}.today-panel,.today-next{padding:15px}.today-stop{gap:8px}.prep-links{margin-top:8px}.prep-links button{font-size:11px;padding:10px 12px}}
 .offline-indicator{position:sticky;top:0;z-index:9999;background:#fbe8c9;color:#654313;text-align:center;font-size:11px;font-weight:800;padding:9px 15px}.offline-indicator[hidden]{display:none!important}
 .activity-adjust{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.day-discarded{background:#f7faf8;border:1px solid #e5ece7;border-radius:14px;padding:14px;margin:13px 0}.day-discarded summary{color:#516d61;font-size:12px;font-weight:800;cursor:pointer}.discarded-line{border-top:1px solid #edf1ed;padding:9px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#667d73}.discarded-line .button{flex:none}
+
+/* Four equal mobile tabs, regardless of legacy widths */
+@media(max-width:960px){.bottom-mobile{display:flex!important;justify-content:space-around!important;overflow-x:hidden!important;gap:0!important}.bottom-mobile button{flex:1 1 25%!important;min-width:0!important;width:25%!important;max-width:25%!important}}
 </style>
 <!-- Leaflet CSS is embedded locally for reliable mobile Safari rendering. -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -1048,7 +1051,7 @@ const boolKeys=['checked','reservations','deadlineDone','hiddenActivities'];for(
 const noteObj=safeSharedObject(incoming.notes);data.notes={...safeSharedObject(data.notes),...Object.fromEntries(Object.entries(noteObj).filter(([k,v])=>/^2026-12-\d\d$/.test(k)&&typeof v==='string').map(([k,v])=>[k,v.slice(0,5000)]))};
 if(['comfort','adventure'].includes(incoming.selectedWall))data.selectedWall=incoming.selectedWall;
 data.hotelChoices={...safeSharedObject(data.hotelChoices),...safeSharedObject(incoming.hotelChoices)};
-data.slotOverrides={...safeSharedObject(data.slotOverrides),...safeSharedObject(incoming.slotOverrides)};
+data.slotOverrides={...safeSharedObject(data.slotOverrides),...Object.fromEntries(Object.entries(safeSharedObject(incoming.slotOverrides)).filter(([key,v])=>/^[a-zA-Z0-9-]{2,40}$/.test(key)&&v&&typeof v==='object'&&/^\d\d:\d\d$/.test(String(v.time||''))&&/^\d\d:\d\d$/.test(String(v.end||''))).map(([key,v])=>[key,{time:v.time,end:v.end}]))};
 const theirs=Array.isArray(incoming.custom)?incoming.custom:[];const old=new Map((Array.isArray(data.custom)?data.custom:[]).map(x=>[String(x.id),x]));for(const a of theirs.slice(0,100)){if(!a||!/^x\d+$/.test(String(a.id))||!days.some(d=>d.date===a.date)||typeof a.name!=='string')continue;old.set(String(a.id),{id:String(a.id),date:a.date,name:a.name.slice(0,150),time:String(a.time||'12:00').slice(0,5),end:String(a.end||'13:00').slice(0,5),desc:String(a.desc||'').slice(0,3000),cn:String(a.cn||'').slice(0,250),route:String(a.route||'À vérifier dans AMap').slice(0,2000),url:/^https:\/\//i.test(String(a.url||''))?String(a.url).slice(0,1000):'',tag:'Idée personnalisée',type:'custom',cost:0,priority:'optional',photo:im.beijing,details:[String(a.desc||'').slice(0,800)],app:'AMap / DiDi',reserve:'À confirmer',budget:'À estimer',tip:'Vérifier horaires et transport avant de confirmer.'})}data.custom=[...old.values()];
 save();history.replaceState(null,'',location.pathname+location.search);render();showToast('Modifications importées sur cet appareil !')
 }catch(e){alert('Lien de partage non reconnu : '+e.message)}
