@@ -1,0 +1,12 @@
+{
+  "name": "WANDER | Chine 2026",
+  "short_name": "WANDER Chine",
+  "description": "Voyage en Chine : programme, cartes, hôtels, réservations et transports.",
+  "start_url": "./Voyage-Chine-2026.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f3",
+  "theme_color": "#092429",
+  "lang": "fr",
+  "orientation": "any"
+}
